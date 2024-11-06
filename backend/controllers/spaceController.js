@@ -1,30 +1,24 @@
-const Space = require('../models/space');
+const Space = require('../models/space');  // Nota el uso de '../' ya que el archivo está en 'controllers' y los modelos en 'models'
+const Service = require('../models/Service');
 
-// Obtener todos los espacios
-exports.getSpaces = async (req, res) => {
+// Crear un nuevo espacio
+exports.createSpace = async (req, res) => {
   try {
-    const spaces = await Space.find();
-    res.json(spaces);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    const { name, address, rating, price, services } = req.body;
+    const space = new Space({ name, address, rating, price, services });
+    await space.save();
+    res.status(201).json(space);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Agregar un nuevo espacio
-exports.addSpace = async (req, res) => {
-  const { name, address, rating, price } = req.body;
-
-  const newSpace = new Space({
-    name,
-    address,
-    rating,
-    price
-  });
-
+// Obtener todos los espacios con los servicios
+exports.getSpaces = async (req, res) => {
   try {
-    const savedSpace = await newSpace.save();
-    res.status(201).json(savedSpace);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    const spaces = await Space.find().populate('services');
+    res.json(spaces);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

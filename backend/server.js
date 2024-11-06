@@ -1,31 +1,39 @@
 const express = require('express');
+const cors = require('cors'); // Importamos el middleware CORS
 const mongoose = require('mongoose');
-const cors = require('cors');  // Asegurando CORS
-const spaceRoutes = require('./routes/spaceRoutes');
+const bodyParser = require('body-parser');
+const SpaceRoutes = require('./routes/spaceRoutes');
+const ServiceRoutes = require('./routes/serviceRoutes');
 
 const app = express();
-const PORT = 5001;  // Cambiar a puerto 5001
 
-// Configurar CORS para permitir solicitudes desde localhost:3000
-app.use(cors({
-  origin: 'http://localhost:3000',  // Asegúrate de que sea la URL de tu frontend
-  methods: 'GET',             // Permitir solo solicitudes GET desde el frontend
-  allowedHeaders: 'Content-Type'   // Permitir encabezados Content-Type
-}));
+// Configuración de CORS: permite solicitudes desde cualquier origen
+app.use(cors());
 
-app.use(express.json());
+// Middleware para parsear el cuerpo de las solicitudes (JSON)
+app.use(bodyParser.json());
 
-// Conexión a MongoDB
-mongoose.connect('mongodb://localhost:27017/nomad', {
+// Conexión a la base de datos MongoDB
+mongoose.connect('mongodb://localhost:27017/nomad-pwa', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log('MongoDB connection error:', err));
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log('Conectado a MongoDB');
+}).catch((error) => {
+  console.error('Error al conectar a MongoDB:', error);
+});
 
-// Rutas
-app.use('/api/spaces', spaceRoutes);
+// Rutas de la API
+app.use('/api', SpaceRoutes);  // Rutas de espacios
+app.use('/api', ServiceRoutes);  // Rutas de servicios
 
+// Ruta raíz (opcional, para comprobar que el servidor está corriendo)
+app.get('/', (req, res) => {
+  res.send('¡Servidor corriendo correctamente!');
+});
+
+// Configurar el puerto en el que el servidor escuchará
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
