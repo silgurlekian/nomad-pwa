@@ -1,48 +1,33 @@
-/* App.css */
-body {
-  background-color: #f8f9fa;
-}
-
 .App {
   font-family: Arial, sans-serif;
-  padding: 20px;
 }
 
-.space {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 20px;
-  margin-bottom: 15px;
-  background-color: #ffffff;
+.header {
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.space h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
+.search-bar {
+  display: flex;
+  align-items: center;
 }
 
-.space p {
-  font-size: 1rem;
-  color: #555;
+.filter-buttons .btn {
+  border-radius: 20px;
 }
 
-.space ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.space ul li {
-  padding: 5px 0;
-}
-
-h1 {
+.city-carousel .city-thumbnail {
+  width: 60px;
   text-align: center;
-  color: #007bff;
-  font-size: 2.5rem;
-  margin-bottom: 20px;
 }
 
-h3 {
-  font-size: 1.25rem;
-  margin-top: 20px;
+.spaces-list .card {
+  border-radius: 10px;
+}
+
+.footer-navigation {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
 }
