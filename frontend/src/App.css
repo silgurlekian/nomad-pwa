@@ -2,13 +2,6 @@
   font-family: Arial, sans-serif;
 }
 
-.header {
-  background-color: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .search-bar {
   display: flex;
   align-items: center;

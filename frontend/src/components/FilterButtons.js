@@ -1,4 +1,5 @@
 import React from "react";
+import './FilterButtons.css';
 
 const filters = ["Coworking", "Cafeterías", "WiFi", "24 horas", "Cercanos", "Populares"];
 

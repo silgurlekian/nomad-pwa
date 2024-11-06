@@ -1,0 +1,29 @@
+/* FooterNavigation.css */
+.footer-navigation {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: #ffffff;
+    box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  .nav-item {
+    text-align: center;
+    color: #333;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  
+  .nav-item.active {
+    color: #1a936f;
+  }
+  
+  .nav-icon {
+    font-size: 1.5rem;
+    color: inherit;
+  }
+  

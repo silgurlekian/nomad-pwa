@@ -1,4 +1,5 @@
 import React from "react";
+import './CityCarousel.css';
 
 const cities = ["Bali", "Jakarta", "Semarang", "Yogyakarta"];
 

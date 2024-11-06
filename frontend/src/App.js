@@ -1,8 +1,8 @@
 import React from "react";
 import Header from "./components/Header";
-import SearchBar from "./components/SearchBar";
-import FilterButtons from "./components/FilterButtons";
-import CityCarousel from "./components/CityCarousel";
+// import SearchBar from "./components/SearchBar";
+// import FilterButtons from "./components/FilterButtons";
+// import CityCarousel from "./components/CityCarousel";
 import SpacesList from "./components/SpacesList";
 import FooterNavigation from "./components/FooterNavigation";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,10 +11,11 @@ import "./App.css";
 function App() {
   return (
     <div className="App">
+      <img src="/images/bkg-home.jpg" alt="Fondo" />
       <Header />
-      <SearchBar />
+      {/* <SearchBar />
       <FilterButtons />
-      <CityCarousel />
+      <CityCarousel /> */}
       <SpacesList />
       <FooterNavigation />
     </div>
