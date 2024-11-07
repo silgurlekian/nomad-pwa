@@ -6,7 +6,6 @@ import React from "react";
 // import SpacesList from "./components/SpacesList";
 // import FooterNavigation from "./components/FooterNavigation";
 import Home from "./components/Home";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
