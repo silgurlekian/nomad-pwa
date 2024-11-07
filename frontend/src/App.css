@@ -1,26 +1,6 @@
-.App {
-  font-family: Arial, sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Avenir+Next:wght@400&display=swap');
 
-.search-bar {
-  display: flex;
-  align-items: center;
-}
-
-.filter-buttons .btn {
-  border-radius: 20px;
-}
-
-.city-carousel .city-thumbnail {
-  width: 60px;
-  text-align: center;
-}
-
-.spaces-list .card {
-  border-radius: 10px;
-}
-
-.footer-navigation {
-  background-color: #f8f9fa;
-  border-top: 1px solid #e9ecef;
+body {
+  margin: 0;
+  line-height: normal;
 }

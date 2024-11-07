@@ -1,54 +1,187 @@
-/* SpacesList.css */
-.spaces-list {
-    padding: 1rem;
-    background-color: #f0f5f5;
-  }
-  
-  .card {
+.espacios-cercanos {
     position: relative;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    margin-bottom: 1rem;
-    background-color: #fff;
-  }
-  
-  .card-img-top {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    max-height: 150px;
-  }
-  
-  .card-body {
-    padding: 1rem;
-  }
-  
-  .card-title {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 0.5rem;
-  }
-  
-  .card-text {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .card-price {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #1a936f;
-  }
-  
-  .favorite-icon {
+}
+
+.ver-todos {
+    position: relative;
+    font-size: 0.875rem;
+    color: #39a58e;
+    text-align: right;
+}
+
+.title {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0rem 0rem;
+}
+
+.image-icon {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #ff6b6b;
-    font-size: 1.5rem;
+    top: calc(50% - 128.82px);
+    left: -0.267rem;
+    width: 19.825rem;
+    height: 11.1rem;
+    object-fit: cover;
+}
+
+.monotone-add-icon {
+    width: 1.5rem;
+    position: relative;
+    height: 1.5rem;
+}
+
+.button-icon {
+    position: absolute;
+    top: 0.338rem;
+    right: 0.438rem;
+    border-radius: 123px;
+    background-color: rgba(230, 126, 34, 0.5);
+    width: 3rem;
+    height: 3rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.frame {
+    align-self: stretch;
+    position: relative;
+    border-radius: 8px;
+    height: 5.938rem;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.osaka-luxury-suites {
+    align-self: stretch;
+    position: relative;
+}
+
+.vuesaxlinearlocation-icon {
+    width: 1.125rem;
+    position: relative;
+    height: 1.125rem;
+}
+
+.traditional-district {
+    flex: 1;
+    position: relative;
+}
+
+.vuesaxlinearlocation-parent {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: #848484;
+}
+
+.frame2 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.25rem;
+}
+
+.vuesaxlinearstar-icon {
+    width: 0.75rem;
+    position: relative;
+    height: 0.75rem;
+}
+
+.rating {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.25rem;
+}
+
+.rating-parent {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.usd {
+    width: 2.125rem;
+    position: relative;
+    font-size: 1rem;
+    color: #848484;
+    display: flex;
+    align-items: flex-end;
+    height: 1.5rem;
+    flex-shrink: 0;
+}
+
+.frame4 {
+    align-self: stretch;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    text-align: left;
+    font-size: 1.25rem;
+    color: #1e1e1e;
+}
+
+.frame3 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #1e293b;
+}
+
+.frame1 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.space {
+    align-self: stretch;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 1rem;
+    gap: 0.75rem;
     cursor: pointer;
-  }
-  
+}
+
+.spaceslist {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0rem 1rem 1rem;
+    gap: 0.75rem;
+}
