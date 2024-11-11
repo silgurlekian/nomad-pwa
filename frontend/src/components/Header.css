@@ -1,12 +1,3 @@
-.icon {
-    position: absolute;
-    top: 0rem;
-    left: calc(50% - 187.5px);
-    width: 23.438rem;
-    height: 8.45rem;
-    object-fit: cover;
-}
-
 .vector-icon {
     position: absolute;
     top: 3.099rem;

@@ -29,6 +29,25 @@ const SpacesList = () => {
     return <div>{error}</div>;
   }
 
+  const renderStars = (rating) => {
+    const filledStars = Math.floor(rating); 
+    const emptyStars = 5 - filledStars;    
+
+    const stars = [];
+
+    // Agregar estrellas llenas
+    for (let i = 0; i < filledStars; i++) {
+      stars.push(<img key={`filled-${i}`} className="icon" alt="filled-star" src="icons/star-filled.svg" />);
+    }
+
+    // Agregar estrellas vacías
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<img key={`empty-${i}`} className="icon" alt="empty-star" src="icons/star.svg" />);
+    }
+
+    return stars;
+  };
+
   return (
     <div className="spaceslist">
       <div className="title">
@@ -44,7 +63,7 @@ const SpacesList = () => {
                 space.imageUrl
                   ? `http://localhost:3000${space.imageUrl}`
                   : "default-image.png"
-              } 
+              }
             />
           </div>
           <div className="frame1">
@@ -62,14 +81,7 @@ const SpacesList = () => {
             <div className="frame3">
               <div className="rating-parent">
                 <div className="rating">
-                  {[...Array(5)].map((_, index) => (
-                    <img
-                      key={index}
-                      className="vuesaxlinearstar-icon"
-                      alt=""
-                      src="icons/star.svg"
-                    />
-                  ))}
+                  {renderStars(space.rating)}  {/* Llama a la función renderStars con el rating */}
                 </div>
                 <div className="espacios-cercanos">{space.rating}</div>
               </div>
