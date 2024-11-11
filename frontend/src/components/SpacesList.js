@@ -33,7 +33,6 @@ const SpacesList = () => {
     <div className="spaceslist">
       <div className="title">
         <div className="espacios-cercanos">Espacios cercanos</div>
-        <div className="ver-todos">Ver todos</div>
       </div>
       {spaces.map((space) => (
         <div key={space._id} className="space">
@@ -45,7 +44,7 @@ const SpacesList = () => {
                 space.imageUrl
                   ? `http://localhost:3000${space.imageUrl}`
                   : "default-image.png"
-              } // Usamos la URL completa para acceder a la imagen
+              } 
             />
           </div>
           <div className="frame1">

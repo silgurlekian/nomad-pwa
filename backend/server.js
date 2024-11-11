@@ -25,10 +25,8 @@ mongoose.connect('mongodb://localhost:27017/nomad-pwa', {
     console.error('Error al conectar a MongoDB:', error);
   });
 
-// Asegúrate de que las rutas están siendo importadas correctamente
 app.use('/api', SpaceRoutes);
 app.use('/api', ServiceRoutes);
-// Sirve los archivos estáticos desde la carpeta 'uploads'
 app.use('/uploads', express.static('uploads'));
 
 // Ruta raíz para verificar el servidor

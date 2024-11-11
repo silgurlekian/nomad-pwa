@@ -1,11 +1,11 @@
-const Space = require('../models/space');  // Nota el uso de '../' ya que el archivo está en 'controllers' y los modelos en 'models'
+const Space = require('../models/space'); 
 const Service = require('../models/Service');
 
 // Crear un nuevo espacio
 exports.createSpace = async (req, res) => {
   try {
     const { name, address, rating, price, services } = req.body;
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;  // Usamos el filename generado por Multer
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;  // filename generado por Multer
 
     const space = new Space({
       name,
@@ -13,11 +13,11 @@ exports.createSpace = async (req, res) => {
       rating,
       price,
       services,
-      imageUrl,  // Guardamos la URL completa de la imagen en la base de datos
+      imageUrl,
     });
 
     await space.save();
-    res.status(201).json(space);  // Respondemos con el espacio creado
+    res.status(201).json(space);  
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

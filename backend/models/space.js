@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Definimos el esquema de Space
 const SpaceSchema = new mongoose.Schema({
   name: { type: String, required: true },
   address: { type: String, required: true },

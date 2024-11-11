@@ -1,4 +1,4 @@
-const Service = require('../models/Service');  // Aquí también se usa '../' ya que los modelos están en la carpeta 'models'
+const Service = require('../models/Service');
 
 // Crear un nuevo servicio
 exports.createService = async (req, res) => {
