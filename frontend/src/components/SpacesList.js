@@ -32,7 +32,7 @@ const SpacesList = () => {
   return (
     <div className="spaceslist">
       <div className="title">
-        <div className="espacios-cercanos">Espacios cercanos</div>
+        <div className="espacios-cercanos">Espacios recomendados</div>
       </div>
       {spaces.map((space) => (
         <div key={space._id} className="space">
