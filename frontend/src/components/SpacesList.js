@@ -40,16 +40,13 @@ const SpacesList = () => {
           <div className="frame">
             <img
               className="image-icon"
-              alt=""
-              src={space.imageUrl || "default-image.png"}
+              alt={space.name}
+              src={
+                space.imageUrl
+                  ? `http://localhost:3000${space.imageUrl}`
+                  : "default-image.png"
+              } // Usamos la URL completa para acceder a la imagen
             />
-            <div className="button-icon">
-              <img
-                className="monotone-add-icon"
-                alt=""
-                src="Monotone add.svg"
-              />
-            </div>
           </div>
           <div className="frame1">
             <div className="frame2">
@@ -78,8 +75,16 @@ const SpacesList = () => {
                 <div className="espacios-cercanos">{space.rating}</div>
               </div>
               <div className="frame4">
-                <div className="espacios-cercanos">${space.price}</div>
-                <div className="usd">ARS</div>
+                <div className="frame5">
+                  <div className="vuesaxlinearcurrency-circle">
+                    <img
+                      className="vuesaxlinearcurrency-icon"
+                      alt=""
+                      src="icons/currency.svg"
+                    />
+                  </div>
+                  <div className="price">{space.price} USD</div>
+                </div>
               </div>
             </div>
           </div>
