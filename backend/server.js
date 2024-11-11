@@ -1,9 +1,9 @@
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const SpaceRoutes = require('./routes/spaceRoutes');
-const ServiceRoutes = require('./routes/serviceRoutes');
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const SpaceRoutes = require("./routes/spaceRoutes");
+const ServiceRoutes = require("./routes/serviceRoutes");
 
 const app = express();
 
@@ -14,24 +14,22 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Conexión a MongoDB
-mongoose.connect('mongodb://localhost:27017/nomad-pwa', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose
+  .connect("mongodb://localhost:27017/nomad-pwa")
   .then(() => {
-    console.log('Conectado a MongoDB');
+    console.log("Conectado a MongoDB");
   })
   .catch((error) => {
-    console.error('Error al conectar a MongoDB:', error);
+    console.error("Error al conectar a MongoDB:", error);
   });
 
-app.use('/api', SpaceRoutes);
-app.use('/api', ServiceRoutes);
-app.use('/uploads', express.static('uploads'));
+app.use("/api", SpaceRoutes);
+app.use("/api", ServiceRoutes);
+app.use("/uploads", express.static("uploads"));
 
 // Ruta raíz para verificar el servidor
-app.get('/', (req, res) => {
-  res.send('¡Servidor corriendo correctamente!');
+app.get("/", (req, res) => {
+  res.send("¡Servidor corriendo correctamente!");
 });
 
 // Configurar el puerto
