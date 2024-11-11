@@ -22,7 +22,7 @@ const SpacesList = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Cargando espacios...</div>;
   }
 
   if (error) {
@@ -30,19 +30,33 @@ const SpacesList = () => {
   }
 
   const renderStars = (rating) => {
-    const filledStars = Math.floor(rating); 
-    const emptyStars = 5 - filledStars;    
+    const filledStars = Math.floor(rating);
+    const emptyStars = 5 - filledStars;
 
     const stars = [];
 
     // Agregar estrellas llenas
     for (let i = 0; i < filledStars; i++) {
-      stars.push(<img key={`filled-${i}`} className="icon" alt="filled-star" src="icons/star-filled.svg" />);
+      stars.push(
+        <img
+          key={`filled-${i}`}
+          className="icon"
+          alt="filled-star"
+          src="icons/star-filled.svg"
+        />
+      );
     }
 
     // Agregar estrellas vacías
     for (let i = 0; i < emptyStars; i++) {
-      stars.push(<img key={`empty-${i}`} className="icon" alt="empty-star" src="icons/star.svg" />);
+      stars.push(
+        <img
+          key={`empty-${i}`}
+          className="icon"
+          alt="empty-star"
+          src="icons/star.svg"
+        />
+      );
     }
 
     return stars;
@@ -69,33 +83,19 @@ const SpacesList = () => {
           <div className="frame1">
             <div className="frame2">
               <div className="osaka-luxury-suites">{space.name}</div>
-              <div className="vuesaxlinearlocation-parent">
-                <img
-                  className="vuesaxlinearlocation-icon"
-                  alt=""
-                  src="icons/location.svg"
-                />
+              <div className="icon-parent">
+                <img className="icon" alt="" src="icons/location.svg" />
                 <div className="traditional-district">{space.address}</div>
               </div>
             </div>
             <div className="frame3">
               <div className="rating-parent">
-                <div className="rating">
-                  {renderStars(space.rating)}  {/* Llama a la función renderStars con el rating */}
-                </div>
+                <div className="rating">{renderStars(space.rating)}</div>
                 <div className="espacios-cercanos">{space.rating}</div>
               </div>
-              <div className="frame4">
-                <div className="frame5">
-                  <div className="vuesaxlinearcurrency-circle">
-                    <img
-                      className="vuesaxlinearcurrency-icon"
-                      alt=""
-                      src="icons/currency.svg"
-                    />
-                  </div>
-                  <div className="price">{space.price} USD</div>
-                </div>
+              <div className="d-flex align-items-center">
+                <p className="price">{space.price}</p>
+                <p className="currency ml-1">USD</p>
               </div>
             </div>
           </div>

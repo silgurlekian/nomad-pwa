@@ -14,12 +14,13 @@
     height: 8.45rem;
 }
 
-.bienvenido-a-nomad {
+.title {
     position: relative;
     font-size: 1rem;
     font-family: 'Avenir Next';
     color: #364a5e;
     text-align: left;
+    font-weight: 500;
 }
 
 .shape {
