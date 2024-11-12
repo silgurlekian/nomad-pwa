@@ -95,7 +95,7 @@ const SpacesList = () => {
               </div>
               <div className="d-flex align-items-center">
                 <p className="price">{space.price}</p>
-                <p className="currency ml-1">USD</p>
+                <p className="currency ml-1">ARS</p>
               </div>
             </div>
           </div>

@@ -123,9 +123,10 @@
     color: #1e1e1e;
     text-align: left;
     font-weight: 600;
+    margin: 0;
 }
 
-.price .currency {
+.currency {
     width: 2.125rem;
     position: relative;
     font-size: 1rem;
@@ -134,13 +135,15 @@
     align-items: flex-end;
     height: 1.5rem;
     flex-shrink: 0;
+    margin-left: 0.5rem;
+    margin: 0;
 }
 
 .frame3 {
     align-self: stretch;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: end;
     justify-content: space-between;
     text-align: center;
     font-size: 0.875rem;
