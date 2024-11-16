@@ -52,13 +52,13 @@ const SpacesList = () => {
               <div className="osaka-luxury-suites">{space.nombre}</div>
               <div className="icon-parent">
                 <img className="icon" alt="" src="icons/location.svg" />
-                <div className="traditional-district">{space.direccion}</div>
+                <div className="traditional-district">{space.direccion}, {space.ciudad}</div>
               </div>
             </div>
             <div className="frame3">
               <div className="d-flex align-items-center">
                 <p className="precio">{space.precio}</p>
-                <p className="currency ml-1">ARS</p>
+                <p className="currency ml-1"> ARS</p>
               </div>
             </div>
           </div>
