@@ -7,12 +7,17 @@
   display: flex;
   justify-content: space-around;
   padding: 10px 0;
+  width: 100%;
 }
 
 .nav-item {
   text-align: center;
   text-decoration: none;
-  color: #333;
+  color: #1e1e1e;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  gap: 5px;
 }
 
 .nav-icon {

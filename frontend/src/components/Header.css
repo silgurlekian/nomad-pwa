@@ -6,12 +6,8 @@
     height: 1.519rem;
 }
 
-.bkg-home {
-    position: absolute;
-    top: 0rem;
-    left: calc(50% - 187.5px);
-    width: 23.438rem;
-    height: 8.45rem;
+.bkg-home img {
+    width: 100%;
 }
 
 .title {
@@ -104,7 +100,7 @@
 .header1 {
     position: absolute;
     top: 5.648rem;
-    left: calc(50% - 187.5px);
+    left: 0;
     border-radius: 20px 20px 0px 0px;
     background-color: #fff;
     width: 23.438rem;
@@ -114,6 +110,7 @@
     justify-content: space-between;
     padding: 0.5rem 1rem 1rem;
     box-sizing: border-box;
+    width: 100%;
 }
 
 .header {
