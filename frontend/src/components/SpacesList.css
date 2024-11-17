@@ -2,13 +2,16 @@
     padding: 1rem;
 }
 
-.titulo {
+.titulo h2 {
     margin-bottom: 1rem;
+    font-family: "Avenir Next";
+    font-size: 1rem;
+    color: #1E1E1E;
 }
 
 .entrada-busqueda {
     width: 100%;
-    padding: 0.5rem;
+    padding: 1rem;
     margin-bottom: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -17,6 +20,15 @@
 .entrada-busqueda:focus {
     border-color: #39a58e;
     outline: none;
+}
+
+.iconos-ordenar-filtrar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-family: "Avenir Next";
+    font-size: 0.875rem;
+    color: #364A5E;
 }
 
 .alerta {
@@ -29,10 +41,9 @@
     color: #31708f;
 }
 
-.columna-espacio {
+.espacio-contenedor {
     display: flex;
     flex-direction: column;
-    /* Asegura que los espacios se muestren en una columna */
 }
 
 .espacio {
@@ -59,6 +70,8 @@
 
 .nombre-espacio {
     font-weight: bold;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
 }
 
 .icono-ubicacion {
@@ -75,7 +88,60 @@
     color: #848484;
 }
 
-.precio-espacio {
-    display: flex;
-    justify-content: space-between;
+.precio {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1e1e1e;
+}
+
+.drawer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: -100%;
+    background-color: white;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.2);
+    transition: bottom 0.3s ease;
+    z-index: 1000;
+    border-radius: 20px;
+}
+
+.modal-visible {
+    bottom: 0;
+}
+
+.drawer .modal-contenido {
+    padding: 20px;
+}
+
+.drawer .modal-contenido h3 {
+    font-size: 1rem;
+    font-family: "Avenir Next";
+    color: #364A5E;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.list-unstyled {
+    list-style: none;
+    padding: 0;
+}
+
+.list-unstyled .btn.btn-link {
+    color: #364A5E;
+    font-size: 1rem;
+    outline: none;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    margin: .5rem 0;
+    text-decoration: none;
 }
