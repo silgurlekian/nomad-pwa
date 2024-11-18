@@ -12,7 +12,7 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/home"); 
+      navigate("/home");
     }
   }, [navigate]);
 
@@ -20,8 +20,9 @@ const Login = () => {
     e.preventDefault();
     try {
       const data = await loginUser({ email, password });
-      localStorage.setItem("token", data.token); 
-      navigate("/home"); 
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data)); // Almacena todos los datos del usuario
+      navigate("/home");
     } catch (err) {
       setError(
         err.response ? err.response.data.message : "Error al iniciar sesión"
@@ -73,7 +74,9 @@ const Login = () => {
         Regístrate
       </a>
 
-      <a href="/home" className="d-block link mt-5">Ver espacios sin cuenta</a>
+      <a href="/home" className="d-block link mt-5">
+        Ver espacios sin cuenta
+      </a>
     </div>
   );
 };

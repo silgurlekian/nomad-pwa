@@ -1,13 +1,27 @@
 import React from "react";
 import "./Profile.css";
 import HeaderSection from "../components/HeaderSection";
+import { useNavigate } from "react-router-dom";
 
 const MyAccount = () => {
-  const user = {
-    name: "Juan Pablo Gomez",
-    email: "jpgomez@gmail.com",
-    memberSince: "2024",
-  };
+  const navigate = useNavigate();
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  // Si no hay datos del usuario, mostrar un mensaje
+  if (!storedUser) {
+    return (
+      <div className="my-account">
+        <HeaderSection />
+        <h2>Acceso Denegado</h2>
+        <p>Debes iniciar sesión para acceder a esta página.</p>
+        <button onClick={() => navigate("/login")} className="login-button">
+          Iniciar Sesión
+        </button>
+      </div>
+    );
+  }
+
+  const user = storedUser;
 
   const reservations = [
     {
@@ -22,6 +36,7 @@ const MyAccount = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     window.location.href = "/login";
   };
 
@@ -33,12 +48,13 @@ const MyAccount = () => {
         <h2>Mi cuenta</h2>
         <div className="user-info">
           <p>
-            <strong>{user.name}</strong>
+            <strong>{user.nombre}</strong>
           </p>
           <p>{user.email}</p>
-          <p>Miembro desde {user.memberSince}</p>
+          <p>Miembro desde {user.memberSince || "Desconocido"}</p>
           <button className="edit-profile-button">Editar perfil</button>
         </div>
+
         <h3>Tus reservas</h3>
         <div className="reservations">
           {reservations.map((reservation) => (
@@ -54,6 +70,7 @@ const MyAccount = () => {
             </div>
           ))}
         </div>
+
         <button className="reserve-new-space-button">
           Reservar nuevo espacio
         </button>
