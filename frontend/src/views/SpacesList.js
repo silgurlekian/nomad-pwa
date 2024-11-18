@@ -72,7 +72,6 @@ const SpacesList = () => {
         <h2>Encuentra tu próximo espacio</h2>
       </div>
 
-      {/* Campo de búsqueda con icono */}
       <div className="input-group mb-3" style={{ position: "relative" }}>
         <input
           type="text"
@@ -162,7 +161,7 @@ const SpacesList = () => {
           No se encontraron espacios que coincidan con tu búsqueda.
         </div>
       ) : (
-        <div className="espacio-contenedor">
+        <div className="espacio-contenedor mb-5">
           {espaciosFiltrados.map((espacio) => (
             <div key={espacio._id} className="espacio">
               <div className="marco-imagen">

@@ -6,6 +6,7 @@ import Register from './components/Register';
 import Login from './components/Login'; 
 import Home from './components/Home';
 import SpacesList from './views/SpacesList'; 
+import Profile from "./views/Profile";
 
 function App() {
   const [showLogo, setShowLogo] = useState(true);
@@ -49,6 +50,7 @@ function App() {
               <Route path="/" element={<Onboarding />} />
               <Route path="/register" element={<Register />} /> 
               <Route path="/login" element={<Login />} />
+              <Route path="/profile" element={<Profile />} /> 
               <Route path="/home" element={<Home />} />
               <Route path="/spaces" element={<SpacesList />} /> 
             </Routes>

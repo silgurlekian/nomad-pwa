@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/AuthService";
 import "./Login.css";
@@ -9,12 +9,19 @@ const Login = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/home"); 
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const data = await loginUser({ email, password });
-      localStorage.setItem("token", data.token); // Guardar el token en localStorage
-      navigate("/home"); // Redirigir a la página principal después del login
+      localStorage.setItem("token", data.token); 
+      navigate("/home"); 
     } catch (err) {
       setError(
         err.response ? err.response.data.message : "Error al iniciar sesión"
@@ -33,7 +40,7 @@ const Login = () => {
         <img alt="" src="/images/logo-nomad.svg" />
         <h2>Iniciar Sesión</h2>
         <form onSubmit={handleLogin}>
-          <label for="email">Correo electrónico</label>
+          <label htmlFor="email">Correo electrónico</label>
           <input
             type="email"
             className="form-control"
@@ -41,7 +48,7 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <label for="email">Contraseña</label>
+          <label htmlFor="password">Contraseña</label>
           <input
             type="password"
             className="form-control"
@@ -66,7 +73,7 @@ const Login = () => {
         Regístrate
       </a>
 
-        <a href="/home" className="d-block link mt-5">Ver espacios sin cuenta</a>
+      <a href="/home" className="d-block link mt-5">Ver espacios sin cuenta</a>
     </div>
   );
 };

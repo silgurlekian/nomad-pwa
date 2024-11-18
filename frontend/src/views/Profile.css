@@ -1,0 +1,42 @@
+/* src/MyAccount.css */
+.my-account {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+    margin-bottom: 20px;
+}
+
+.edit-profile-button,
+.cancel-reservation-button,
+.reserve-new-space-button {
+    background-color: #007bff; /* Color del botón */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.edit-profile-button:hover,
+.cancel-reservation-button:hover,
+.reserve-new-space-button:hover {
+    background-color: #0056b3; /* Color más oscuro al pasar el mouse */
+}
+
+.reservations {
+    margin-top: 20px;
+}
+
+.reservation {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #fff; /* Fondo blanco para las reservas */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
