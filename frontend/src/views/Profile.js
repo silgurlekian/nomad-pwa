@@ -2,6 +2,7 @@ import React from "react";
 import "./Profile.css";
 import HeaderSection from "../components/HeaderSection";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const MyAccount = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const MyAccount = () => {
   const reservations = [
     {
       id: 1,
+      imagen: "../images/default-image.png",
       location: "Open Work Bariloche",
       address:
         "Francisco Pascasio Moreno 370, San Carlos de Bariloche, Río Negro",
@@ -40,45 +42,63 @@ const MyAccount = () => {
     window.location.href = "/login";
   };
 
+  const getMemberSinceYear = () => {
+    if (user.createdAt) {
+      console.log(user.createdAt);
+      const year = new Date(user.createdAt).getFullYear();
+      return isNaN(year) ? "Desconocido" : year;
+    }
+    return "Desconocido";
+  };
+
+  const handleReserveNewSpace = () => {
+    navigate("/home");
+  };
+
   return (
     <div>
       <HeaderSection />
 
       <div className="my-account">
-        <h2>Mi cuenta</h2>
         <div className="user-info">
-          <p>
-            <strong>{user.nombre}</strong>
-          </p>
+          <p>{user.nombre}</p>
           <p>{user.email}</p>
-          <p>Miembro desde {user.memberSince || "Desconocido"}</p>
-          <button className="edit-profile-button">Editar perfil</button>
+          <p className="font-small">Miembro desde {getMemberSinceYear()}</p>
+          {/* <button className="mt-4">Editar perfil</button> */}
         </div>
-
+      </div>
+      <div className="reservations">
         <h3>Tus reservas</h3>
-        <div className="reservations">
-          {reservations.map((reservation) => (
-            <div key={reservation.id} className="reservation">
-              <h4>{reservation.location}</h4>
-              <p>{reservation.address}</p>
-              <p>
-                {reservation.date} {reservation.time}
-              </p>
-              <button className="cancel-reservation-button">
-                Cancelar reserva
-              </button>
+        {reservations.map((reservation) => (
+          <div key={reservation.id} className="reservation-container">
+            <div className="reservation">
+              <img src={reservation.imagen} alt="" />
+              <div className="d-flex datos-reservas">
+                <h4>{reservation.location}</h4>
+                <p>{reservation.address}</p>
+                <p>
+                  {reservation.date} {reservation.time}
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
-
-        <button className="reserve-new-space-button">
+            <button className="link m-0">Cancelar reserva</button>
+          </div>
+        ))}
+      </div>
+      <div className="my-account">
+        <button className="reserve-button" onClick={handleReserveNewSpace}>
           Reservar nuevo espacio
         </button>
 
-        <button className="logout-button" onClick={handleLogout}>
+        <button
+          className="link text-center logout-button"
+          onClick={handleLogout}
+        >
           Cerrar sesión
         </button>
       </div>
+
+      <Navbar />
     </div>
   );
 };

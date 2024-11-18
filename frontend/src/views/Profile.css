@@ -1,42 +1,102 @@
-/* src/MyAccount.css */
+body {
+    background-color: #FFFFFF;
+}
+
 .my-account {
     padding: 20px;
-    max-width: 600px;
-    margin: auto;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .user-info {
-    margin-bottom: 20px;
+    padding: 20px 0;
 }
 
-.edit-profile-button,
-.cancel-reservation-button,
-.reserve-new-space-button {
-    background-color: #007bff; /* Color del botón */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
+.user-info p {
+    margin-bottom: 10px;
+    color: #364A5E;
 }
 
-.edit-profile-button:hover,
-.cancel-reservation-button:hover,
-.reserve-new-space-button:hover {
-    background-color: #0056b3; /* Color más oscuro al pasar el mouse */
+.user-info p:first-child {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.user-info p.font-small {
+    font-size: .8rem;
+}
+
+button {
+    align-items: center;
+    background-color: #364A5E;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    padding: 12px 16px;
+    position: relative;
+    color: #FFFFFF;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.reserve-button {
+    background-color: #364A5E;
+    border-radius: 8px;
+    padding: 12px 16px;
+    position: relative;
+    color: #FFFFFF;
+    margin: 20px auto;
 }
 
 .reservations {
-    margin-top: 20px;
+    background-color: #ECF0F1;
+    border-radius: 20px 20px 0px 0px;
+    padding: 20px;
+}
+
+.reservations h3 {
+    font-size: 1.5rem;
+    color: #364A5E;
+    font-weight: bold;
+}
+
+.reservation-container {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    padding: 8px;
 }
 
 .reservation {
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    background-color: #fff; /* Fondo blanco para las reservas */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    align-items: flex-start;
+    display: flex;
+    gap: 12px;
+    position: relative;
+}
+
+.reservation img {
+    height: 90px;
+    object-fit: cover;
+    width: 90px;
+}
+
+.reservation .datos-reservas {
+    flex-direction: column;
+}
+
+button.link {
+    align-items: center;
+    background-color: transparent;
+    border-radius: 0;
+    display: flex;
+    justify-content: center;
+    padding: 12px 16px;
+    position: relative;
+    color: #39A58E;
+    border: 0;
+    margin-top: 30px;
+    width: 100%;
+}
+
+button.link:hover {
+    background-color: transparent;
 }

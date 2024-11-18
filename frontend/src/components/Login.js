@@ -21,7 +21,8 @@ const Login = () => {
     try {
       const data = await loginUser({ email, password });
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data)); // Almacena todos los datos del usuario
+      localStorage.setItem("user", JSON.stringify(data));
+      alert(`Bienvenido ${data.nombre}!\nEmail: ${data.email}`);
       navigate("/home");
     } catch (err) {
       setError(
