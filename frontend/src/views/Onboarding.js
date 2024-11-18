@@ -39,11 +39,11 @@ const Onboarding = () => {
   }, [slides.length]);
 
   const handleSkip = () => {
-    navigate("/home");
+    navigate("/login");
   };
 
   const handleContinue = () => {
-    navigate("/home");
+    navigate("/login");
   };
 
   return (
