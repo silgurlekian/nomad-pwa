@@ -59,9 +59,9 @@ const Login = () => {
             required
           />
           <button type="submit">Entrar</button>
-          <a href="/forgot-password" className="link">
+          {/* <a href="/forgot-password" className="link">
             ¿Olvidaste tu contraseña?
-          </a>
+          </a> */}
         </form>
       </div>
       {error && <p className="error-message">{error}</p>}

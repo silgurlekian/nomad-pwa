@@ -11,13 +11,15 @@ const MyAccount = () => {
   // Si no hay datos del usuario, mostrar un mensaje
   if (!storedUser) {
     return (
-      <div className="my-account">
+      <div>
         <HeaderSection />
-        <h2>Acceso Denegado</h2>
-        <p>Debes iniciar sesión para acceder a esta página.</p>
-        <button onClick={() => navigate("/login")} className="login-button">
-          Iniciar Sesión
-        </button>
+        <div className="my-account">
+          <img src="../icons/warning.svg" alt="" className="warning-icon" />
+          <p>Debes iniciar sesión para acceder a esta página.</p>
+          <button onClick={() => navigate("/login")} className="login-button">
+            Iniciar Sesión
+          </button>
+        </div>
       </div>
     );
   }

@@ -100,3 +100,9 @@ button.link {
 button.link:hover {
     background-color: transparent;
 }
+
+.warning-icon {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
