@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/AuthService";
+import "../App.css";
 import "./Login.css";
 
 const Login = () => {
@@ -22,7 +23,6 @@ const Login = () => {
       const data = await loginUser({ email, password });
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data));
-      alert(`Bienvenido ${data.nombre}!\nEmail: ${data.email}`);
       navigate("/home");
     } catch (err) {
       setError(
@@ -32,7 +32,7 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="login-container">
       <div className="header">
         <div className="bkg-home">
           <img alt="" src="/images/login.jpg" />
@@ -42,23 +42,29 @@ const Login = () => {
         <img alt="" src="/images/logo-nomad.svg" />
         <h2>Iniciar Sesión</h2>
         <form onSubmit={handleLogin}>
-          <label htmlFor="email">Correo electrónico</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <label htmlFor="password">Contraseña</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit">Entrar</button>
+          <div className="form-group">
+            <label htmlFor="email">Correo electrónico</label>
+            <input
+              type="email"
+              className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="btn-primary">
+            Entrar
+          </button>
           {/* <a href="/forgot-password" className="link">
             ¿Olvidaste tu contraseña?
           </a> */}
@@ -67,15 +73,16 @@ const Login = () => {
       {error && <p className="error-message">{error}</p>}
       <div className="d-flex separator">
         <div className="line"></div>
+        <hr className="w-100"/>
         <div>ó</div>
-        <div className="line"></div>
+        <hr className="w-100"/>
       </div>
       <p className="text-center">¿No tienes una cuenta?</p>
       <a href="/register" className="d-block link">
         Regístrate
       </a>
 
-      <a href="/home" className="d-block link mt-5">
+      <a href="/home" className="d-block link mt-auto pb-5">
         Ver espacios sin cuenta
       </a>
     </div>

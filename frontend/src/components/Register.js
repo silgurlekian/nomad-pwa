@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/AuthService";
+import "../App.css";
 import "./Login.css";
 
 const Register = () => {
@@ -23,16 +24,16 @@ const Register = () => {
     try {
       const data = await registerUser({ nombre, email, password });
       // Almacenar datos del usuario en localStorage
-      localStorage.setItem("user", JSON.stringify(data)); // Asegúrate de que 'data' incluya 'createdAt'
-      localStorage.setItem("token", data.token); // Si tu API devuelve un token
-      navigate("/login"); // Redirigir a la página de login después del registro
+      localStorage.setItem("user", JSON.stringify(data));
+      localStorage.setItem("token", data.token);
+      navigate("/login");
     } catch (err) {
       setError(err.response ? err.response.data.message : "Error al registrar");
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <div className="header">
         <div className="bkg-home">
           <img alt="" src="/images/login.jpg" />
@@ -48,39 +49,49 @@ const Register = () => {
         </div>
 
         <form onSubmit={handleRegister}>
-          <label htmlFor="nombre">Nombre completo</label>
-          <input
-            type="text"
-            className="form-control"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            required
-          />
-          <label htmlFor="email">Correo electrónico</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <label htmlFor="password">Contraseña</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-          <input
-            type="password"
-            className="form-control"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-          <button type="submit">Registrarse</button>
+          <div className="form-group">
+            <label htmlFor="nombre">Nombre completo</label>
+            <input
+              type="text"
+              className="form-control"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Correo electrónico</label>
+            <input
+              type="email"
+              className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirmar contraseña</label>
+            <input
+              type="password"
+              className="form-control"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="btn-primary">
+            Registrarse
+          </button>
         </form>
         {error && <p className="error-message">{error}</p>}
       </div>
@@ -89,14 +100,12 @@ const Register = () => {
         <div>ó</div>
         <div className="line"></div>
       </div>
-      <p className="text-center">¿Ya tienes una cuenta?</p>
-      <a href="/login" className="d-block link">
-        Inicia sesión
-      </a>
-
-      <a href="/home" className="d-block link mt-5">
-        Ver espacios sin cuenta
-      </a>
+      <div className="mb-5 pb-5">
+        <p className="text-center">¿Ya tienes una cuenta?</p>
+        <a href="/login" className="d-block link">
+          Inicia sesión
+        </a>
+      </div>
     </div>
   );
 };

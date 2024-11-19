@@ -1,4 +1,5 @@
 import React from "react";
+import "../App.css";
 import "./Profile.css";
 import HeaderSection from "../components/HeaderSection";
 import { useNavigate } from "react-router-dom";
@@ -13,10 +14,10 @@ const MyAccount = () => {
     return (
       <div>
         <HeaderSection />
-        <div className="my-account">
-          <img src="../icons/warning.svg" alt="" className="warning-icon" />
+        <div className="my-account text-center">
+          <img src="../icons/warning-big.svg" alt="" className="warning-icon" />
           <p>Debes iniciar sesión para acceder a esta página.</p>
-          <button onClick={() => navigate("/login")} className="login-button">
+          <button onClick={() => navigate("/login")} className="btn-primary">
             Iniciar Sesión
           </button>
         </div>
