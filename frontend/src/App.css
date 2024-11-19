@@ -16,7 +16,7 @@ body {
   font-family: 'Avenir Next', Arial, sans-serif;
 }
 
-.logo-animation {
+.splash-screen {
   position: fixed;
   top: 0;
   left: 0;
@@ -30,7 +30,7 @@ body {
   transition: opacity 1s ease-out;
 }
 
-.logo-animation.start .logo {
+.splash-screen .logo {
   animation: scaleAndFade 3s forwards;
 }
 
