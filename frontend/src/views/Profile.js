@@ -89,12 +89,12 @@ const MyAccount = () => {
         ))}
       </div>
       <div className="my-account">
-        <button className="reserve-button" onClick={handleReserveNewSpace}>
+        <button className="btn-primary" onClick={handleReserveNewSpace}>
           Reservar nuevo espacio
         </button>
 
         <button
-          className="link text-center logout-button"
+          className="link text-center"
           onClick={handleLogout}
         >
           Cerrar sesión

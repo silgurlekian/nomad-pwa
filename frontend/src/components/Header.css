@@ -20,3 +20,19 @@
     color: #364a5e;
     font-family: 'Avenir Next';
 }
+
+.header1 {
+    position: absolute;
+    top: 5.648rem;
+    left: 0;
+    border-radius: 20px 20px 0px 0px;
+    background-color: #fff;
+    width: 23.438rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    box-sizing: border-box;
+    width: 100%;
+}

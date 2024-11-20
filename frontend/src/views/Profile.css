@@ -24,15 +24,6 @@ body {
     font-size: .8rem;
 }
 
-.reserve-button {
-    background-color: #364A5E;
-    border-radius: 8px;
-    padding: 12px 16px;
-    position: relative;
-    color: #FFFFFF;
-    margin: 20px auto;
-}
-
 .reservations {
     background-color: #ECF0F1;
     border-radius: 20px 20px 0px 0px;
@@ -66,22 +57,4 @@ body {
 
 .reservation .datos-reservas {
     flex-direction: column;
-}
-
-button.link {
-    align-items: center;
-    background-color: transparent;
-    border-radius: 0;
-    display: flex;
-    justify-content: center;
-    padding: 12px 16px;
-    position: relative;
-    color: #39A58E;
-    border: 0;
-    margin-top: 30px;
-    width: 100%;
-}
-
-button.link:hover {
-    background-color: transparent;
 }
