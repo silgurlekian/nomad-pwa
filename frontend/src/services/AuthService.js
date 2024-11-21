@@ -3,7 +3,7 @@ import axios from "axios";
 export const registerUser = async ({ nombre, email, password }) => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/auth/register",
+      "https://api-nomad.onrender.com/api/auth/register",
       { nombre, email, password }
     );
     return response.data;
@@ -17,7 +17,7 @@ export const registerUser = async ({ nombre, email, password }) => {
 
 const loginUser = async ({ email, password }) => {
   try {
-    const response = await axios.post("http://localhost:3000/api/auth/login", {
+    const response = await axios.post("https://api-nomad.onrender.com/api/auth/login", {
       email,
       password,
     });

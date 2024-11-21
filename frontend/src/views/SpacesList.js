@@ -14,7 +14,7 @@ const SpacesList = () => {
   useEffect(() => {
     const getSpaces = async () => {
       try {
-        const respuesta = await axios.get("http://localhost:3000/api/spaces");
+        const respuesta = await axios.get("https://api-nomad.onrender.com/api/spaces");
         setSpaces(respuesta.data);
         setSpacesFiltered(respuesta.data);
         setLoading(false);
@@ -170,7 +170,7 @@ const SpacesList = () => {
                   alt={espacio.nombre}
                   src={
                     espacio.imagen
-                      ? `http://localhost:3000/${espacio.imagen}`
+                      ? `https://api-nomad.onrender.com/${espacio.imagen}`
                       : "default-image.png"
                   }
                 />
