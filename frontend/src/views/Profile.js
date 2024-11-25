@@ -15,7 +15,7 @@ const MyAccount = () => {
       <div>
         <HeaderSection />
         <div className="my-account text-center">
-          <img src="../icons/warning-big.svg" alt="" className="warning-icon" />
+          <img src="../images/icons/warning-big.svg" alt="" className="warning-icon" />
           <p>Debes iniciar sesión para acceder a esta página.</p>
           <button onClick={() => navigate("/login")} className="btn-primary">
             Iniciar Sesión

@@ -82,7 +82,7 @@ const SpacesList = () => {
           style={{ paddingLeft: "30px" }}
         />
         <img
-          src="icons/search.svg"
+          src="images/icons/search.svg"
           alt="Buscar"
           style={{
             position: "absolute",
@@ -99,7 +99,7 @@ const SpacesList = () => {
 
       <div className="iconos-ordenar-filtrar">
         <img
-          src="icons/arrow-3.svg"
+          src="images/icons/arrow-3.svg"
           alt="Ordenar"
           onClick={() => setModalVisible(true)}
           className="icono-ordenar"
@@ -123,7 +123,7 @@ const SpacesList = () => {
       <div className={`drawer ${modalVisible ? "modal-visible" : ""}`}>
         <div className="modal-contenido">
           <img
-            src="icons/close-circle.svg"
+            src="images/icons/close-circle.svg"
             alt="Cerrar"
             onClick={() => setModalVisible(false)}
             style={{
@@ -178,7 +178,7 @@ const SpacesList = () => {
               <div className="contenido-espacio">
                 <div className="nombre-espacio">{espacio.nombre}</div>
                 <div className="d-flex align-items-start">
-                  <img className="icono" alt="" src="icons/location.svg" />
+                  <img className="icono" alt="" src="images/icons/location.svg" />
                   <div className="direccion-ubicacion">
                     {espacio.direccion}, {espacio.ciudad}
                   </div>

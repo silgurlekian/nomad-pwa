@@ -16,7 +16,7 @@ const HeaderSection = () => {
           {" "}
           <img
             className="white-icon"
-            src="../icons/arrow-left.svg"
+            src="../images/icons/arrow-left.svg"
             alt="volver"
           />
           <div className="text-wrapper">Mi cuenta</div>
