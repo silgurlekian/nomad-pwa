@@ -1,26 +1,13 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom"; // Importar useNavigate
 import "./HeaderSection.css";
 
-const HeaderSection = () => {
-  const navigate = useNavigate();
-  const location = useLocation(); 
-
-  // Función para ir a la pantalla anterior
+const HeaderSection = ({ title }) => {  // Agregamos una propiedad "title"
+  const navigate = useNavigate(); 
   const handleBackClick = () => {
-    navigate(-1);  // Navegar a la página anterior en el historial
+    navigate("/home");
   };
-
-  // Función para determinar el texto del encabezado según la ruta actual
-  const getHeaderText = () => {
-    if (location.pathname === "/profile") {
-      return "Mi cuenta"; 
-    } else if (location.pathname.startsWith("/detalle")) {
-      return "Detalle";
-    }
-    return ""; 
-  };
-
+  
   return (
     <div className="header-section">
       <header className="header">
@@ -30,9 +17,8 @@ const HeaderSection = () => {
             src="../images/icons/arrow-left.svg"
             alt="volver"
           />
-          <div className="text-wrapper">{getHeaderText()}</div>
+          <div className="text-wrapper">{title || "Mi cuenta"}</div>  {/* Título dinámico */}
         </div>
-
         <img src="../images/header-icon.svg" alt="icono" />
       </header>
     </div>

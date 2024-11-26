@@ -52,7 +52,7 @@ const SpaceDetail = () => {
 
   return (
     <div className="section detalle-espacio">
-      <HeaderSection />
+      <HeaderSection title="Detalle" />
 
       <div className="imagen-detalle">
         <img

@@ -60,7 +60,7 @@ const MyAccount = () => {
 
   return (
     <div>
-      <HeaderSection />
+      <HeaderSection title="Mi cuenta"/>
 
       <div className="my-account">
         <div className="user-info">
