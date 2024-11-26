@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 import "./SpacesList.css";
 
 const SpacesList = () => {
@@ -11,10 +13,18 @@ const SpacesList = () => {
   const [criterioOrdenacion, setOrderCriteria] = useState("alfabetico");
   const [modalVisible, setModalVisible] = useState(false);
 
+  const navigate = useNavigate();
+
+  const handleClick = (espacio) => {
+    navigate(`/spaces/${espacio._id}`, { state: { espacio } });
+  };
+
   useEffect(() => {
     const getSpaces = async () => {
       try {
-        const respuesta = await axios.get("https://api-nomad.onrender.com/api/spaces");
+        const respuesta = await axios.get(
+          "http://localhost:3000/api/spaces"
+        );
         setSpaces(respuesta.data);
         setSpacesFiltered(respuesta.data);
         setLoading(false);
@@ -163,14 +173,18 @@ const SpacesList = () => {
       ) : (
         <div className="espacio-contenedor mb-5">
           {espaciosFiltrados.map((espacio) => (
-            <div key={espacio._id} className="espacio">
+            <div
+              key={espacio._id}
+              className="espacio"
+              onClick={() => handleClick(espacio)}
+            >
               <div className="marco-imagen">
                 <img
                   className="imagen-espacio"
                   alt={espacio.nombre}
                   src={
                     espacio.imagen
-                      ? `https://api-nomad.onrender.com/${espacio.imagen}`
+                      ? `http://localhost:3000/${espacio.imagen}`
                       : "default-image.png"
                   }
                 />
@@ -178,7 +192,11 @@ const SpacesList = () => {
               <div className="contenido-espacio">
                 <div className="nombre-espacio">{espacio.nombre}</div>
                 <div className="d-flex align-items-start">
-                  <img className="icono" alt="" src="images/icons/location.svg" />
+                  <img
+                    className="icono"
+                    alt=""
+                    src="images/icons/location.svg"
+                  />
                   <div className="direccion-ubicacion">
                     {espacio.direccion}, {espacio.ciudad}
                   </div>

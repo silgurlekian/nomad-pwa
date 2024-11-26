@@ -6,6 +6,7 @@ import Register from './components/Register';
 import Login from './components/Login'; 
 import Home from './components/Home';
 import SpacesList from './views/SpacesList'; 
+import SpaceDetail from "./views/SpaceDetail";
 import Profile from "./views/Profile";
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route path="/profile" element={<Profile />} /> 
           <Route path="/home" element={<Home />} />
           <Route path="/spaces" element={<SpacesList />} /> 
+          <Route path="/spaces/:id" element={<SpaceDetail />} />
         </Routes>
       )}
     </div>

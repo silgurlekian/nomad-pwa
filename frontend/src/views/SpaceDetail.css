@@ -1,0 +1,29 @@
+.contenido-detalle {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+}
+
+.services-list {
+    list-style: none;
+    padding: 0;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.services-list li {
+    padding: 10px;
+    background-color: #ECF0F1;
+    border-radius: 8px;
+    color: #364A5E;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.services-list li img {
+    fill: #364A5E;
+    color: #364A5E;
+}
