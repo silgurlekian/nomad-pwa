@@ -18,7 +18,7 @@ function App() {
     if (location.pathname === "/") {
       const timer = setTimeout(() => {
         setShowSplash(false);
-      }, 4000); 
+      }, 3000); 
 
       return () => clearTimeout(timer); 
     } else {
@@ -30,7 +30,7 @@ function App() {
     <div className="App">
       {showSplash ? (
         <div className="splash-screen">
-          <img src="./favicon.svg" alt="Logo" className="logo" />
+          <img src="./favicon.png" alt="Logo" className="logo" />
         </div>
       ) : (
         <Routes>
