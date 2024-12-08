@@ -23,7 +23,7 @@ const SpacesList = () => {
     const getSpaces = async () => {
       try {
         const respuesta = await axios.get(
-          "http://localhost:3000/api/spaces"
+          "https://api-nomad.onrender.com/api/spaces"
         );
         setSpaces(respuesta.data);
         setSpacesFiltered(respuesta.data);
@@ -184,7 +184,7 @@ const SpacesList = () => {
                   alt={espacio.nombre}
                   src={
                     espacio.imagen
-                      ? `http://localhost:3000/${espacio.imagen}`
+                      ? `https://api-nomad.onrender.com/${espacio.imagen}`
                       : "default-image.png"
                   }
                 />

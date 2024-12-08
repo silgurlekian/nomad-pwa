@@ -20,7 +20,7 @@ const SpaceDetail = () => {
 
   useEffect(() => {
     // Fetch del espacio con servicios ya populados
-    fetch(`http://localhost:3000/api/spaces/${id}`)
+    fetch(`https://api-nomad.onrender.com/api/spaces/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Error HTTP: ${response.status}`);
@@ -58,7 +58,7 @@ const SpaceDetail = () => {
         <img
           src={
             espacio.imagen
-              ? `http://localhost:3000/${espacio.imagen}`
+              ? `https://api-nomad.onrender.com/${espacio.imagen}`
               : "default-image.png"
           }
           alt={espacio.nombre}

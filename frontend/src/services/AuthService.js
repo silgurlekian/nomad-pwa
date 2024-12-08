@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // URL base para la API
-const apiUrl = "http://localhost:3000/api";
+const apiUrl = "https://api-nomad.onrender.com/api";
 
 export const registerUser = async ({ nombre, email, password }) => {
   try {
