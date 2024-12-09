@@ -11,19 +11,19 @@ const Onboarding = () => {
       image: "./images/onboarding1.jpg",
       title: "Bienvenido a nomad!",
       description:
-        "Encuentra el espacio de trabajo perfecto cerca tuyo.",
+        "Encuentra el espacio de trabajo perfecto cerca tuyo. Ya sea para una reunión rápida o un día de trabajo remoto, tenemos el lugar que necesitas.",
     },
     {
       image: "./images/onboarding2.jpg",
       title: "Explora espacios de trabajo",
       description:
-        "Descubre coworkings, cafés y oficinas en toda la ciudad.",
+        "Descubre coworkings, cafés y oficinas en toda la ciudad. Filtra por ubicación, servicios y más para encontrar el espacio ideal para trabajar.",
     },
     {
       image: "./images/onboarding3.jpg",
       title: "Reserva tu espacio de trabajo en segundos",
       description:
-        "Navega, elige y confirma tu lugar ideal para trabajar.",
+        "Navega, elige y confirma tu lugar ideal para trabajar sin complicaciones.",
     },
   ];
 
