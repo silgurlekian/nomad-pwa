@@ -10,6 +10,8 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Estado para confirmar contraseña
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -56,6 +58,7 @@ const Register = () => {
               className="form-control"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
+              placeholder="Ingresa tu nombre completo" // Placeholder agregado
               required
             />
           </div>
@@ -66,28 +69,55 @@ const Register = () => {
               className="form-control"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Ingresa tu correo electrónico" // Placeholder agregado
               required
             />
           </div>
           <div className="form-group">
             <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="password-input-container">
+              <input
+                type={showPassword ? "text" : "password"} // Cambia entre text y password
+                className="form-control"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Ingresa tu contraseña" // Placeholder agregado
+                required
+              />
+              <span 
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)} // Alterna el estado de la contraseña
+              >
+                <img 
+                  src={showPassword ? "/images/icons/eye-slash.svg" : "/images/icons/eye.svg"} 
+                  alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} 
+                  style={{ width: '20px', height: '20px' }} // Ajusta el tamaño del ícono
+                />
+              </span>
+            </div>
           </div>
           <div className="form-group">
             <label htmlFor="confirmPassword">Confirmar contraseña</label>
-            <input
-              type="password"
-              className="form-control"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+            <div className="password-input-container">
+              <input
+                type={showConfirmPassword ? "text" : "password"} // Cambia entre text y password
+                className="form-control"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirma tu contraseña" // Placeholder agregado
+                required
+              />
+              <span 
+                className="toggle-password"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Alterna el estado de la confirmación de la contraseña
+              >
+                <img 
+                  src={showConfirmPassword ? "/images/icons/eye-slash.svg" : "/images/icons/eye.svg"} 
+                  alt={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"} 
+                  style={{ width: '20px', height: '20px' }} // Ajusta el tamaño del ícono
+                />
+              </span>
+            </div>
           </div>
           <button type="submit" className="btn-primary">
             Registrarse
