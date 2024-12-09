@@ -9,7 +9,6 @@ const ResetPassword = () => {
     const { token } = useParams();
 
     useEffect(() => {
-        // Verifica si el token es válido haciendo una solicitud GET al backend
         const verifyToken = async () => {
             try {
                 const response = await fetch(`https://api-nomad.onrender.com/api/auth/reset-password/${token}`);
