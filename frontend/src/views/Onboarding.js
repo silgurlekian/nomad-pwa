@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useSwipeable } from "react-swipeable";
 import "./Onboarding.css";
 import { useNavigate } from "react-router-dom";
 
@@ -26,18 +27,6 @@ const Onboarding = () => {
     },
   ];
 
-  const nextSlide = (index) => {
-    setCurrentSlide(index);
-  };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-    }, 5000);
-
-    return () => clearInterval(timer);
-  }, [slides.length]);
-
   const handleSkip = () => {
     navigate("/login");
   };
@@ -46,8 +35,15 @@ const Onboarding = () => {
     navigate("/login");
   };
 
+  const handlers = useSwipeable({
+    onSwipedLeft: () => setCurrentSlide((prev) => Math.min(prev + 1, slides.length - 1)),
+    onSwipedRight: () => setCurrentSlide((prev) => Math.max(prev - 1, 0)),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
+
   return (
-    <div className="onboarding">
+    <div {...handlers} className="onboarding">
       <img
         className="image-onboarding"
         alt=""
@@ -65,7 +61,7 @@ const Onboarding = () => {
             <div
               key={index}
               className={index === currentSlide ? "active" : "circle"}
-              onClick={() => nextSlide(index)}
+              onClick={() => setCurrentSlide(index)}
             />
           ))}
         </div>
@@ -73,7 +69,7 @@ const Onboarding = () => {
           className="saltar"
           onClick={
             currentSlide === slides.length - 1 ? handleContinue : handleSkip
-          } 
+          }
         >
           {currentSlide === slides.length - 1 ? "Continuar" : "Saltar"}
         </div>
