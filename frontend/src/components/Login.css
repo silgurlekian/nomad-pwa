@@ -3,7 +3,6 @@ body {
 }
 
 .login-container {
-    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -74,4 +73,11 @@ form {
 
 .form-control.error {
     border: 1px solid red;
+}
+
+.position-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }

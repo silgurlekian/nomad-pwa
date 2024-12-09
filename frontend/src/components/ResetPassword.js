@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { resetPassword } from '../services/AuthService';
+import "../App.css";
+import "./Login.css"; 
 
 const ResetPassword = () => {
     const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState(''); 
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const { token } = useParams();
@@ -14,7 +17,7 @@ const ResetPassword = () => {
                 const response = await fetch(`https://api-nomad.onrender.com/api/auth/reset-password/${token}`);
                 if (!response.ok) throw new Error('Token inválido o expirado.');
                 const data = await response.json();
-                console.log(data.message); // Puedes mostrar este mensaje si lo deseas
+                console.log(data.message);
             } catch (err) {
                 setError(err.message);
             }
@@ -25,7 +28,13 @@ const ResetPassword = () => {
 
     const handleResetPassword = async (e) => {
         e.preventDefault();
-        
+
+        // Validar que las contraseñas coincidan
+        if (newPassword !== confirmPassword) {
+            setError("Las contraseñas no coinciden.");
+            return;
+        }
+
         try {
             await resetPassword({ token, newPassword });
             setSuccess('Contraseña restablecida con éxito.');
@@ -37,20 +46,69 @@ const ResetPassword = () => {
     };
 
     return (
-        <div>
-            <h2>Restablecer Contraseña</h2>
-            <form onSubmit={handleResetPassword}>
-                <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Nueva Contraseña"
-                    required
-                />
-                <button type="submit">Restablecer Contraseña</button>
-            </form>
-            {error && <p className="error-message">{error}</p>}
-            {success && <p className="success-message">{success}</p>}
+        <div className="login-container">
+            <div className="header">
+                <div className="bkg-home">
+                    <img alt="" src="/images/login.jpg" />
+                </div>
+            </div>
+            <div className="container">
+                <img alt="" src="/images/logo-nomad.svg" />
+                <h2>Restablecer Contraseña</h2>
+                <form onSubmit={handleResetPassword}>
+                    <div className="form-group">
+                        <label htmlFor="new-password">Nueva Contraseña</label>
+                        <input
+                            type="password"
+                            id="new-password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            placeholder="Ingresa tu nueva contraseña"
+                            className={`form-control ${error ? "error" : ""}`} 
+                        />
+                        {error && (
+                            <p className="d-flex align-items-center gap-1 error-message mt-2">
+                                <img
+                                    src="/images/icons/warning.svg"
+                                    alt="Advertencia"
+                                    style={{ width: "16px", height: "16px" }}
+                                />
+                                {error}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="confirm-password">Confirmar Contraseña</label>
+                        <input
+                            type="password"
+                            id="confirm-password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="Confirma tu nueva contraseña"
+                            className={`form-control ${error ? "error" : ""}`} 
+                        />
+                    </div>
+
+                    {success && (
+                        <p className="success-message">{success}</p>
+                    )}
+                    <button type="submit" className="btn-primary">
+                        Restablecer Contraseña
+                    </button>
+                </form>
+            </div>
+
+            {/* Enlace para volver a la página de inicio de sesión */}
+            <div className="d-flex separator mt-4">
+                <hr className="w-100" />
+                <div>ó</div>
+                <hr className="w-100" />
+            </div>
+            <p className="text-center">¿Ya tienes una cuenta?</p>
+            <a href="/login" className="d-block link">
+                Inicia Sesión
+            </a>
         </div>
     );
 };

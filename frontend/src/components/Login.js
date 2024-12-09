@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser, requestPasswordReset } from "../services/AuthService";
+import { loginUser } from "../services/AuthService";
 import "../App.css";
 import "./Login.css";
 
@@ -8,11 +8,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState(null);
-  const [errorPassword, setErrorPassword] = useState(null); 
-  const [showPassword, setShowPassword] = useState(false); 
-  const [resetEmail, setResetEmail] = useState(""); // Estado para el correo de restablecimiento
-  const [resetError, setResetError] = useState(null); // Estado para errores de restablecimiento
-  const [resetSuccess, setResetSuccess] = useState(null); // Estado para éxito de restablecimiento
+  const [errorPassword, setErrorPassword] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,24 +62,6 @@ const Login = () => {
       setErrorEmail(
         err.response ? err.response.data.message : "Error al iniciar sesión"
       );
-    }
-  };
-
-  const handlePasswordResetRequest = async (e) => {
-    e.preventDefault();
-    try {
-      await requestPasswordReset({ email: resetEmail });
-      setResetSuccess(
-        "Se ha enviado un enlace para restablecer tu contraseña."
-      );
-      setResetError(null);
-    } catch (err) {
-      setResetError(
-        err.response
-          ? err.response.data.message
-          : "Error al solicitar el restablecimiento de contraseña."
-      );
-      setResetSuccess(null);
     }
   };
 
@@ -156,28 +135,21 @@ const Login = () => {
               </p>
             )}
           </div>
+
           <button type="submit" className="btn-primary">
             Entrar
           </button>
         </form>
 
-        <div className="password-reset-container">
-          <h4>¿Olvidaste tu contraseña?</h4>
-          <form onSubmit={handlePasswordResetRequest}>
-            <input
-              type="email"
-              value={resetEmail}
-              onChange={(e) => setResetEmail(e.target.value)}
-              placeholder="Ingresa tu correo electrónico"
-            />
-            <button type="submit" className="btn-secondary">
-              Enviar enlace de restablecimiento
-            </button>
-          </form>
-          {resetError && <p className="error-message">{resetError}</p>}
-          {resetSuccess && <p className="success-message">{resetSuccess}</p>}
-        </div>
+        {/* Enlace para restablecer la contraseña */}
+        <p className="text-center mt-3">
+          ¿Olvidaste tu contraseña?{" "}
+          <a href="/reset-password" className="link">
+            Haz click aquí
+          </a>
+        </p>
       </div>
+
       <div className="d-flex separator">
         <div className="line"></div>
         <hr className="w-100" />
@@ -189,7 +161,7 @@ const Login = () => {
         Regístrate
       </a>
 
-      <a href="/home" className="d-block link mt-auto pb-5">
+      <a href="/home" className="d-block link mt-auto pb-5 position-bottom">
         Ver espacios sin cuenta
       </a>
     </div>

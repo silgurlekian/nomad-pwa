@@ -9,7 +9,9 @@ import {
 import Onboarding from "./views/Onboarding";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import RequestResetPassword from './components/RequestResetPassword'; 
 import ResetPassword from './components/ResetPassword';
+
 import Home from "./components/Home";
 import SpacesList from "./views/SpacesList";
 import SpaceDetail from "./views/SpaceDetail";
@@ -43,7 +45,8 @@ function App() {
           <Route path="/" element={<Onboarding />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} /> {/* Cambiado de component a element */}
+          <Route path="/reset-password" element={<RequestResetPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} /> 
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/home" element={<Home />} />
