@@ -7,8 +7,9 @@ import "./Login.css";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+  const [errorEmail, setErrorEmail] = useState(null);
+  const [errorPassword, setErrorPassword] = useState(null); 
+  const [showPassword, setShowPassword] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,15 +19,47 @@ const Login = () => {
     }
   }, [navigate]);
 
+  const validateForm = () => {
+    let isValid = true;
+    setErrorEmail(null); 
+    setErrorPassword(null); 
+
+    // Validar el correo electrónico
+    if (!email) {
+      setErrorEmail("El correo electrónico es obligatorio.");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setErrorEmail("Por favor ingresa un correo electrónico válido.");
+      isValid = false;
+    }
+
+    // Validar la contraseña
+    if (!password) {
+      setErrorPassword("La contraseña es obligatoria.");
+      isValid = false;
+    } else if (password.length < 6) {
+      setErrorPassword("La contraseña debe tener al menos 6 caracteres.");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    
+    // Validar el formulario
+    if (!validateForm()) {
+      return; // Si la validación falla, no continuar
+    }
+
     try {
       const data = await loginUser({ email, password });
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/home");
     } catch (err) {
-      setError(
+      setErrorEmail(
         err.response ? err.response.data.message : "Error al iniciar sesión"
       );
     }
@@ -47,45 +80,52 @@ const Login = () => {
             <label htmlFor="email">Correo electrónico</label>
             <input
               type="email"
-              className="form-control"
+              className={`form-control ${errorEmail ? 'error' : ''}`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Ingresa tu correo electrónico" // Placeholder agregado
-              required
+              placeholder="Ingresa tu correo electrónico"
             />
+            {errorEmail && (
+              <p className="d-flex align-items-center gap-1 error-message mt-2">
+                <img src="/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                {errorEmail}
+              </p>
+            )} 
           </div>
+          
           <div className="form-group">
             <label htmlFor="password">Contraseña</label>
             <div className="password-input-container">
               <input
-                type={showPassword ? "text" : "password"} // Cambia entre text y password
-                className="form-control"
+                type={showPassword ? "text" : "password"}
+                className={`form-control ${errorPassword ? 'error' : ''}`} 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Ingresa tu contraseña" // Placeholder agregado
-                required
+                placeholder="Ingresa tu contraseña"
               />
               <span 
                 className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)} // Alterna el estado de la contraseña
+                onClick={() => setShowPassword(!showPassword)} 
               >
                 <img 
                   src={showPassword ? "/images/icons/eye-slash.svg" : "/images/icons/eye.svg"} 
                   alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} 
-                  style={{ width: '20px', height: '20px' }} // Ajusta el tamaño del ícono
+                  style={{ width: '20px', height: '20px' }} 
                 />
               </span>
             </div>
+            {errorPassword && (
+              <p className="d-flex align-items-center gap-1 error-message mt-2">
+                <img src="/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                {errorPassword}
+              </p>
+            )} 
           </div>
           <button type="submit" className="btn-primary">
             Entrar
           </button>
-          {/* <a href="/forgot-password" className="link">
-            ¿Olvidaste tu contraseña?
-          </a> */}
         </form>
       </div>
-      {error && <p className="error-message">{error}</p>}
       <div className="d-flex separator">
         <div className="line"></div>
         <hr className="w-100"/>

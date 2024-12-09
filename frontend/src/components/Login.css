@@ -66,3 +66,12 @@ form {
     transform: translateY(-50%);
     cursor: pointer;
 }
+
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+}
+
+.form-control.error {
+    border: 1px solid red;
+}
