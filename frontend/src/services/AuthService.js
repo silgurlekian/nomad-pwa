@@ -3,6 +3,7 @@ import axios from "axios";
 // URL base para la API
 const apiUrl = "https://api-nomad.onrender.com/api";
 
+// Función para solicitar el restablecimiento de contraseña
 export const requestPasswordReset = async ({ email }) => {
   try {
     const response = await axios.post(`${apiUrl}/auth/reset-password`, { email });
@@ -10,6 +11,17 @@ export const requestPasswordReset = async ({ email }) => {
   } catch (error) {
     console.log("Error response data:", error.response?.data);
     throw new Error(error.response?.data?.message || "Error al solicitar el restablecimiento de contraseña.");
+  }
+};
+
+// Función para restablecer la contraseña
+export const resetPassword = async ({ token, newPassword }) => {
+  try {
+    const response = await axios.post(`${apiUrl}/auth/reset-password/${token}`, { newPassword });
+    return response.data;
+  } catch (error) {
+    console.log("Error response data:", error.response?.data);
+    throw new Error(error.response?.data?.message || "Error al restablecer la contraseña.");
   }
 };
 
