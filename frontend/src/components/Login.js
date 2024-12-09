@@ -8,6 +8,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,18 +50,32 @@ const Login = () => {
               className="form-control"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Ingresa tu correo electrónico" // Placeholder agregado
               required
             />
           </div>
           <div className="form-group">
             <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="password-input-container">
+              <input
+                type={showPassword ? "text" : "password"} // Cambia entre text y password
+                className="form-control"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Ingresa tu contraseña" // Placeholder agregado
+                required
+              />
+              <span 
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)} // Alterna el estado de la contraseña
+              >
+                <img 
+                  src={showPassword ? "/images/icons/eye-slash.svg" : "/images/icons/eye.svg"} 
+                  alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} 
+                  style={{ width: '20px', height: '20px' }} // Ajusta el tamaño del ícono
+                />
+              </span>
+            </div>
           </div>
           <button type="submit" className="btn-primary">
             Entrar
