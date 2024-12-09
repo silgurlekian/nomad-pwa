@@ -71,7 +71,9 @@ const RequestResetPassword = () => {
               </p>
             )}
           </div>
-          {resetSuccess && <p className="success-message">{resetSuccess}</p>}
+          {resetSuccess && (
+            <p className="success-message">{resetSuccess}</p>
+          )}
           <button type="submit" className="btn-primary">
             Recuperar contraseña
           </button>
@@ -86,6 +88,10 @@ const RequestResetPassword = () => {
       <p className="text-center">¿Ya tienes una cuenta?</p>
       <a href="/login" className="d-block link">
         Inicia Sesión
+      </a>
+
+      <a href="/home" className="d-block link mt-auto pb-5">
+        Ver espacios sin cuenta
       </a>
     </div>
   );
