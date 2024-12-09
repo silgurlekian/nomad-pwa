@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { resetPassword } from '../services/AuthService';
 
@@ -7,6 +7,22 @@ const ResetPassword = () => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const { token } = useParams();
+
+    useEffect(() => {
+        // verificar si el token es válido haciendo una solicitud GET al backend
+        const verifyToken = async () => {
+            try {
+                const response = await fetch(`https://api-nomad.onrender.com/api/auth/reset-password/${token}`);
+                if (!response.ok) throw new Error('Token inválido o expirado.');
+                const data = await response.json();
+                console.log(data.message); // Puedes mostrar este mensaje si lo deseas
+            } catch (err) {
+                setError(err.message);
+            }
+        };
+
+        verifyToken();
+    }, [token]);
 
     const handleResetPassword = async (e) => {
         e.preventDefault();
