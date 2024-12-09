@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../services/AuthService";
+import { loginUser, requestPasswordReset } from "../services/AuthService";
 import "../App.css";
 import "./Login.css";
 
@@ -10,6 +10,9 @@ const Login = () => {
   const [errorEmail, setErrorEmail] = useState(null);
   const [errorPassword, setErrorPassword] = useState(null); 
   const [showPassword, setShowPassword] = useState(false); 
+  const [resetEmail, setResetEmail] = useState(""); // Estado para el correo de restablecimiento
+  const [resetError, setResetError] = useState(null); // Estado para errores de restablecimiento
+  const [resetSuccess, setResetSuccess] = useState(null); // Estado para éxito de restablecimiento
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,8 +24,8 @@ const Login = () => {
 
   const validateForm = () => {
     let isValid = true;
-    setErrorEmail(null); 
-    setErrorPassword(null); 
+    setErrorEmail(null);
+    setErrorPassword(null);
 
     // Validar el correo electrónico
     if (!email) {
@@ -47,7 +50,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     // Validar el formulario
     if (!validateForm()) {
       return; // Si la validación falla, no continuar
@@ -62,6 +65,24 @@ const Login = () => {
       setErrorEmail(
         err.response ? err.response.data.message : "Error al iniciar sesión"
       );
+    }
+  };
+
+  const handlePasswordResetRequest = async (e) => {
+    e.preventDefault();
+    try {
+      await requestPasswordReset({ email: resetEmail });
+      setResetSuccess(
+        "Se ha enviado un enlace para restablecer tu contraseña."
+      );
+      setResetError(null);
+    } catch (err) {
+      setResetError(
+        err.response
+          ? err.response.data.message
+          : "Error al solicitar el restablecimiento de contraseña."
+      );
+      setResetSuccess(null);
     }
   };
 
@@ -80,57 +101,88 @@ const Login = () => {
             <label htmlFor="email">Correo electrónico</label>
             <input
               type="email"
-              className={`form-control ${errorEmail ? 'error' : ''}`}
+              className={`form-control ${errorEmail ? "error" : ""}`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Ingresa tu correo electrónico"
             />
             {errorEmail && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img
+                  src="/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
                 {errorEmail}
               </p>
-            )} 
+            )}
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="password">Contraseña</label>
             <div className="password-input-container">
               <input
                 type={showPassword ? "text" : "password"}
-                className={`form-control ${errorPassword ? 'error' : ''}`} 
+                className={`form-control ${errorPassword ? "error" : ""}`}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Ingresa tu contraseña"
               />
-              <span 
+              <span
                 className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)} 
+                onClick={() => setShowPassword(!showPassword)}
               >
-                <img 
-                  src={showPassword ? "/images/icons/eye-slash.svg" : "/images/icons/eye.svg"} 
-                  alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} 
-                  style={{ width: '20px', height: '20px' }} 
+                <img
+                  src={
+                    showPassword
+                      ? "/images/icons/eye-slash.svg"
+                      : "/images/icons/eye.svg"
+                  }
+                  alt={
+                    showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                  }
+                  style={{ width: "20px", height: "20px" }}
                 />
               </span>
             </div>
             {errorPassword && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img
+                  src="/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
                 {errorPassword}
               </p>
-            )} 
+            )}
           </div>
           <button type="submit" className="btn-primary">
             Entrar
           </button>
         </form>
+
+        <div className="password-reset-container">
+          <h4>¿Olvidaste tu contraseña?</h4>
+          <form onSubmit={handlePasswordResetRequest}>
+            <input
+              type="email"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+              placeholder="Ingresa tu correo electrónico"
+            />
+            <button type="submit" className="btn-secondary">
+              Enviar enlace de restablecimiento
+            </button>
+          </form>
+          {resetError && <p className="error-message">{resetError}</p>}
+          {resetSuccess && <p className="success-message">{resetSuccess}</p>}
+        </div>
       </div>
       <div className="d-flex separator">
         <div className="line"></div>
-        <hr className="w-100"/>
+        <hr className="w-100" />
         <div>ó</div>
-        <hr className="w-100"/>
+        <hr className="w-100" />
       </div>
       <p className="text-center">¿No tienes una cuenta?</p>
       <a href="/register" className="d-block link">

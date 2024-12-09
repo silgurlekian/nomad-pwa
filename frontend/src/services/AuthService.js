@@ -3,6 +3,16 @@ import axios from "axios";
 // URL base para la API
 const apiUrl = "https://api-nomad.onrender.com/api";
 
+export const requestPasswordReset = async ({ email }) => {
+  try {
+    const response = await axios.post(`${apiUrl}/auth/reset-password`, { email });
+    return response.data;
+  } catch (error) {
+    console.log("Error response data:", error.response?.data);
+    throw new Error(error.response?.data?.message || "Error al solicitar el restablecimiento de contraseña.");
+  }
+};
+
 export const registerUser = async ({ nombre, email, password }) => {
   try {
     // Usar la URL absoluta para las solicitudes a la API
