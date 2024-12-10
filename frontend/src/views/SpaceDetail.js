@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import HeaderSection from "../components/HeaderSection";
 import SpaceNavbar from "../components/SpaceNavbar";
+
+import Loading from "../components/Loading";
+
 import "../App.css";
 import "./SpaceDetail.css";
 
@@ -47,7 +50,7 @@ const SpaceDetail = () => {
   }, [id]);
 
   if (cargando) {
-    return <div>Cargando espacio...</div>;
+    return <Loading />;
   }
 
   if (error) {
