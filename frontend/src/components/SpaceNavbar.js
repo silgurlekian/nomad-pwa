@@ -1,13 +1,17 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Remove useLocation import
 import "../App.css";
 import "./SpaceNavbar.css";
 
-export const SpaceNavbar = ({ precio }) => {
+export const SpaceNavbar = ({ precio, spaceDetails }) => {
   const navigate = useNavigate();
 
   const handleSelectDate = () => {
-    navigate("/reservation");
+    navigate("/reservation", { 
+      state: { 
+        spaceDetails: spaceDetails 
+      } 
+    });
   };
 
   return (

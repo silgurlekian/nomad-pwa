@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import HeaderSection from "../components/HeaderSection";
 import SpaceNavbar from "../components/SpaceNavbar";
-
 import Loading from "../components/Loading";
-
 import "../App.css";
 import "./SpaceDetail.css";
 
 const SpaceDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // Hook para redirigir al usuario
   const [espacio, setEspacio] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const [usuarioLogueado, setUsuarioLogueado] = useState(false); // Estado para verificar si el usuario está logueado
 
   const iconosServicios = {
     Wifi: "../images/icons/wifi.svg",
@@ -21,7 +21,6 @@ const SpaceDetail = () => {
     "Excelente ubicación": "../images/icons/location.svg",
   };
 
-  // Mapeo de tipos de reserva a su forma legible
   const tipoReservaMap = {
     porHora: "Por hora",
     porDia: "Por día",
@@ -29,8 +28,12 @@ const SpaceDetail = () => {
     porAno: "Por año",
   };
 
+  // Simulación de verificación de usuario logueado, puedes reemplazar esto con la lógica real
   useEffect(() => {
-    // Fetch del espacio con servicios ya populados
+    // Simular que el usuario está logueado, puedes reemplazarlo con la autenticación real
+    const isLoggedIn = localStorage.getItem("userToken");
+    setUsuarioLogueado(isLoggedIn ? true : false);
+
     fetch(`https://api-nomad.onrender.com/api/spaces/${id}`)
       .then((response) => {
         if (!response.ok) {
@@ -48,6 +51,14 @@ const SpaceDetail = () => {
         setCargando(false);
       });
   }, [id]);
+
+  const handleReservaClick = () => {
+    if (usuarioLogueado) {
+      navigate(`/reserva/${id}`); // Redirige a la pantalla de reserva si está logueado
+    } else {
+      navigate("/login"); // Si no está logueado, redirige al login
+    }
+  };
 
   if (cargando) {
     return <Loading />;
@@ -97,7 +108,6 @@ const SpaceDetail = () => {
           </div>
         </div>
 
-        {/* Website */}
         {espacio.website && (
           <p className="website">
             <a href={espacio.website} target="_blank" rel="noopener noreferrer">
@@ -107,7 +117,6 @@ const SpaceDetail = () => {
           </p>
         )}
 
-        {/* Información sobre reservas */}
         {espacio.aceptaReservas && espacio.tiposReservas && (
           <p className="reservas">
             Acepta reservas:{" "}
@@ -158,9 +167,14 @@ const SpaceDetail = () => {
           allowFullScreen=""
           loading="lazy"
         ></iframe>
+
+        {/* Botón de reserva */}
+        <button className="btn-reservar" onClick={handleReservaClick}>
+          {usuarioLogueado ? "Realizar reserva" : "Iniciar sesión para reservar"}
+        </button>
       </div>
 
-      <SpaceNavbar precio={espacio.precio} /> 
+      <SpaceNavbar precio={espacio.precio} spaceDetails={espacio} />
     </div>
   );
 };

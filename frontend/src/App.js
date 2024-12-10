@@ -11,6 +11,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import RequestResetPassword from './components/RequestResetPassword'; 
 import ResetPassword from './components/ResetPassword';
+import Reservation from "./views/Reservation"; // Add this import
 
 import Home from "./components/Home";
 import SpacesList from "./views/SpacesList";
@@ -52,6 +53,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/spaces" element={<SpacesList />} />
           <Route path="/spaces/:id" element={<SpaceDetail />} />
+          <Route path="/reservation" element={<Reservation />} />
         </Routes>
       )}
     </div>
