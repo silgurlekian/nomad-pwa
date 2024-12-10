@@ -1,16 +1,30 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // Remove useLocation import
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 import "./SpaceNavbar.css";
 
 export const SpaceNavbar = ({ precio, spaceDetails }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true); // El usuario está logueado
+    }
+  }, []);
+
   const handleSelectDate = () => {
-    navigate("/reservation", { 
-      state: { 
-        spaceDetails: spaceDetails 
-      } 
+    if (!isLoggedIn) {
+      navigate("/login"); // Redirigir al login si no está logueado
+      return; // Detener la ejecución de la función
+    }
+
+    // Solo proceder a la página de reserva si el usuario está logueado
+    navigate("/reservation", {
+      state: {
+        spaceDetails: spaceDetails,
+      },
     });
   };
 
@@ -21,8 +35,11 @@ export const SpaceNavbar = ({ precio, spaceDetails }) => {
         <p className="moneda">ARS / hora</p>
       </div>
 
-      <button className="btn-primary" onClick={handleSelectDate}>
-        Seleccionar fecha
+      <button
+        className="btn-primary"
+        onClick={handleSelectDate}
+      >
+        {isLoggedIn ? "Seleccionar fecha" : "Inicia sesión para continuar"}
       </button>
     </div>
   );

@@ -168,10 +168,13 @@ const SpaceDetail = () => {
           loading="lazy"
         ></iframe>
 
-        {/* Botón de reserva */}
-        <button className="btn-reservar" onClick={handleReservaClick}>
-          {usuarioLogueado ? "Realizar reserva" : "Iniciar sesión para reservar"}
-        </button>
+        {/* Eliminar el botón de reserva si el usuario no está logueado */}
+        {usuarioLogueado && (
+          <button className="btn-reservar" onClick={handleReservaClick}>
+            Realizar reserva
+          </button>
+        )}
+
       </div>
 
       <SpaceNavbar precio={espacio.precio} spaceDetails={espacio} />
