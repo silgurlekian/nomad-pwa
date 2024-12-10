@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import HeaderSection from "../components/HeaderSection";
-import Navbar from "../components/Navbar";
+import SpaceNavbar from "../components/SpaceNavbar";
 import "../App.css";
 import "./SpaceDetail.css";
 
@@ -16,6 +16,14 @@ const SpaceDetail = () => {
     Impresora: "../images/icons/printer.svg",
     "Café gratis": "../images/icons/coffee.svg",
     "Excelente ubicación": "../images/icons/location.svg",
+  };
+
+  // Mapeo de tipos de reserva a su forma legible
+  const tipoReservaMap = {
+    porHora: "Por hora",
+    porDia: "Por día",
+    porMes: "Por mes",
+    porAno: "Por año",
   };
 
   useEffect(() => {
@@ -62,7 +70,17 @@ const SpaceDetail = () => {
               : "default-image.png"
           }
           alt={espacio.nombre}
+          className="imagen-espacio"
         />
+
+        <div className="tag-container">
+          <img src="../images/icons/building-4.svg" alt="tipo de espacio" />
+          {espacio.spacesType && espacio.spacesType.length > 0 ? (
+            <span className="tag">{espacio.spacesType[0].name}</span>
+          ) : (
+            <span className="tag">Tipo no disponible</span>
+          )}
+        </div>
       </div>
 
       <div className="contenido-detalle">
@@ -70,11 +88,31 @@ const SpaceDetail = () => {
 
         <p className="p-title">Sobre el espacio</p>
         <div className="d-flex align-items-start">
-          <img className="icono" alt="" src="images/icons/location.svg" />
-          <div className="direccion-ubicacion">
+          <img className="icono" alt="" src="../images/icons/location.svg" />
+          <div>
             {espacio.direccion}, {espacio.ciudad}
           </div>
         </div>
+
+        {/* Website */}
+        {espacio.website && (
+          <p className="website">
+            <a href={espacio.website} target="_blank" rel="noopener noreferrer">
+              <img className="icono" alt="" src="../images/icons/global-search.svg" />
+              Visitar sitio web
+            </a>
+          </p>
+        )}
+
+        {/* Información sobre reservas */}
+        {espacio.aceptaReservas && espacio.tiposReservas && (
+          <p className="reservas">
+            Acepta reservas:{" "}
+            {espacio.tiposReservas
+              .map((tipo) => tipoReservaMap[tipo] || tipo)
+              .join(", ") || "No especificado"}
+          </p>
+        )}
 
         <p className="p-title">Características e Instalaciones</p>
 
@@ -118,7 +156,8 @@ const SpaceDetail = () => {
           loading="lazy"
         ></iframe>
       </div>
-      <Navbar />
+
+      <SpaceNavbar precio={espacio.precio} /> 
     </div>
   );
 };

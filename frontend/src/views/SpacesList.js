@@ -180,7 +180,7 @@ const SpacesList = () => {
             >
               <div className="marco-imagen">
                 <img
-                  className="imagen-espacio"
+                  className="imagen-espacio-lista"
                   alt={espacio.nombre}
                   src={
                     espacio.imagen

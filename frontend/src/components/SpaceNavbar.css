@@ -1,0 +1,20 @@
+.space-navbar {
+    align-items: center;
+    border-radius: 20px 20px 0px 0px;
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 16px;
+    background-color: #fff;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.space-navbar .d-flex {
+    display: flex;
+    align-items: center;
+}
+
+.space-navbar .precio,
+.space-navbar .moneda {
+    margin: 0;
+}
