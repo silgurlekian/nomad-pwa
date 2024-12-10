@@ -1,13 +1,13 @@
 // Nombre del caché
-const CACHE_NAME = 'nomad-cache-v1';
+const CACHE_NAME = 'nomad-cache-v1.1';
 
 // Archivos a almacenar en caché
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
-  '/assets/logo.png',
+  'https://pwa.nomad.com.ar/',
+  'https://pwa.nomad.com.ar/index.html',
+  'https://pwa.nomad.com.ar/styles.css',
+  'https://pwa.nomad.com.ar/app.js',
+  'https://pwa.nomad.com.ar/assets/logo.png',
 ];
 
 // Instalación del Service Worker
