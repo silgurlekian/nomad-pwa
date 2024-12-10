@@ -89,10 +89,6 @@ const RequestResetPassword = () => {
       <a href="/login" className="d-block link">
         Inicia Sesión
       </a>
-
-      <a href="/home" className="d-block link mt-auto pb-5">
-        Ver espacios sin cuenta
-      </a>
     </div>
   );
 };
