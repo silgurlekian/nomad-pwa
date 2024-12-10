@@ -2,12 +2,13 @@ import React from "react";
 import { useNavigate } from "react-router-dom"; // Importar useNavigate
 import "./HeaderSection.css";
 
-const HeaderSection = ({ title }) => {  // Agregamos una propiedad "title"
-  const navigate = useNavigate(); 
+const HeaderSection = ({ title }) => {
+  // Agregamos una propiedad "title"
+  const navigate = useNavigate();
   const handleBackClick = () => {
-    navigate("/home");
+    navigate(-1); 
   };
-  
+
   return (
     <div className="header-section">
       <header className="header">
@@ -17,7 +18,8 @@ const HeaderSection = ({ title }) => {  // Agregamos una propiedad "title"
             src="../images/icons/arrow-left.svg"
             alt="volver"
           />
-          <div className="text-wrapper">{title || "Mi cuenta"}</div>  {/* Título dinámico */}
+          <div className="text-wrapper">{title || "Mi cuenta"}</div>{" "}
+          {/* Título dinámico */}
         </div>
         <img src="../images/header-icon.svg" alt="icono" />
       </header>
