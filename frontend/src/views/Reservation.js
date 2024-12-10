@@ -60,31 +60,26 @@ const Reservation = () => {
     const newErrors = {};
     let isValid = true;
 
-    // Validate fullName
     if (!reservationData.fullName) {
       newErrors.fullName = "El nombre completo es obligatorio.";
       isValid = false;
     }
 
-    // Validate date
     if (!reservationData.date) {
       newErrors.date = "La fecha es obligatoria.";
       isValid = false;
     }
 
-    // Validate startTime
     if (!reservationData.startTime) {
       newErrors.startTime = "La hora de inicio es obligatoria.";
       isValid = false;
     }
 
-    // Validate endTime
     if (!reservationData.endTime) {
       newErrors.endTime = "La hora de fin es obligatoria.";
       isValid = false;
     }
 
-    // Validate numberOfPlaces
     if (reservationData.numberOfPlaces < 1) {
       newErrors.numberOfPlaces = "La cantidad de lugares debe ser al menos 1.";
       isValid = false;
@@ -109,7 +104,7 @@ const Reservation = () => {
     }
 
     const reservationDataToSend = {
-      userId: "", // El userId lo tomamos del token JWT
+      userId: "", // El userId lo toma del token JWT
       fullName: reservationData.fullName,
       date: reservationData.date,
       startTime: reservationData.startTime,
@@ -136,6 +131,15 @@ const Reservation = () => {
       const data = await response.json();
       console.log("Reserva creada:", data);
       setReservationSuccess(true);
+
+      setTimeout(() => {
+        navigate("/reservation-success", {
+          state: {
+            reservation: data,
+            spaceDetails: spaceDetails,
+          },
+        });
+      }, 2000);
     } catch (error) {
       console.error("Error:", error);
       setErrors({ ...errors, general: error.message });
@@ -282,7 +286,9 @@ const Reservation = () => {
               onChange={handleInputChange}
             />
           </div>
-          <button type="submit" className="btn-primary">Confirmar reserva</button>
+          <button type="submit" className="btn-primary">
+            Confirmar reserva
+          </button>
         </form>
       </div>
     </div>

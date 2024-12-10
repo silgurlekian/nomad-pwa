@@ -54,9 +54,16 @@ const SpaceDetail = () => {
 
   const handleReservaClick = () => {
     if (usuarioLogueado) {
-      navigate(`/reserva/${id}`); // Redirige a la pantalla de reserva si está logueado
+      navigate(`/reserva/${id}`, {
+        state: { spaceDetails: espacio }, 
+      });
     } else {
-      navigate("/login"); // Si no está logueado, redirige al login
+      navigate("/login", {
+        state: {
+          from: `/reserva/${id}`,
+          spaceDetails: espacio, 
+        },
+      });
     }
   };
 
@@ -111,7 +118,11 @@ const SpaceDetail = () => {
         {espacio.website && (
           <p className="website">
             <a href={espacio.website} target="_blank" rel="noopener noreferrer">
-              <img className="icono" alt="" src="../images/icons/global-search.svg" />
+              <img
+                className="icono"
+                alt=""
+                src="../images/icons/global-search.svg"
+              />
               Visitar sitio web
             </a>
           </p>
@@ -174,7 +185,6 @@ const SpaceDetail = () => {
             Realizar reserva
           </button>
         )}
-
       </div>
 
       <SpaceNavbar precio={espacio.precio} spaceDetails={espacio} />

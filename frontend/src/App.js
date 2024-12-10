@@ -18,6 +18,8 @@ import SpacesList from "./views/SpacesList";
 import SpaceDetail from "./views/SpaceDetail";
 import Profile from "./views/Profile";
 
+import SuccessPage from "./components/SuccessPage";
+
 function App() {
   const [showSplash, setShowSplash] = useState(true);
   const location = useLocation();
@@ -52,8 +54,11 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/home" element={<Home />} />
           <Route path="/spaces" element={<SpacesList />} />
+
           <Route path="/spaces/:id" element={<SpaceDetail />} />
           <Route path="/reservation" element={<Reservation />} />
+          <Route path="/reservation-success" element={<SuccessPage />} />
+
         </Routes>
       )}
     </div>
