@@ -8,9 +8,6 @@ const HomeFull = () => {
   return (
     <div className="home-full">
       <Header />
-      <div className="welcome-message">
-        <h1>Bienvenido a Nomad</h1>
-      </div>
       <div className="gray">
         <SpacesList />
       </div>
