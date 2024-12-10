@@ -16,7 +16,13 @@ const Reservation = () => {
     additionalNotes: "",
     numberOfPlaces: 1,
   });
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({
+    fullName: "",
+    date: "",
+    startTime: "",
+    endTime: "",
+    numberOfPlaces: "",
+  });
   const [reservationSuccess, setReservationSuccess] = useState(false);
 
   useEffect(() => {
@@ -50,13 +56,55 @@ const Reservation = () => {
     }));
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    // Validate fullName
+    if (!reservationData.fullName) {
+      newErrors.fullName = "El nombre completo es obligatorio.";
+      isValid = false;
+    }
+
+    // Validate date
+    if (!reservationData.date) {
+      newErrors.date = "La fecha es obligatoria.";
+      isValid = false;
+    }
+
+    // Validate startTime
+    if (!reservationData.startTime) {
+      newErrors.startTime = "La hora de inicio es obligatoria.";
+      isValid = false;
+    }
+
+    // Validate endTime
+    if (!reservationData.endTime) {
+      newErrors.endTime = "La hora de fin es obligatoria.";
+      isValid = false;
+    }
+
+    // Validate numberOfPlaces
+    if (reservationData.numberOfPlaces < 1) {
+      newErrors.numberOfPlaces = "La cantidad de lugares debe ser al menos 1.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmitReservation = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setError("No estás autenticado.");
+      setErrors({ ...errors, general: "No estás autenticado." });
+      return;
+    }
+
+    if (!validateForm()) {
       return;
     }
 
@@ -76,7 +124,7 @@ const Reservation = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Enviamos el token para autenticar al usuario
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(reservationDataToSend),
       });
@@ -90,81 +138,151 @@ const Reservation = () => {
       setReservationSuccess(true);
     } catch (error) {
       console.error("Error:", error);
-      setError(error.message);
+      setErrors({ ...errors, general: error.message });
     }
   };
 
   return (
     <div>
-      <HeaderSection />
-      <div className="reservation-form-container">
-        <h2>Reservar espacio: {spaceDetails?.nombre}</h2>
+      <HeaderSection title="Completar reserva" />
+      <div className="contenido-detalle">
+        <h1 className="h4">Reservar espacio: {spaceDetails?.nombre}</h1>
+
         {reservationSuccess && (
-          <div className="reservation-success-message">
+          <div className="alert alert-success">
             ¡Reserva realizada exitosamente!
           </div>
         )}
+
         {!isLoggedIn && (
           <div className="error-message">
             Por favor, inicie sesión para realizar la reserva.
           </div>
         )}
+
         <form onSubmit={handleSubmitReservation}>
-          {error && <div className="error-message">{error}</div>}
-          <label htmlFor="fullName">Nombre completo:</label>
-          <input
-            type="text"
-            id="fullName"
-            name="fullName"
-            value={reservationData.fullName}
-            onChange={handleInputChange}
-            required
-          />
-          <label htmlFor="date">Fecha:</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={reservationData.date}
-            onChange={handleInputChange}
-            required
-          />
-          <label htmlFor="startTime">Hora de inicio:</label>
-          <input
-            type="time"
-            id="startTime"
-            name="startTime"
-            value={reservationData.startTime}
-            onChange={handleInputChange}
-            required
-          />
-          <label htmlFor="endTime">Hora de fin:</label>
-          <input
-            type="time"
-            id="endTime"
-            name="endTime"
-            value={reservationData.endTime}
-            onChange={handleInputChange}
-            required
-          />
-          <label htmlFor="numberOfPlaces">Cantidad de lugares:</label>
-          <input
-            type="number"
-            id="numberOfPlaces"
-            name="numberOfPlaces"
-            min="1"
-            value={reservationData.numberOfPlaces}
-            onChange={handleInputChange}
-            required
-          />
-          <label htmlFor="additionalNotes">Notas adicionales:</label>
-          <textarea
-            id="additionalNotes"
-            name="additionalNotes"
-            value={reservationData.additionalNotes}
-            onChange={handleInputChange}
-          />
-          <button type="submit">Confirmar reserva</button>
+          {errors.general && (
+            <div className="error-message">{errors.general}</div>
+          )}
+
+          <div className="form-group">
+            <label htmlFor="fullName">Nombre completo</label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              className={`form-control ${errors.fullName ? "error" : ""}`}
+              value={reservationData.fullName}
+              onChange={handleInputChange}
+            />
+            {errors.fullName && (
+              <p className="d-flex align-items-center gap-1 error-message mt-2">
+                <img
+                  src="/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
+                {errors.fullName}
+              </p>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="date">Fecha</label>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              className={`form-control ${errors.date ? "error" : ""}`}
+              value={reservationData.date}
+              onChange={handleInputChange}
+            />
+            {errors.date && (
+              <p className="d-flex align-items-center gap-1 error-message mt-2">
+                <img
+                  src="/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
+                {errors.date}
+              </p>
+            )}
+          </div>
+          <div className="form-group">
+            <label htmlFor="startTime">Hora de inicio</label>
+            <input
+              type="time"
+              id="startTime"
+              name="startTime"
+              className={`form-control ${errors.startTime ? "error" : ""}`}
+              value={reservationData.startTime}
+              onChange={handleInputChange}
+            />
+            {errors.startTime && (
+              <p className="d-flex align-items-center gap-1 error-message mt-2">
+                <img
+                  src="/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
+                {errors.startTime}
+              </p>
+            )}
+          </div>
+          <div className="form-group">
+            <label htmlFor="endTime">Hora de fin</label>
+            <input
+              type="time"
+              id="endTime"
+              name="endTime"
+              className={`form-control ${errors.endTime ? "error" : ""}`}
+              value={reservationData.endTime}
+              onChange={handleInputChange}
+            />
+            {errors.endTime && (
+              <p className="d-flex align-items-center gap-1 error-message mt-2">
+                <img
+                  src="/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
+                {errors.endTime}
+              </p>
+            )}
+          </div>
+          <div className="form-group">
+            <label htmlFor="numberOfPlaces">Cantidad de lugares</label>
+            <input
+              type="number"
+              id="numberOfPlaces"
+              name="numberOfPlaces"
+              className={`form-control ${errors.numberOfPlaces ? "error" : ""}`}
+              min="1"
+              value={reservationData.numberOfPlaces}
+              onChange={handleInputChange}
+            />
+            {errors.numberOfPlaces && (
+              <p className="d-flex align-items-center gap-1 error-message mt-2">
+                <img
+                  src="/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
+                {errors.numberOfPlaces}
+              </p>
+            )}
+          </div>
+          <div className="form-group">
+            <label htmlFor="additionalNotes">Notas adicionales</label>
+            <textarea
+              id="additionalNotes"
+              name="additionalNotes"
+              className="form-control"
+              value={reservationData.additionalNotes}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button type="submit" className="btn-primary">Confirmar reserva</button>
         </form>
       </div>
     </div>
