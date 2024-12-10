@@ -72,7 +72,7 @@ const Reservation = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/reservas", {
+      const response = await fetch("http://localhost:3000/api/reservations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
