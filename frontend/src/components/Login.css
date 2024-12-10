@@ -76,13 +76,6 @@ form {
     border: 1px solid red;
 }
 
-.position-bottom {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
 .success-message {
     color: #28a745;
     background-color: #d4edda;
@@ -90,4 +83,9 @@ form {
     padding: 10px;
     border-radius: 5px;
     text-align: center;
+}
+
+.flex-position {
+    flex-direction: column;
+    gap: 100px;
 }

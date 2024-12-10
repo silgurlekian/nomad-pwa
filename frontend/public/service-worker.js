@@ -12,6 +12,7 @@ const urlsToCache = [
 
 // Instalación del Service Worker
 self.addEventListener('install', (event) => {
+  console.log('Instalando el Service Worker...');
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('Archivos en caché correctamente');
@@ -22,11 +23,12 @@ self.addEventListener('install', (event) => {
 
 // Activación del Service Worker
 self.addEventListener('activate', (event) => {
+  console.log('Activando el Service Worker...');
   event.waitUntil(
     caches.keys().then((cacheNames) =>
       Promise.all(
         cacheNames.map((cache) => {
-          // Elimina cachés antiguas
+          // Elimina cachés antiguas que no coinciden con el CACHE_NAME actual
           if (cache !== CACHE_NAME) {
             console.log('Eliminando caché antigua:', cache);
             return caches.delete(cache);

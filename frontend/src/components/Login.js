@@ -156,14 +156,18 @@ const Login = () => {
         <div>ó</div>
         <hr className="w-100" />
       </div>
-      <p className="text-center">¿No tienes una cuenta?</p>
-      <a href="/register" className="d-block link">
-        Regístrate
-      </a>
 
-      <a href="/home" className="d-block link mt-auto pb-5 position-bottom">
-        Ver espacios sin cuenta
-      </a>
+      <div className="d-flex flex-position">
+        <div className="">
+          <p className="text-center">¿No tienes una cuenta?</p>
+          <a href="/register" className="d-block link">
+            Regístrate
+          </a>
+        </div>
+        <a href="/home" className="d-block link mt-auto pb-5 position-bottom">
+          Ver espacios sin cuenta
+        </a>
+      </div>
     </div>
   );
 };
