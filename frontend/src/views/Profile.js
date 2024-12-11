@@ -9,6 +9,9 @@ import Loading from "../components/Loading";
 const MyAccount = () => {
   const [cargando, setLoading] = useState(true);
   const [reservas, setReservas] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [reservationToCancel, setReservationToCancel] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(""); // Estado para el mensaje de éxito
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
@@ -31,7 +34,6 @@ const MyAccount = () => {
 
         const data = await response.json();
 
-        // Aquí se busca el nombre y dirección del espacio para cada reserva
         const reservasConDetalles = await Promise.all(
           data.map(async (reserva) => {
             const spaceResponse = await fetch(
@@ -54,7 +56,7 @@ const MyAccount = () => {
               };
             }
 
-            return reserva; // Si no se puede obtener los detalles del espacio, devolvemos la reserva tal cual
+            return reserva; 
           })
         );
 
@@ -92,9 +94,22 @@ const MyAccount = () => {
       setReservas(
         reservas.filter((reservation) => reservation._id !== reservationId)
       );
+      setShowModal(false); // Cerrar el modal después de la cancelación
+      setSuccessMessage("Reserva eliminada correctamente."); // Mostrar mensaje de éxito
+      setTimeout(() => setSuccessMessage(""), 3000); // Ocultar mensaje después de 3 segundos
     } catch (error) {
       console.error("Error al cancelar la reserva:", error);
     }
+  };
+
+  const handleShowModal = (reservationId) => {
+    setReservationToCancel(reservationId);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setReservationToCancel(null);
   };
 
   if (cargando) {
@@ -135,6 +150,13 @@ const MyAccount = () => {
   return (
     <div>
       <HeaderSection title="Mi cuenta" />
+
+      {/* Mostrar el mensaje de éxito si existe */}
+      {successMessage && (
+        <div className="alert alert-success" role="alert">
+          {successMessage}
+        </div>
+      )}
 
       <div className="my-account">
         <div className="user-info">
@@ -183,7 +205,7 @@ const MyAccount = () => {
               </div>
               <button
                 className="link m-0"
-                onClick={() => handleCancelReservation(reservation._id)}
+                onClick={() => handleShowModal(reservation._id)}
               >
                 Cancelar reserva
               </button>
@@ -191,6 +213,37 @@ const MyAccount = () => {
           ))
         )}
       </div>
+
+      {/* Modal Bootstrap */}
+      {showModal && (
+        <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">Confirmar cancelación</h5>
+              </div>
+              <div className="modal-body">
+                ¿Estás seguro de que deseas cancelar esta reserva?
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() => {
+                    handleCancelReservation(reservationToCancel);
+                    handleCloseModal();
+                  }}
+                >
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="my-account">
         <button className="btn-primary" onClick={handleReserveNewSpace}>

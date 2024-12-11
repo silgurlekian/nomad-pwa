@@ -80,3 +80,7 @@ body {
     width: 20px;
     height: 20px;
 }
+
+.modal.fade.show {
+    background-color: rgba(0,0,0,.7);
+}
