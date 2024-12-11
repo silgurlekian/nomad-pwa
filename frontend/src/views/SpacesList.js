@@ -78,7 +78,9 @@ const SpacesList = () => {
               espacio.ciudad.toLowerCase() === ciudadDetectada.toLowerCase()
           );
 
-          setSpacesFiltered(espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data);
+          setSpacesFiltered(
+            espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data
+          );
         } catch (errorUbicacion) {
           setSpacesFiltered(respuesta.data); // Mostrar todos si no hay ubicación
         }
@@ -136,7 +138,6 @@ const SpacesList = () => {
     <div className="lista-espacios">
       <div className="titulo">
         <h2>Encuentra tu próximo espacio</h2>
-        
       </div>
 
       <div className="input-group mb-3" style={{ position: "relative" }}>
@@ -151,14 +152,7 @@ const SpacesList = () => {
         <img
           src="/pwa/images/icons/search.svg"
           alt="Buscar"
-          style={{
-            position: "absolute",
-            left: "10px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            width: "20px",
-            height: "20px",
-          }}
+          className="search-icon"
         />
       </div>
 
@@ -181,7 +175,9 @@ const SpacesList = () => {
         </span>
       </div>
 
-      {modalVisible && <div className="overlay" onClick={() => setModalVisible(false)}></div>}
+      {modalVisible && (
+        <div className="overlay" onClick={() => setModalVisible(false)}></div>
+      )}
 
       <div className={`drawer ${modalVisible ? "modal-visible" : ""}`}>
         <div className="modal-contenido">
@@ -220,10 +216,8 @@ const SpacesList = () => {
       </div>
 
       {ubicacionDetectada && (
-          <p className="texto-ubicacion">
-            Espacios cerca de {ubicacionDetectada}
-          </p>
-        )}
+        <p className="texto-ubicacion">Espacios cerca de tu ubicación</p>
+      )}
 
       {espaciosFiltrados.length === 0 ? (
         <div className="alerta alerta-info">

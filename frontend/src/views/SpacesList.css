@@ -11,17 +11,14 @@
     text-align: left;
 }
 
-.entrada-busqueda {
-    width: 100%;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.entrada-busqueda:focus {
-    border-color: #39a58e;
-    outline: none;
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    z-index: 9;
 }
 
 .iconos-ordenar-filtrar {
@@ -178,7 +175,7 @@
 
 .tag-container {
     align-items: center;
-    background-color:#FFFFFF;
+    background-color: #FFFFFF;
     border: 1px solid;
     border-color: #364a5e;
     border-radius: 40px;
