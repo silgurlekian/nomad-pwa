@@ -7,16 +7,58 @@ import "./SpacesList.css";
 const SpacesList = () => {
   const [espacios, setSpaces] = useState([]);
   const [espaciosFiltrados, setSpacesFiltered] = useState([]);
-  const [terminoBusqueda, setSearchTerms] = useState("");
+  const [terminoBusqueda, setSearchTerms] = useState(""); // Inicialmente vacío
   const [cargando, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [criterioOrdenacion, setOrderCriteria] = useState("alfabetico");
   const [modalVisible, setModalVisible] = useState(false);
+  const [ubicacionDetectada, setUbicacionDetectada] = useState(null);
 
   const navigate = useNavigate();
 
   const handleClick = (espacio) => {
     navigate(`/spaces/${espacio._id}`, { state: { espacio } });
+  };
+
+  // Función para solicitar permisos de ubicación
+  const solicitarPermisoUbicacion = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocalización no soportada por este navegador."));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const response = await axios.get(
+              `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+            );
+
+            const ciudad =
+              response.data.address.city ||
+              response.data.address.town ||
+              response.data.address.village ||
+              response.data.address.county;
+
+            setUbicacionDetectada(ciudad);
+            resolve(ciudad);
+          } catch (error) {
+            console.error("Error al obtener la ciudad:", error);
+            reject(error);
+          }
+        },
+        (error) => {
+          console.error("Error al obtener la ubicación:", error);
+          reject(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        }
+      );
+    });
   };
 
   useEffect(() => {
@@ -26,7 +68,21 @@ const SpacesList = () => {
           "https://api-nomad.onrender.com/api/spaces"
         );
         setSpaces(respuesta.data);
-        setSpacesFiltered(respuesta.data);
+
+        try {
+          const ciudadDetectada = await solicitarPermisoUbicacion();
+          setSearchTerms(ciudadDetectada); // Establecer la ciudad como término de búsqueda inicial
+
+          const espaciosCiudad = respuesta.data.filter(
+            (espacio) =>
+              espacio.ciudad.toLowerCase() === ciudadDetectada.toLowerCase()
+          );
+
+          setSpacesFiltered(espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data);
+        } catch (errorUbicacion) {
+          setSpacesFiltered(respuesta.data); // Mostrar todos si no hay ubicación
+        }
+
         setLoading(false);
       } catch (error) {
         console.error("Error al obtener los espacios de coworking:", error);
@@ -80,6 +136,11 @@ const SpacesList = () => {
     <div className="lista-espacios">
       <div className="titulo">
         <h2>Encuentra tu próximo espacio</h2>
+        {ubicacionDetectada && (
+          <p className="texto-ubicacion">
+            Espacios cerca de {ubicacionDetectada}
+          </p>
+        )}
       </div>
 
       <div className="input-group mb-3" style={{ position: "relative" }}>
@@ -124,12 +185,8 @@ const SpacesList = () => {
         </span>
       </div>
 
-      {/* Overlay */}
-      {modalVisible && (
-        <div className="overlay" onClick={() => setModalVisible(false)}></div>
-      )}
+      {modalVisible && <div className="overlay" onClick={() => setModalVisible(false)}></div>}
 
-      {/* Modal */}
       <div className={`drawer ${modalVisible ? "modal-visible" : ""}`}>
         <div className="modal-contenido">
           <img
@@ -190,21 +247,9 @@ const SpacesList = () => {
                 />
               </div>
               <div className="contenido-espacio">
-                <div className="nombre-espacio">{espacio.nombre}</div>
-                <div className="d-flex align-items-start">
-                  <img
-                    className="icono"
-                    alt=""
-                    src="/pwa/images/icons/location.svg"
-                  />
-                  <div className="direccion-ubicacion">
-                    {espacio.direccion}, {espacio.ciudad}
-                  </div>
-                </div>
-                <div className="d-flex align-items-center justify-content-end gap-1">
-                  <p className="precio">{espacio.precio}</p>
-                  <p className="moneda">ARS</p>
-                </div>
+                <h3>{espacio.nombre}</h3>
+                <div className="direccion">{espacio.direccion}</div>
+                <div className="precio">${espacio.precio}</div>
               </div>
             </div>
           ))}
