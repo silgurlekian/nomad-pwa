@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { requestPasswordReset } from "../services/AuthService";
 import "../App.css";
 import "./Login.css";
@@ -43,11 +44,11 @@ const RequestResetPassword = () => {
     <div className="login-container">
       <div className="header">
         <div className="bkg-home">
-          <img alt="" src="/images/login.jpg" />
+          <img alt="" src="/pwa/images/login.jpg" />
         </div>
       </div>
       <div className="container">
-        <img alt="" src="/images/logo-nomad.svg" />
+        <img alt="" src="/pwa/images/logo-nomad.svg" />
         <h2>Restablecer contraseña</h2>
         <form onSubmit={handleRequestReset}>
           <div className="form-group">
@@ -63,7 +64,7 @@ const RequestResetPassword = () => {
             {resetError && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
                 <img
-                  src="/images/icons/warning.svg"
+                  src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
                   style={{ width: "16px", height: "16px" }}
                 />
@@ -86,9 +87,9 @@ const RequestResetPassword = () => {
         <hr className="w-100" />
       </div>
       <p className="text-center">¿Ya tienes una cuenta?</p>
-      <a href="/login" className="d-block link">
+      <Link to="/login" className="d-block link">
         Inicia Sesión
-      </a>
+      </Link>
     </div>
   );
 };

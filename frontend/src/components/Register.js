@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { registerUser } from "../services/AuthService";
 import "../App.css";
 import "./Login.css";
@@ -77,11 +78,11 @@ const Register = () => {
     <div className="login-container">
       <div className="header">
         <div className="bkg-home">
-          <img alt="" src="/images/login.jpg" />
+          <img alt="" src="/pwa/images/login.jpg" />
         </div>
       </div>
       <div className="container">
-        <img alt="" src="/images/logo-nomad.svg" />
+        <img alt="" src="/pwa/images/logo-nomad.svg" />
         <h2>Crea tu cuenta</h2>
         <p className="text-center">
           Únete a nomad para encontrar y reservar espacios de trabajo
@@ -102,7 +103,7 @@ const Register = () => {
             />
             {errorNombre && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img src="/pwa/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
                 {errorNombre}
               </p>
             )}
@@ -121,7 +122,7 @@ const Register = () => {
             />
             {errorEmail && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img src="/pwa/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
                 {errorEmail}
               </p>
             )}
@@ -144,7 +145,7 @@ const Register = () => {
                 onClick={() => setShowPassword(!showPassword)}
               >
                 <img 
-                  src={showPassword ? "/images/icons/eye-slash.svg" : "/images/icons/eye.svg"} 
+                  src={showPassword ? "/pwa/images/icons/eye-slash.svg" : "/pwa//images/icons/eye.svg"} 
                   alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} 
                   style={{ width: '20px', height: '20px' }} 
                 />
@@ -152,7 +153,7 @@ const Register = () => {
             </div>
             {errorPassword && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img src="/pwa/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
                 {errorPassword}
               </p>
             )}
@@ -178,7 +179,7 @@ const Register = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 <img 
-                  src={showConfirmPassword ? "/images/icons/eye-slash.svg" : "/images/icons/eye.svg"} 
+                  src={showConfirmPassword ? "/pwa/images/icons/eye-slash.svg" : "/pwa//images/icons/eye.svg"} 
                   alt={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"} 
                   style={{ width: '20px', height: '20px' }} 
                 />
@@ -187,7 +188,7 @@ const Register = () => {
             {/* Mostrar error específico para confirmación si es necesario */}
             {password && confirmPassword && password !== confirmPassword && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img src="/pwa/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
                 Las contraseñas no coinciden.
               </p>
             )}
@@ -205,9 +206,9 @@ const Register = () => {
         <hr className="w-100"/>
       </div>
       <p className="text-center">¿Ya tienes una cuenta?</p>
-      <a href="/login" className="d-block link">
+      <Link to="/login" className="d-block link">
         Inicia sesión
-      </a>
+      </Link>
     </div>
   );
 };

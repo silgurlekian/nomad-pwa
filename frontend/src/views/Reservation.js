@@ -182,7 +182,7 @@ const Reservation = () => {
             {errors.fullName && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
                 <img
-                  src="/images/icons/warning.svg"
+                  src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
                   style={{ width: "16px", height: "16px" }}
                 />
@@ -204,7 +204,7 @@ const Reservation = () => {
             {errors.date && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
                 <img
-                  src="/images/icons/warning.svg"
+                  src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
                   style={{ width: "16px", height: "16px" }}
                 />
@@ -225,7 +225,7 @@ const Reservation = () => {
             {errors.startTime && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
                 <img
-                  src="/images/icons/warning.svg"
+                  src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
                   style={{ width: "16px", height: "16px" }}
                 />
@@ -246,7 +246,7 @@ const Reservation = () => {
             {errors.endTime && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
                 <img
-                  src="/images/icons/warning.svg"
+                  src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
                   style={{ width: "16px", height: "16px" }}
                 />
@@ -268,7 +268,7 @@ const Reservation = () => {
             {errors.numberOfPlaces && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
                 <img
-                  src="/images/icons/warning.svg"
+                  src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
                   style={{ width: "16px", height: "16px" }}
                 />

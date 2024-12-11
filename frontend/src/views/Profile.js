@@ -1,21 +1,44 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../App.css";
 import "./Profile.css";
 import HeaderSection from "../components/HeaderSection";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Loading from "../components/Loading";
 
 const MyAccount = () => {
+  const [cargando, setLoading] = useState(true);
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
-  // Si no hay datos del usuario, mostrar un mensaje
+  useEffect(() => {
+    const getSpaces = async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1000)); 
+        setLoading(false);
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+        setLoading(false);
+      }
+    };
+
+    getSpaces();
+  }, []); 
+
+  if (cargando) {
+    return <Loading />;
+  }
+
   if (!storedUser) {
     return (
       <div>
         <HeaderSection />
         <div className="my-account text-center">
-          <img src="../images/icons/warning-big.svg" alt="" className="warning-icon" />
+          <img
+            src="../pwa/images/icons/warning-big.svg"
+            alt=""
+            className="warning-icon"
+          />
           <p>Debes iniciar sesión para acceder a esta página.</p>
           <button onClick={() => navigate("/login")} className="btn-primary">
             Iniciar Sesión
@@ -30,7 +53,7 @@ const MyAccount = () => {
   const reservations = [
     {
       id: 1,
-      imagen: "../images/default-image.png",
+      imagen: "../pwa/images/default-image.png",
       location: "Open Work Bariloche",
       address:
         "Francisco Pascasio Moreno 370, San Carlos de Bariloche, Río Negro",
@@ -42,12 +65,11 @@ const MyAccount = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.href = "/login";
+    navigate("/login");
   };
 
   const getMemberSinceYear = () => {
     if (user.createdAt) {
-      console.log(user.createdAt);
       const year = new Date(user.createdAt).getFullYear();
       return isNaN(year) ? "Desconocido" : year;
     }
@@ -60,14 +82,13 @@ const MyAccount = () => {
 
   return (
     <div>
-      <HeaderSection title="Mi cuenta"/>
+      <HeaderSection title="Mi cuenta" />
 
       <div className="my-account">
         <div className="user-info">
           <p>{user.nombre}</p>
           <p>{user.email}</p>
           <p className="font-small">Miembro desde {getMemberSinceYear()}</p>
-          {/* <button className="mt-4">Editar perfil</button> */}
         </div>
       </div>
       <div className="reservations">
@@ -93,10 +114,7 @@ const MyAccount = () => {
           Reservar nuevo espacio
         </button>
 
-        <button
-          className="link text-center"
-          onClick={handleLogout}
-        >
+        <button className="link text-center" onClick={handleLogout}>
           Cerrar sesión
         </button>
       </div>

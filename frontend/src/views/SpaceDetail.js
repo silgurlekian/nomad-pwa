@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import HeaderSection from "../components/HeaderSection";
 import SpaceNavbar from "../components/SpaceNavbar";
 import Loading from "../components/Loading";
@@ -15,10 +16,10 @@ const SpaceDetail = () => {
   const [usuarioLogueado, setUsuarioLogueado] = useState(false); // Estado para verificar si el usuario está logueado
 
   const iconosServicios = {
-    Wifi: "../images/icons/wifi.svg",
-    Impresora: "../images/icons/printer.svg",
-    "Café gratis": "../images/icons/coffee.svg",
-    "Excelente ubicación": "../images/icons/location.svg",
+    Wifi: "../pwa/images/icons/wifi.svg",
+    Impresora: "../pwa/images/icons/printer.svg",
+    "Café gratis": "../pwa/images/icons/coffee.svg",
+    "Excelente ubicación": "../pwa/images/icons/location.svg",
   };
 
   const tipoReservaMap = {
@@ -95,7 +96,7 @@ const SpaceDetail = () => {
         />
 
         <div className="tag-container">
-          <img src="../images/icons/building-4.svg" alt="tipo de espacio" />
+          <img src="../pwa/images/icons/building-4.svg" alt="tipo de espacio" />
           {espacio.spacesType && espacio.spacesType.length > 0 ? (
             <span className="tag">{espacio.spacesType[0].name}</span>
           ) : (
@@ -109,7 +110,7 @@ const SpaceDetail = () => {
 
         <p className="p-title">Sobre el espacio</p>
         <div className="d-flex align-items-start">
-          <img className="icono" alt="" src="../images/icons/location.svg" />
+          <img className="icono" alt="" src="../pwa/images/icons/location.svg" />
           <div>
             {espacio.direccion}, {espacio.ciudad}
           </div>
@@ -117,14 +118,14 @@ const SpaceDetail = () => {
 
         {espacio.website && (
           <p className="website">
-            <a href={espacio.website} target="_blank" rel="noopener noreferrer">
+            <Link to={espacio.website} target="_blank" rel="noopener noreferrer">
               <img
                 className="icono"
                 alt=""
-                src="../images/icons/global-search.svg"
+                src="../pwa/images/icons/global-search.svg"
               />
               Visitar sitio web
-            </a>
+            </Link>
           </p>
         )}
 
@@ -152,7 +153,7 @@ const SpaceDetail = () => {
                 ) : (
                   <span className="icon-placeholder">
                     <img
-                      src="../images/icons/verify.svg"
+                      src="../pwa/images/icons/verify.svg"
                       alt={`${servicio.name} icon`}
                       className="service-icon"
                     />

@@ -9,8 +9,8 @@ import {
 import Onboarding from "./views/Onboarding";
 import Register from "./components/Register";
 import Login from "./components/Login";
-import RequestResetPassword from './components/RequestResetPassword'; 
-import ResetPassword from './components/ResetPassword';
+import RequestResetPassword from "./components/RequestResetPassword";
+import ResetPassword from "./components/ResetPassword";
 import Reservation from "./views/Reservation"; // Add this import
 
 import Home from "./components/Home";
@@ -25,8 +25,9 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    // Solo mostrar el splash screen en la ruta raíz
-    if (location.pathname === "/") {
+    const isRootPath =
+      location.pathname === "/" || location.pathname === "/pwa/";
+    if (isRootPath) {
       const timer = setTimeout(() => {
         setShowSplash(false);
       }, 3000);
@@ -41,7 +42,7 @@ function App() {
     <div className="App">
       {showSplash ? (
         <div className="splash-screen">
-          <img src="./favicon.png" alt="Logo" className="logo" />
+          <img src="./pwa/favicon.png" alt="Logo" className="logo" />
         </div>
       ) : (
         <Routes>
@@ -49,7 +50,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset-password" element={<RequestResetPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} /> 
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="/home" element={<Home />} />
@@ -58,7 +59,6 @@ function App() {
           <Route path="/spaces/:id" element={<SpaceDetail />} />
           <Route path="/reservation" element={<Reservation />} />
           <Route path="/reservation-success" element={<SuccessPage />} />
-
         </Routes>
       )}
     </div>
@@ -67,7 +67,7 @@ function App() {
 
 export default function AppWrapper() {
   return (
-    <Router>
+    <Router basename="/pwa">
       <App />
     </Router>
   );

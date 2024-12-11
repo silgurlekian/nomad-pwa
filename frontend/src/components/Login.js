@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { loginUser } from "../services/AuthService";
 import "../App.css";
 import "./Login.css";
@@ -69,11 +70,11 @@ const Login = () => {
     <div className="login-container">
       <div className="header">
         <div className="bkg-home">
-          <img alt="" src="/images/login.jpg" />
+          <img alt="" src="/pwa/images/login.jpg" />
         </div>
       </div>
       <div className="container">
-        <img alt="" src="/images/logo-nomad.svg" />
+        <img alt="" src="/pwa/images/logo-nomad.svg" />
         <h2>Iniciar Sesión</h2>
         <form onSubmit={handleLogin}>
           <div className="form-group">
@@ -88,7 +89,7 @@ const Login = () => {
             {errorEmail && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
                 <img
-                  src="/images/icons/warning.svg"
+                  src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
                   style={{ width: "16px", height: "16px" }}
                 />
@@ -114,8 +115,8 @@ const Login = () => {
                 <img
                   src={
                     showPassword
-                      ? "/images/icons/eye-slash.svg"
-                      : "/images/icons/eye.svg"
+                      ? "/pwa/images/icons/eye-slash.svg"
+                      : "/pwa/images/icons/eye.svg"
                   }
                   alt={
                     showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
@@ -127,7 +128,7 @@ const Login = () => {
             {errorPassword && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
                 <img
-                  src="/images/icons/warning.svg"
+                  src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
                   style={{ width: "16px", height: "16px" }}
                 />
@@ -144,9 +145,9 @@ const Login = () => {
         {/* Enlace para restablecer la contraseña */}
         <p className="text-center mt-3">
           ¿Olvidaste tu contraseña?{" "}
-          <a href="/reset-password" className="link">
+          <Link to="/reset-password" className="link">
             Haz click aquí
-          </a>
+          </Link>
         </p>
       </div>
 
@@ -160,13 +161,13 @@ const Login = () => {
       <div className="d-flex flex-position">
         <div className="">
           <p className="text-center">¿No tienes una cuenta?</p>
-          <a href="/register" className="d-block link">
+          <Link to="/register" className="d-block link">
             Regístrate
-          </a>
+          </Link>
         </div>
-        <a href="/home" className="d-block link mt-auto pb-5 position-bottom">
+        <Link to="/home" className="d-block link mt-auto pb-5 position-bottom">
           Ver espacios sin cuenta
-        </a>
+        </Link>
       </div>
     </div>
   );

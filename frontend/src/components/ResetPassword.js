@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { resetPassword } from "../services/AuthService";
 import "../App.css";
 import "./Login.css";
@@ -57,11 +58,11 @@ const ResetPassword = () => {
     <div className="login-container">
       <div className="header">
         <div className="bkg-home">
-          <img alt="" src="/images/login.jpg" />
+          <img alt="" src="/pwa/images/login.jpg" />
         </div>
       </div>
       <div className="container">
-        <img alt="" src="/images/logo-nomad.svg" />
+        <img alt="" src="/pwa/images/logo-nomad.svg" />
         <h2>Restablecer Contraseña</h2>
         <form onSubmit={handleResetPassword}>
           <div className="form-group">
@@ -82,8 +83,8 @@ const ResetPassword = () => {
                 <img
                   src={
                     showNewPassword
-                      ? "/images/icons/eye-slash.svg"
-                      : "/images/icons/eye.svg"
+                      ? "/pwa/images/icons/eye-slash.svg"
+                      : "/pwa/images/icons/eye.svg"
                   }
                   alt={
                     showNewPassword
@@ -97,7 +98,7 @@ const ResetPassword = () => {
             {error && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
                 <img
-                  src="/images/icons/warning.svg"
+                  src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
                   style={{ width: "16px", height: "16px" }}
                 />
@@ -124,8 +125,8 @@ const ResetPassword = () => {
                 <img
                   src={
                     showConfirmPassword
-                      ? "/images/icons/eye-slash.svg"
-                      : "/images/icons/eye.svg"
+                      ? "/pwa/images/icons/eye-slash.svg"
+                      : "/pwa/images/icons/eye.svg"
                   }
                   alt={
                     showConfirmPassword
@@ -151,9 +152,9 @@ const ResetPassword = () => {
         <hr className="w-100" />
       </div>
       <p className="text-center">¿Ya tienes una cuenta?</p>
-      <a href="/login" className="d-block link">
+      <Link to="/login" className="d-block link">
         Inicia Sesión
-      </a>
+      </Link>
     </div>
   );
 };

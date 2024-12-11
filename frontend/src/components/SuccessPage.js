@@ -15,7 +15,7 @@ const SuccessPage = () => {
   return (
     <div className="success-wrapper">
       <div className="success-icon">
-        <img src="../images/icons/circle-success.svg" alt="Reserva exitosa" />
+        <img src="../pwa/images/icons/circle-success.svg" alt="Reserva exitosa" />
       </div>
       <h2 className="success-title">Reserva confirmada!</h2>
       <p className="success-description">
@@ -31,16 +31,16 @@ const SuccessPage = () => {
         </div>
         <div className="reservation-meta">
           <div>
-            <img src="../images/icons/calendar.svg" alt="Reserva exitosa" />{" "}
+            <img src="../pwa/images/icons/calendar.svg" alt="Reserva exitosa" />{" "}
             {reservation?.date}
           </div>
           <div>
-            <img src="../images/icons/clock.svg" alt="Reserva exitosa" />{" "}
+            <img src="../pwa/images/icons/clock.svg" alt="Reserva exitosa" />{" "}
             {`${reservation?.startTime} - ${reservation?.endTime}`}
           </div>
           <div>
             <img
-              src="../images/icons/format-circle.svg"
+              src="../pwa/images/icons/format-circle.svg"
               alt="Reserva exitosa"
             />{" "}
             {reservation?.numberOfPlaces}
