@@ -165,7 +165,7 @@ const Login = () => {
             Regístrate
           </Link>
         </div>
-        <Link to="/home" className="d-block link mt-auto pb-5 position-bottom">
+        <Link to="/home" className="d-block link mt-auto pb-2 position-bottom">
           Ver espacios sin cuenta
         </Link>
       </div>

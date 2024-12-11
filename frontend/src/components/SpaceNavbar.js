@@ -28,6 +28,11 @@ export const SpaceNavbar = ({ precio, spaceDetails }) => {
     });
   };
 
+  // Si el espacio no acepta reservas, no renderizar el botón
+  if (!spaceDetails.aceptaReservas) {
+    return null;
+  }
+
   return (
     <div className="space-navbar fixed-bottom">
       <div className="d-flex align-items-center justify-content-start gap-1 w-100">
@@ -35,10 +40,7 @@ export const SpaceNavbar = ({ precio, spaceDetails }) => {
         <p className="moneda">ARS / hora</p>
       </div>
 
-      <button
-        className="btn-primary"
-        onClick={handleSelectDate}
-      >
+      <button className="btn-primary" onClick={handleSelectDate}>
         {isLoggedIn ? "Seleccionar fecha" : "Inicia sesión para continuar"}
       </button>
     </div>

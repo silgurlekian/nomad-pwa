@@ -56,13 +56,13 @@ const SpaceDetail = () => {
   const handleReservaClick = () => {
     if (usuarioLogueado) {
       navigate(`/reserva/${id}`, {
-        state: { spaceDetails: espacio }, 
+        state: { spaceDetails: espacio },
       });
     } else {
       navigate("/login", {
         state: {
           from: `/reserva/${id}`,
-          spaceDetails: espacio, 
+          spaceDetails: espacio,
         },
       });
     }
@@ -110,7 +110,11 @@ const SpaceDetail = () => {
 
         <p className="p-title">Sobre el espacio</p>
         <div className="d-flex align-items-start">
-          <img className="icono" alt="" src="../pwa/images/icons/location.svg" />
+          <img
+            className="icono"
+            alt=""
+            src="../pwa/images/icons/location.svg"
+          />
           <div>
             {espacio.direccion}, {espacio.ciudad}
           </div>
@@ -118,7 +122,11 @@ const SpaceDetail = () => {
 
         {espacio.website && (
           <p className="website">
-            <Link to={espacio.website} target="_blank" rel="noopener noreferrer">
+            <Link
+              to={espacio.website}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 className="icono"
                 alt=""
@@ -129,13 +137,15 @@ const SpaceDetail = () => {
           </p>
         )}
 
-        {espacio.aceptaReservas && espacio.tiposReservas && (
+        {espacio.aceptaReservas ? (
           <p className="reservas">
             Acepta reservas:{" "}
             {espacio.tiposReservas
               .map((tipo) => tipoReservaMap[tipo] || tipo)
               .join(", ") || "No especificado"}
           </p>
+        ) : (
+          <p className="reservas">No acepta reservas</p>
         )}
 
         <p className="p-title">Características e Instalaciones</p>

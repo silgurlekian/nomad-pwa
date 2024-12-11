@@ -223,7 +223,7 @@ const SpacesList = () => {
           Espacios cerca de tu ubicación
         </p>
       ) : (
-        <p className="texto-ubicacion">No se detectó tu ubicación.</p>
+        <p className="texto-ubicacion"></p>
       )}
 
       {espaciosFiltrados.length === 0 ? (
