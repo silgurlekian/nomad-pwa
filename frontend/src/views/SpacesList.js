@@ -71,18 +71,21 @@ const SpacesList = () => {
 
         try {
           const ciudadDetectada = await solicitarPermisoUbicacion();
-          setSearchTerms(ciudadDetectada); // Establecer la ciudad como término de búsqueda inicial
+          setSearchTerms(ciudadDetectada);
 
-          const espaciosCiudad = respuesta.data.filter(
-            (espacio) =>
-              espacio.ciudad.toLowerCase() === ciudadDetectada.toLowerCase()
+          const espaciosCiudad = respuesta.data.filter((espacio) =>
+            espacio.ciudad
+              .toLowerCase()
+              .trim()
+              .includes(ciudadDetectada.toLowerCase().trim())
           );
 
           setSpacesFiltered(
             espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data
           );
         } catch (errorUbicacion) {
-          setSpacesFiltered(respuesta.data); // Mostrar todos si no hay ubicación
+          console.error("No se pudo detectar la ubicación:", errorUbicacion);
+          setSpacesFiltered(respuesta.data);
         }
 
         setLoading(false);
@@ -97,7 +100,7 @@ const SpacesList = () => {
   }, []);
 
   const ChageSearch = (event) => {
-    const valor = event.target.value;
+    const valor = event.target.value.trim();
     setSearchTerms(valor);
 
     const filtrados = espacios.filter(
@@ -215,8 +218,12 @@ const SpacesList = () => {
         </div>
       </div>
 
-      {ubicacionDetectada && (
-        <p className="texto-ubicacion">Espacios cerca de tu ubicación</p>
+      {ubicacionDetectada !== "tu ubicación" ? (
+        <p className="texto-ubicacion">
+          Espacios cerca de tu ubicación
+        </p>
+      ) : (
+        <p className="texto-ubicacion">No se detectó tu ubicación.</p>
       )}
 
       {espaciosFiltrados.length === 0 ? (
@@ -243,9 +250,12 @@ const SpacesList = () => {
                 />
               </div>
               <div className="contenido-espacio">
-                <h3>{espacio.nombre}</h3>
-                <div className="direccion">{espacio.direccion}</div>
-                <div className="precio">${espacio.precio}</div>
+                <h3 className="nombre-espacio">{espacio.nombre}</h3>
+                <div className="direccion">
+                  <img src="../pwa/images/icons/location.svg" alt="direccion del espacio"/>
+                  {espacio.direccion}, {espacio.ciudad}
+                  </div>
+                <div className="precio mt-3">${espacio.precio} <span>/hora</span></div>
               </div>
             </div>
           ))}

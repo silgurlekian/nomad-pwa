@@ -47,8 +47,8 @@
 
 .espacio {
     border-radius: 8px;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background-color: #FFFFFF;
+    border: 1px solid #DBDBDB;
     margin-bottom: 1rem;
 }
 
@@ -69,8 +69,20 @@
 
 .nombre-espacio {
     font-weight: bold;
-    font-size: 1.3rem;
-    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #364a5e;
+    margin-bottom: 0;
+}
+
+.direccion {
+    font-size: .9rem;
+    color: #848484;
+    display: flex;
+    gap: 5px;
+}
+
+.direccion img {
+    width: 16px;
 }
 
 .icono-ubicacion {
@@ -86,8 +98,16 @@
 .precio {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #1e1e1e;
+    color: #39A58E;
     margin: 0;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.precio span {
+    font-size: .8rem;
+    color: #364A5E;
 }
 
 .moneda {
