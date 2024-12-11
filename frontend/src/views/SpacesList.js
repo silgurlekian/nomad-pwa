@@ -12,7 +12,7 @@ const SpacesList = () => {
   const [error, setError] = useState(null);
   const [criterioOrdenacion, setOrderCriteria] = useState("alfabetico");
   const [modalVisible, setModalVisible] = useState(false);
-  const [ubicacionDetectada, setUbicacionDetectada] = useState(null);
+  const [ubicacionDetectada, setUbicacionDetectada] = useState("tu ubicación");
 
   const navigate = useNavigate();
 
@@ -136,11 +136,7 @@ const SpacesList = () => {
     <div className="lista-espacios">
       <div className="titulo">
         <h2>Encuentra tu próximo espacio</h2>
-        {ubicacionDetectada && (
-          <p className="texto-ubicacion">
-            Espacios cerca de {ubicacionDetectada}
-          </p>
-        )}
+        
       </div>
 
       <div className="input-group mb-3" style={{ position: "relative" }}>
@@ -222,6 +218,12 @@ const SpacesList = () => {
           </ul>
         </div>
       </div>
+
+      {ubicacionDetectada && (
+          <p className="texto-ubicacion">
+            Espacios cerca de {ubicacionDetectada}
+          </p>
+        )}
 
       {espaciosFiltrados.length === 0 ? (
         <div className="alerta alerta-info">
