@@ -8,22 +8,94 @@ import Loading from "../components/Loading";
 
 const MyAccount = () => {
   const [cargando, setLoading] = useState(true);
+  const [reservas, setReservas] = useState([]);
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    const getSpaces = async () => {
+    const getReservations = async () => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1000)); 
+        const response = await fetch(
+          "https://api-nomad.onrender.com/api/reservations/user",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Error fetching reservations: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Aquí se busca el nombre y dirección del espacio para cada reserva
+        const reservasConDetalles = await Promise.all(
+          data.map(async (reserva) => {
+            const spaceResponse = await fetch(
+              `https://api-nomad.onrender.com/api/spaces/${reserva.spaceId}`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            );
+
+            if (spaceResponse.ok) {
+              const spaceData = await spaceResponse.json();
+              return {
+                ...reserva,
+                spaceName: spaceData.nombre,
+                spaceAddress: spaceData.direccion,
+                spaceCity: spaceData.ciudad,
+              };
+            }
+
+            return reserva; // Si no se puede obtener los detalles del espacio, devolvemos la reserva tal cual
+          })
+        );
+
+        setReservas(reservasConDetalles);
         setLoading(false);
       } catch (error) {
-        console.error("Error al cargar datos:", error);
+        console.error("Error al cargar reservas:", error);
         setLoading(false);
       }
     };
 
-    getSpaces();
-  }, []); 
+    if (storedUser) {
+      getReservations();
+    } else {
+      setLoading(false);
+    }
+  }, [storedUser]);
+
+  const handleCancelReservation = async (reservationId) => {
+    try {
+      const response = await fetch(
+        `https://api-nomad.onrender.com/api/reservations/${reservationId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error canceling reservation: ${response.status}`);
+      }
+
+      setReservas(
+        reservas.filter((reservation) => reservation._id !== reservationId)
+      );
+    } catch (error) {
+      console.error("Error al cancelar la reserva:", error);
+    }
+  };
 
   if (cargando) {
     return <Loading />;
@@ -50,30 +122,10 @@ const MyAccount = () => {
 
   const user = storedUser;
 
-  const reservations = [
-    {
-      id: 1,
-      imagen: "../pwa/images/default-image.png",
-      location: "Open Work Bariloche",
-      address:
-        "Francisco Pascasio Moreno 370, San Carlos de Bariloche, Río Negro",
-      date: "06/11/24",
-      time: "10:00 - 16:30",
-    },
-  ];
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
-  };
-
-  const getMemberSinceYear = () => {
-    if (user.createdAt) {
-      const year = new Date(user.createdAt).getFullYear();
-      return isNaN(year) ? "Desconocido" : year;
-    }
-    return "Desconocido";
   };
 
   const handleReserveNewSpace = () => {
@@ -88,27 +140,58 @@ const MyAccount = () => {
         <div className="user-info">
           <p>{user.nombre}</p>
           <p>{user.email}</p>
-          <p className="font-small">Miembro desde {getMemberSinceYear()}</p>
         </div>
       </div>
+
       <div className="reservations">
         <h3>Tus reservas</h3>
-        {reservations.map((reservation) => (
-          <div key={reservation.id} className="reservation-container">
-            <div className="reservation">
-              <img src={reservation.imagen} alt="" />
-              <div className="d-flex datos-reservas">
-                <h4>{reservation.location}</h4>
-                <p>{reservation.address}</p>
-                <p>
-                  {reservation.date} {reservation.time}
-                </p>
+        {reservas.length === 0 ? (
+          <p>No tienes reservas activas.</p>
+        ) : (
+          reservas.map((reservation) => (
+            <div key={reservation._id} className="reservation-container">
+              <div className="reservation">
+                <img
+                  src={reservation.imagen || "../pwa/images/default-image.png"}
+                  alt={reservation.spaceName}
+                  className="reservation-image"
+                />
+                <div className="d-flex datos-reservas">
+                  <h4 className="reservation-name">
+                    {reservation.spaceName || "Sin nombre"}
+                  </h4>
+                  <p className="reservation-address">
+                    {reservation.spaceAddress || "Sin dirección"},
+                    {reservation.spaceCity || "Sin ciudad"}
+                  </p>
+
+                  <p className="reservation-date">
+                    <img
+                      src="../pwa/images/icons/calendar.svg"
+                      alt="fecha de reserva"
+                    />
+                    {new Date(reservation.date).toLocaleDateString("es-ES")}
+                  </p>
+                  <p className="reservation-date">
+                    <img
+                      src="../pwa/images/icons/clock.svg"
+                      alt="hora de reserva"
+                    />
+                    {reservation.startTime} - {reservation.endTime}
+                  </p>
+                </div>
               </div>
+              <button
+                className="link m-0"
+                onClick={() => handleCancelReservation(reservation._id)}
+              >
+                Cancelar reserva
+              </button>
             </div>
-            <button className="link m-0">Cancelar reserva</button>
-          </div>
-        ))}
+          ))
+        )}
       </div>
+
       <div className="my-account">
         <button className="btn-primary" onClick={handleReserveNewSpace}>
           Reservar nuevo espacio

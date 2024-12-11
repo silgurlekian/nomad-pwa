@@ -111,18 +111,21 @@ const Reservation = () => {
       endTime: reservationData.endTime,
       additionalNotes: reservationData.additionalNotes,
       numberOfPlaces: reservationData.numberOfPlaces,
-      location: spaceDetails?.nombre || "Room A",
+      spaceId: spaceDetails?._id || "", // Incluye el ID del espacio reservado
     };
 
     try {
-      const response = await fetch("https://api-nomad.onrender.com/api/reservations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(reservationDataToSend),
-      });
+      const response = await fetch(
+        "https://api-nomad.onrender.com/api/reservations",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(reservationDataToSend),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error al crear la reserva");
