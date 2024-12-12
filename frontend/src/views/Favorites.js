@@ -16,7 +16,7 @@ const Favorites = () => {
 
   useEffect(() => {
     const getFavorites = async () => {
-      if (!storedUser) return; 
+      if (!storedUser) return;
 
       try {
         const token = localStorage.getItem("token");
@@ -42,15 +42,16 @@ const Favorites = () => {
     } else {
       setCargando(false);
     }
-  }, [storedUser]); 
+  }, [storedUser]);
 
-  const handleClick = (espacio) => {
-    navigate(`/spaces/${espacio._id}`, { state: { espacio } });
+  const handleClick = (space) => {
+    navigate(`/spaces/${space._id}`, { state: { space } });
   };
 
   const handleRemoveFavorite = async (favoriteId) => {
     try {
       const token = localStorage.getItem("token");
+      console.log("Favorite ID to delete:", favoriteId); // Verifica el ID aquí
       const response = await axios.delete(
         `https://api-nomad.onrender.com/api/favorites/${favoriteId}`,
         {
@@ -59,8 +60,7 @@ const Favorites = () => {
           },
         }
       );
-
-      console.log("Delete response:", response); // Log the response from the server for debugging
+      console.log("Delete response:", response); // Log de respuesta para verificar el éxito
       setFavorites(favorites.filter((favorite) => favorite._id !== favoriteId));
     } catch (error) {
       console.error("Error al eliminar favorito:", error);
@@ -109,50 +109,23 @@ const Favorites = () => {
         {favorites.length === 0 ? (
           <p>No tienes favoritos aún.</p>
         ) : (
-          <div className="espacios-favoritos">
+          <div className="spaces-favoritos">
             {favorites.map((favorite) => (
               <div
                 key={favorite._id}
-                className="espacio"
-                onClick={() => handleClick(favorite.espacioId)} // Cambié espacioId por el valor correcto
+                className="space"
+                onClick={() => handleClick(favorite.spaceId)} // Cambié spaceId por el valor correcto
               >
-                <div className="marco-imagen">
-                  <img
-                    className="imagen-espacio-lista"
-                    alt={favorite.espacioId.nombre}
-                    src={
-                      favorite.espacioId.imagen
-                        ? `https://api-nomad.onrender.com/${favorite.espacioId.imagen}`
-                        : "default-image.png" // Usar una imagen por defecto si no hay imagen
-                    }
-                  />
-                </div>
-                <div className="contenido-espacio">
-                  <h3 className="nombre-espacio">
-                    {favorite.espacioId.nombre}
-                  </h3>
-                  <div className="direccion">
-                    <img
-                      src="../pwa/images/icons/location.svg"
-                      alt="direccion del espacio"
-                    />
-                    {favorite.espacioId.direccion}, {favorite.espacioId.ciudad}
-                  </div>
-                  <div className="precio mt-3">
-                    ${favorite.espacioId.precio} <span>/hora</span>
-                  </div>
-                  <div>
-                    <button
-                      className="eliminar-favorito"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Evita que el clic sobre el botón active el evento onClick del contenedor
-                        handleRemoveFavorite(favorite._id);
-                      }}
-                    >
-                      Eliminar de favoritos
-                    </button>
-                  </div>
-                </div>
+                {/* Aquí el código sigue */}
+                <button
+                  className="eliminar-favorito"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveFavorite(favorite._id); // Asegúrate de pasar el _id correctamente
+                  }}
+                >
+                  Eliminar de favoritos
+                </button>
               </div>
             ))}
           </div>
