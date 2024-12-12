@@ -18,37 +18,27 @@ const Favorites = () => {
     const getFavorites = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) throw new Error("Token no encontrado");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
 
         const response = await axios.get(
-          "https://nomad-j3w6.onrender.com/api/favorites",
+          "https://nomad-j3w6.onrender.com/api/favorites/user",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const data = response.data;
+        // Log the initial favorites response
+        console.log("Initial Favorites Response:", response.data);
 
-        const favoritesWithDetails = await Promise.all(
-          data.map(async (favorite) => {
-            try {
-              const spaceResponse = await axios.get(
-                `https://nomad-j3w6.onrender.com/api/spaces/${favorite.spaceId}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-              );
-              return { ...favorite, ...spaceResponse.data };
-            } catch (spaceError) {
-              console.error(
-                `Error al obtener datos del espacio ${favorite.spaceId}:`,
-                spaceError
-              );
-              return favorite; // Devuelve favorito sin detalles si falla
-            }
-          })
-        );
-
-        setFavorites(favoritesWithDetails);
+        // Directly set favorites without additional mapping
+        setFavorites(response.data);
         setCargando(false);
       } catch (mainError) {
-        console.error("Error al cargar favoritos:", mainError);
+        console.error(
+          "Detailed Error loading favorites:",
+          mainError.response ? mainError.response.data : mainError.message
+        );
         setError("No se pudieron cargar los favoritos. Intenta de nuevo.");
         setCargando(false);
       }
@@ -65,27 +55,41 @@ const Favorites = () => {
     navigate(`/spaces/${space._id}`, { state: { space } });
   };
 
-  const handleRemoveFavorite = async (favoriteId) => {
-    try {
-      const token = localStorage.getItem("token");
-      console.log("Favorite ID to delete:", favoriteId); // Verifica el ID aquí
-      const response = await axios.delete(
-        `https://nomad-j3w6.onrender.com/api/favorites/${favoriteId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Delete response:", response); // Log de respuesta para verificar el éxito
-      setFavorites(favorites.filter((favorite) => favorite._id !== favoriteId));
-    } catch (error) {
-      console.error("Error al eliminar favorito:", error);
-      setError(
-        `No se pudo eliminar el favorito: ${
+  const handleRemoveFavorite = async (favoriteId, e) => {
+    e.stopPropagation();
+
+    const confirmDelete = window.confirm(
+      "¿Estás seguro de eliminar este favorito?"
+    );
+
+    if (confirmDelete) {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.delete(
+          `https://nomad-j3w6.onrender.com/api/favorites/${favoriteId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setFavorites(
+          favorites.filter((favorite) => favorite._id !== favoriteId)
+        );
+      } catch (error) {
+        console.error(
+          "Error al eliminar favorito:",
           error.response ? error.response.data : error.message
-        }`
-      );
+        );
+
+        const errorMessage = error.response
+          ? error.response.data.message
+          : "No se pudo eliminar el favorito";
+
+        setError(errorMessage);
+      }
     }
   };
 
@@ -130,41 +134,38 @@ const Favorites = () => {
                 <div
                   key={favorite._id}
                   className="favorite-container"
-                  onClick={() => handleClick(favorite)}
+                  onClick={() => handleClick(favorite.spaceId)}
                 >
                   <div className="favorite">
                     <img
                       className="favorite-image"
-                      alt={favorite.nombre || "Nombre no disponible"}
+                      alt={favorite.spaceId.nombre || "Nombre no disponible"}
                       src={
-                        favorite.imagen
-                          ? `https://nomad-j3w6.onrender.com/${favorite.imagen}`
+                        favorite.spaceId.imagen
+                          ? `https://nomad-j3w6.onrender.com/${favorite.spaceId.imagen}`
                           : "default-image.png"
                       }
                     />
                   </div>
                   <div className="d-flex datos-favoritos">
                     <h3 className="favorite-name">
-                      {favorite.nombre || "Sin nombre"}
+                      {favorite.spaceId.nombre || "Sin nombre"}
                     </h3>
                     <div className="favorite-address">
                       <img
                         src="../pwa/images/icons/location.svg"
                         alt="direccion del espacio"
                       />
-                      {favorite.direccion || "Sin dirección"},{" "}
-                      {favorite.ciudad || "Sin ciudad"}
+                      {favorite.spaceId.direccion || "Sin dirección"},{" "}
+                      {favorite.spaceId.ciudad || "Sin ciudad"}
                     </div>
                     <div className="precio">
-                      ${favorite.precio || "N/A"} <span>/hora</span>
+                      ${favorite.spaceId.precio || "N/A"} <span>/hora</span>
                     </div>
                     <div>
                       <button
                         className="link m-0"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveFavorite(favorite._id);
-                        }}
+                        onClick={(e) => handleRemoveFavorite(favorite._id, e)}
                       >
                         Eliminar de favoritos
                       </button>

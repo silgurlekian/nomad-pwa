@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import "./SpacesList.css";
 
@@ -20,6 +21,12 @@ const SpacesList = () => {
   // Obtener user y token desde localStorage
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
+
+  const navigate = useNavigate();
+
+  const handleClick = (espacio) => {
+    navigate(`/spaces/${espacio._id}`, { state: { espacio } });
+  };
 
   // Función para solicitar permisos de ubicación
   const solicitarPermisoUbicacion = () => {
@@ -62,7 +69,7 @@ const SpacesList = () => {
     });
   };
 
-  const handleFavoriteToggle = async (spaceId, isFavorite) => {
+  const handleFavoriteToggle = async (espacioId, isFavorite) => {
     if (!user) {
       setWarningMessage("Debes estar logueado para gestionar favoritos.");
       setTimeout(() => setWarningMessage(""), 3000);
@@ -71,9 +78,9 @@ const SpacesList = () => {
 
     try {
       if (isFavorite) {
-        await removeFavorite(spaceId);
+        await removeFavorite(espacioId);
       } else {
-        await toggleFavorite(spaceId);
+        await toggleFavorite(espacioId);
       }
     } catch (error) {
       console.error("Error al gestionar favoritos:", error);
@@ -86,37 +93,66 @@ const SpacesList = () => {
     try {
       const response = await axios.post(
         "https://nomad-j3w6.onrender.com/api/favorites",
+        { spaceId },
         {
-          spaceId,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
-      setFavoritos((prevFavoritos) => [...prevFavoritos, response.data._id]);
-      console.log("Favorito gestionado:", response.data);
+
+      // Actualizar la lista de favoritos
+      setFavoritos((prevFavoritos) => [...prevFavoritos, spaceId]);
+
+      setSuccessMessage("Espacio añadido a favoritos.");
+      setTimeout(() => setSuccessMessage(""), 3000);
+
+      return response.data;
     } catch (error) {
-      console.error("Error al gestionar favoritos:", error);
+      console.error("Error al añadir favorito:", error);
+      setWarningMessage("No se pudo añadir a favoritos.");
+      setTimeout(() => setWarningMessage(""), 3000);
+      throw error;
     }
   };
 
-  const removeFavorite = async (spaceId) => {
+  const removeFavorite = async (espacioId) => {
     try {
-      await axios.delete(
-        `https://nomad-j3w6.onrender.com/api/favorites/${spaceId}`,
+      // Buscar el ID del favorito para este espacio
+      const favoritosUsuario = await axios.get(
+        "https://nomad-j3w6.onrender.com/api/favorites/user",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setFavoritos((prevFavoritos) =>
-        prevFavoritos.filter((id) => id !== spaceId)
+
+      // Encontrar el favorito específico para eliminar
+      const favoriteToDelete = favoritosUsuario.data.find(
+        (fav) => fav.spaceId._id === espacioId
       );
-      setSuccessMessage("Espacio eliminado de favoritos.");
-      setTimeout(() => setSuccessMessage(""), 3000);
+
+      if (favoriteToDelete) {
+        await axios.delete(
+          `https://nomad-j3w6.onrender.com/api/favorites/${favoriteToDelete._id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Actualizar lista de favoritos
+        setFavoritos((prevFavoritos) =>
+          prevFavoritos.filter((id) => id !== espacioId)
+        );
+
+        setSuccessMessage("Espacio eliminado de favoritos.");
+        setTimeout(() => setSuccessMessage(""), 3000);
+      }
     } catch (error) {
-      console.error("Error al eliminar el favorito:", error);
-      setWarningMessage("Hubo un problema al eliminar el favorito.");
+      console.error("Error al eliminar favorito:", error);
+      setWarningMessage("No se pudo eliminar de favoritos.");
       setTimeout(() => setWarningMessage(""), 3000);
+      throw error;
     }
   };
 
@@ -280,43 +316,82 @@ const SpacesList = () => {
       {ubicacionDetectada !== "tu ubicación" ? (
         <p className="texto-ubicacion">Espacios cerca de tu ubicación</p>
       ) : (
-        <p className="texto-ubicacion">Resultados para tu búsqueda</p>
+        <p className="texto-ubicacion"></p>
       )}
 
       {espaciosFiltrados.length === 0 ? (
-        <div className="no-results">
-          <p>No se encontraron espacios para tu búsqueda.</p>
+        <div className="alerta alerta-info">
+          No se encontraron espacios que coincidan con tu búsqueda.
         </div>
       ) : (
-        <div className="row">
-          {espaciosFiltrados.map((espacio) => {
-            const isFavorite = favoritos.includes(espacio._id);
+        <div className="espacio-contenedor mb-5">
+          {/* Mostrar el mensaje de éxito si existe */}
+          {successMessage && (
+            <div className="alert alert-success" role="alert">
+              {successMessage}
+            </div>
+          )}
 
-            return (
-              <div className="col-md-4" key={espacio._id}>
-                <div className="espacio-card">
-                  <div className="espacio-card-body">
-                    <h3>{espacio.nombre}</h3>
-                    <p>{espacio.direccion}</p>
-                    <p>Ciudad: {espacio.ciudad}</p>
-                    <p>Precio: ${espacio.precio}</p>
+          {warningMessage && (
+            <div className="alert alert-warning" role="alert">
+              {warningMessage}
+            </div>
+          )}
+          {espaciosFiltrados.map((espacio) => (
+            <div
+              key={espacio._id}
+              className="espacio"
+              onClick={() => handleClick(espacio)}
+            >
+              <div className="marco-imagen">
+                <img
+                  className="imagen-espacio-lista"
+                  alt={espacio.nombre}
+                  src={
+                    espacio.imagen
+                      ? `https://nomad-j3w6.onrender.com/${espacio.imagen}`
+                      : "default-image.png"
+                  }
+                />
+              </div>
 
-                    <button
-                      onClick={() => handleFavoriteToggle(espacio._id, isFavorite)}
-                      className={`btn-favorite ${isFavorite ? "favorito" : ""}`}
-                    >
-                      {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
-                    </button>
-                  </div>
+              <div className="contenido-espacio">
+                <h3 className="nombre-espacio">{espacio.nombre}</h3>
+                <div className="direccion">
+                  <img
+                    src="../pwa/images/icons/location.svg"
+                    alt="direccion del espacio"
+                  />
+                  {espacio.direccion}, {espacio.ciudad}
+                </div>
+                <div className="precio mt-3">
+                  ${espacio.precio} <span>/hora</span>
+                </div>
+                <div
+                  className="favorito"
+                  style={{ cursor: "pointer" }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleFavoriteToggle(
+                      espacio._id,
+                      favoritos.includes(espacio._id)
+                    );
+                  }}
+                >
+                  <img
+                    src={
+                      favoritos.includes(espacio._id)
+                        ? "/pwa/images/icons/heart-filled.svg"
+                        : "/pwa/images/icons/heart.svg"
+                    }
+                    alt={`Favorito ${espacio.nombre}`}
+                  />
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
-
-      {warningMessage && <div className="alert alert-warning">{warningMessage}</div>}
-      {successMessage && <div className="alert alert-success">{successMessage}</div>}
     </div>
   );
 };
