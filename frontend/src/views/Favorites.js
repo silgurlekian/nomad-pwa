@@ -16,23 +16,40 @@ const Favorites = () => {
 
   useEffect(() => {
     const getFavorites = async () => {
-      if (!storedUser) return;
-
       try {
         const token = localStorage.getItem("token");
+        if (!token) throw new Error("Token no encontrado");
+
         const response = await axios.get(
           "https://api-nomad.onrender.com/api/favorites",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-        setFavorites(response.data);
+
+        const data = response.data;
+
+        const favoritesWithDetails = await Promise.all(
+          data.map(async (favorite) => {
+            try {
+              const spaceResponse = await axios.get(
+                `https://api-nomad.onrender.com/api/spaces/${favorite.spaceId}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+              return { ...favorite, ...spaceResponse.data };
+            } catch (spaceError) {
+              console.error(
+                `Error al obtener datos del espacio ${favorite.spaceId}:`,
+                spaceError
+              );
+              return favorite; // Devuelve favorito sin detalles si falla
+            }
+          })
+        );
+
+        setFavorites(favoritesWithDetails);
         setCargando(false);
-      } catch (error) {
-        console.error("Error al obtener favoritos:", error);
-        setError("No se pudieron cargar los favoritos.");
+      } catch (mainError) {
+        console.error("Error al cargar favoritos:", mainError);
+        setError("No se pudieron cargar los favoritos. Intenta de nuevo.");
         setCargando(false);
       }
     };
@@ -40,9 +57,9 @@ const Favorites = () => {
     if (storedUser) {
       getFavorites();
     } else {
-      setCargando(false);
+      navigate("/login");
     }
-  }, [storedUser]);
+  }, [storedUser, navigate]);
 
   const handleClick = (space) => {
     navigate(`/spaces/${space._id}`, { state: { space } });
@@ -103,31 +120,59 @@ const Favorites = () => {
     <div>
       <HeaderSection title="Mis favoritos" />
 
-      <div className="favoritos">
-        <h2>Mis Favoritos</h2>
-
+      <div className="favorites">
         {favorites.length === 0 ? (
           <p>No tienes favoritos aún.</p>
         ) : (
-          <div className="spaces-favoritos">
-            {favorites.map((favorite) => (
-              <div
-                key={favorite._id}
-                className="space"
-                onClick={() => handleClick(favorite.spaceId)} // Cambié spaceId por el valor correcto
-              >
-                {/* Aquí el código sigue */}
-                <button
-                  className="eliminar-favorito"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveFavorite(favorite._id); // Asegúrate de pasar el _id correctamente
-                  }}
+          <div className="espacios-favoritos">
+            {favorites.map((favorite) => {
+              return (
+                <div
+                  key={favorite._id}
+                  className="favorite-container"
+                  onClick={() => handleClick(favorite)}
                 >
-                  Eliminar de favoritos
-                </button>
-              </div>
-            ))}
+                  <div className="favorite">
+                    <img
+                      className="favorite-image"
+                      alt={favorite.nombre || "Nombre no disponible"}
+                      src={
+                        favorite.imagen
+                          ? `https://api-nomad.onrender.com/${favorite.imagen}`
+                          : "default-image.png"
+                      }
+                    />
+                  </div>
+                  <div className="d-flex datos-favoritos">
+                    <h3 className="favorite-name">
+                      {favorite.nombre || "Sin nombre"}
+                    </h3>
+                    <div className="favorite-address">
+                      <img
+                        src="../pwa/images/icons/location.svg"
+                        alt="direccion del espacio"
+                      />
+                      {favorite.direccion || "Sin dirección"},{" "}
+                      {favorite.ciudad || "Sin ciudad"}
+                    </div>
+                    <div className="precio">
+                      ${favorite.precio || "N/A"} <span>/hora</span>
+                    </div>
+                    <div>
+                      <button
+                        className="link m-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveFavorite(favorite._id);
+                        }}
+                      >
+                        Eliminar de favoritos
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
