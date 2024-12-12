@@ -116,7 +116,7 @@ const Reservation = () => {
 
     try {
       const response = await fetch(
-        "https://api-nomad.onrender.com/api/reservations",
+        "https://nomad-j3w6.onrender.com/api/reservations",
         {
           method: "POST",
           headers: {

@@ -21,7 +21,7 @@ const Favorites = () => {
         if (!token) throw new Error("Token no encontrado");
 
         const response = await axios.get(
-          "https://api-nomad.onrender.com/api/favorites",
+          "https://nomad-j3w6.onrender.com/api/favorites",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -31,7 +31,7 @@ const Favorites = () => {
           data.map(async (favorite) => {
             try {
               const spaceResponse = await axios.get(
-                `https://api-nomad.onrender.com/api/spaces/${favorite.spaceId}`,
+                `https://nomad-j3w6.onrender.com/api/spaces/${favorite.spaceId}`,
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               return { ...favorite, ...spaceResponse.data };
@@ -70,7 +70,7 @@ const Favorites = () => {
       const token = localStorage.getItem("token");
       console.log("Favorite ID to delete:", favoriteId); // Verifica el ID aquí
       const response = await axios.delete(
-        `https://api-nomad.onrender.com/api/favorites/${favoriteId}`,
+        `https://nomad-j3w6.onrender.com/api/favorites/${favoriteId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -138,7 +138,7 @@ const Favorites = () => {
                       alt={favorite.nombre || "Nombre no disponible"}
                       src={
                         favorite.imagen
-                          ? `https://api-nomad.onrender.com/${favorite.imagen}`
+                          ? `https://nomad-j3w6.onrender.com/${favorite.imagen}`
                           : "default-image.png"
                       }
                     />
