@@ -7,7 +7,7 @@ import "./SpacesList.css";
 const SpacesList = () => {
   const [espacios, setSpaces] = useState([]);
   const [espaciosFiltrados, setSpacesFiltered] = useState([]);
-  const [terminoBusqueda, setSearchTerms] = useState(""); // Inicialmente vacío
+  const [terminoBusqueda, setSearchTerms] = useState(""); 
   const [cargando, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [criterioOrdenacion, setOrderCriteria] = useState("alfabetico");
@@ -77,21 +77,25 @@ const SpacesList = () => {
     }
 
     try {
-      await axios.post(
-        `https://api-nomad.onrender.com/api/favorites`,
-        { espacioId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setFavoritos((prevFavoritos) => [...prevFavoritos, espacioId]); // Actualizar la lista de favoritos
-      setSuccessMessage("Espacio añadido a favoritos.");
-      setTimeout(() => setSuccessMessage(""), 3000);
+      if (favoritos.includes(espacioId)) {
+        await removeFavorite(espacioId);
+      } else {
+        await axios.post(
+          `https://api-nomad.onrender.com/api/favorites`,
+          { espacioId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setFavoritos((prevFavoritos) => [...prevFavoritos, espacioId]); // Update the favorite list
+        setSuccessMessage("Espacio añadido a favoritos.");
+        setTimeout(() => setSuccessMessage(""), 3000);
+      }
     } catch (error) {
-      console.error("Error al añadir a favoritos:", error);
-      setSuccessMessage("No se pudo añadir el espacio a favoritos.");
+      console.error("Error al añadir o eliminar de favoritos:", error);
+      setSuccessMessage("No se pudo actualizar el espacio en favoritos.");
       setTimeout(() => setSuccessMessage(""), 3000);
     }
   };
@@ -108,7 +112,7 @@ const SpacesList = () => {
       );
       setFavoritos((prevFavoritos) =>
         prevFavoritos.filter((id) => id !== espacioId)
-      ); // Eliminar el espacio de favoritos
+      ); 
       setSuccessMessage("Espacio eliminado de favoritos.");
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
@@ -154,7 +158,29 @@ const SpacesList = () => {
     };
 
     getSpaces();
-  }, []);
+    const fetchFavorites = async () => {
+      try {
+        const response = await axios.get(
+          "https://api-nomad.onrender.com/api/favorites",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const favoriteIds = response.data.map(
+          (favorite) => favorite.espacioId._id
+        );
+        setFavoritos(favoriteIds); // Store the ids of the favorite spaces
+      } catch (error) {
+        console.error("Error al obtener los favoritos:", error);
+      }
+    };
+
+    if (user) {
+      fetchFavorites();
+    }
+  }, [user, token]);
 
   const ChageSearch = (event) => {
     const valor = event.target.value.trim();
@@ -333,12 +359,8 @@ const SpacesList = () => {
                   className="favorito"
                   style={{ cursor: "pointer" }}
                   onClick={(event) => {
-                    event.stopPropagation(); // Evita que el clic se propague al contenedor del espacio
-                    if (favoritos.includes(espacio._id)) {
-                      removeFavorite(espacio._id);
-                    } else {
-                      toggleFavorite(espacio._id);
-                    }
+                    event.stopPropagation(); 
+                    toggleFavorite(espacio._id);
                   }}
                 >
                   <img
