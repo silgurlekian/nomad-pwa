@@ -13,6 +13,14 @@ const SpacesList = () => {
   const [criterioOrdenacion, setOrderCriteria] = useState("alfabetico");
   const [modalVisible, setModalVisible] = useState(false);
   const [ubicacionDetectada, setUbicacionDetectada] = useState("tu ubicación");
+  const [favoritos, setFavoritos] = useState([]); // Estado para gestionar los favoritos
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [warningMessage, setWarningMessage] = useState("");
+
+  // Obtener user y token desde localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
   const navigate = useNavigate();
 
@@ -59,6 +67,55 @@ const SpacesList = () => {
         }
       );
     });
+  };
+
+  const toggleFavorite = async (espacioId) => {
+    if (!user) {
+      setWarningMessage("Debes estar logueado para añadir favoritos.");
+      setTimeout(() => setWarningMessage(""), 3000);
+      return;
+    }
+
+    try {
+      await axios.post(
+        `https://api-nomad.onrender.com/api/favorites`,
+        { espacioId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setFavoritos((prevFavoritos) => [...prevFavoritos, espacioId]); // Actualizar la lista de favoritos
+      setSuccessMessage("Espacio añadido a favoritos.");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Error al añadir a favoritos:", error);
+      setSuccessMessage("No se pudo añadir el espacio a favoritos.");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    }
+  };
+
+  const removeFavorite = async (espacioId) => {
+    try {
+      await axios.delete(
+        `https://api-nomad.onrender.com/api/favorites/${espacioId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setFavoritos((prevFavoritos) =>
+        prevFavoritos.filter((id) => id !== espacioId)
+      ); // Eliminar el espacio de favoritos
+      setSuccessMessage("Espacio eliminado de favoritos.");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Error al eliminar de favoritos:", error);
+      setSuccessMessage("No se pudo eliminar el espacio de favoritos.");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    }
   };
 
   useEffect(() => {
@@ -219,9 +276,7 @@ const SpacesList = () => {
       </div>
 
       {ubicacionDetectada !== "tu ubicación" ? (
-        <p className="texto-ubicacion">
-          Espacios cerca de tu ubicación
-        </p>
+        <p className="texto-ubicacion">Espacios cerca de tu ubicación</p>
       ) : (
         <p className="texto-ubicacion"></p>
       )}
@@ -232,6 +287,18 @@ const SpacesList = () => {
         </div>
       ) : (
         <div className="espacio-contenedor mb-5">
+          {/* Mostrar el mensaje de éxito si existe */}
+          {successMessage && (
+            <div className="alert alert-success" role="alert">
+              {successMessage}
+            </div>
+          )}
+
+          {warningMessage && (
+            <div className="alert alert-warning" role="alert">
+              {warningMessage}
+            </div>
+          )}
           {espaciosFiltrados.map((espacio) => (
             <div
               key={espacio._id}
@@ -249,13 +316,41 @@ const SpacesList = () => {
                   }
                 />
               </div>
+
               <div className="contenido-espacio">
                 <h3 className="nombre-espacio">{espacio.nombre}</h3>
                 <div className="direccion">
-                  <img src="../pwa/images/icons/location.svg" alt="direccion del espacio"/>
+                  <img
+                    src="../pwa/images/icons/location.svg"
+                    alt="direccion del espacio"
+                  />
                   {espacio.direccion}, {espacio.ciudad}
-                  </div>
-                <div className="precio mt-3">${espacio.precio} <span>/hora</span></div>
+                </div>
+                <div className="precio mt-3">
+                  ${espacio.precio} <span>/hora</span>
+                </div>
+                <div
+                  className="favorito"
+                  style={{ cursor: "pointer" }}
+                  onClick={(event) => {
+                    event.stopPropagation(); // Evita que el clic se propague al contenedor del espacio
+                    if (favoritos.includes(espacio._id)) {
+                      removeFavorite(espacio._id);
+                    } else {
+                      toggleFavorite(espacio._id);
+                    }
+                  }}
+                >
+                  <img
+                    src={
+                      favoritos.includes(espacio._id)
+                        ? "/pwa/images/icons/heart-filled.svg"
+                        : "/pwa/images/icons/heart.svg"
+                    }
+                    alt="Favorito"
+                    style={{ width: "24px", height: "24px" }}
+                  />
+                </div>
               </div>
             </div>
           ))}

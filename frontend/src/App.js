@@ -11,7 +11,8 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import RequestResetPassword from "./components/RequestResetPassword";
 import ResetPassword from "./components/ResetPassword";
-import Reservation from "./views/Reservation"; // Add this import
+import Reservation from "./views/Reservation";
+import Favorites from "./views/Favorites";
 
 import Home from "./components/Home";
 import SpacesList from "./views/SpacesList";
@@ -59,6 +60,8 @@ function App() {
           <Route path="/spaces/:id" element={<SpaceDetail />} />
           <Route path="/reservation" element={<Reservation />} />
           <Route path="/reservation-success" element={<SuccessPage />} />
+
+          <Route path="/favorites" element={<Favorites />} />
         </Routes>
       )}
     </div>

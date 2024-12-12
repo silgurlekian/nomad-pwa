@@ -10,6 +10,10 @@ const Navbar = () => {
           <img src="/pwa/images/icons/home-2.svg" alt="Inicio" className="nav-icon" />
           <span>Inicio</span>
         </Link>
+        <Link to="/favorites" className="nav-item">
+          <img src="/pwa/images/icons/heart.svg" alt="Favoritos" className="nav-icon" />
+          <span>Favoritos</span>
+        </Link>
         <Link to="/profile" className="nav-item">
           <img src="/pwa/images/icons/profile-circle.svg" alt="Mi cuenta" className="nav-icon" />
           <span>Mi cuenta</span>
