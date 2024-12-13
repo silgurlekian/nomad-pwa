@@ -1,10 +1,10 @@
 const CACHE_NAME = "nomad-pwa-cache-v2.2"; 
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/icons/192x192.png",
-  "/icons/512x512.png",
+  "/pwa/",
+  "/pwa/index.html",
+  "/pwa/manifest.json",
+  "/pwa/icons/192x192.png",
+  "/pwa/icons/512x512.png",
 ].map((url) => new URL(url, self.location).href);
 
 // Instalación del Service Worker
@@ -44,12 +44,26 @@ self.addEventListener("activate", (event) => {
   });
 });
 
-// Interceptar solicitudes de red
+// Interceptar solicitudes de red y manejar errores en fetch
 self.addEventListener("fetch", (event) => {
+  console.log("Fetching:", event.request.url); // Log para depuración
+
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request); // Retornar caché o hacer fetch
-    })
+    caches.match(event.request)
+      .then((response) => {
+        // Si se encuentra en caché, retornar la respuesta
+        if (response) {
+          return response;
+        }
+
+        // Si no está en caché, hacer el fetch
+        return fetch(event.request)
+          .catch((error) => {
+            console.error("Error al obtener el recurso:", error);
+            // Retornar una página de fallback en caso de error
+            return caches.match('/pwa/offline.html');
+          });
+      })
   );
 });
 
