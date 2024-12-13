@@ -3,7 +3,7 @@
   "short_name": "nomad",
   "theme_color": "#fff",
   "background_color": "#fff",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "portrait",
   "scope": "/pwa/",
   "start_url": "/pwa/",
@@ -48,5 +48,26 @@
       "sizes": "512x512",
       "type": "image/png"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "images/screenshot-1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "label": "Pantalla de inicio"
+    },
+    {
+      "src": "images/screenshot-2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "label": "Búsqueda de espacios"
+    }
+  ],
+  "id": "nomad",
+  "description": "La app que centraliza todos los espacios de trabajo en tu ciudad",
+  "dir": "ltr",
+  "lang": "es",
+  "categories": [
+    "lifestyle"
   ]
 }
