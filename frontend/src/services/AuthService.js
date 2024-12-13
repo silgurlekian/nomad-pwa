@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // URL base para la API
-const apiUrl = "https://nomad-j3w6.onrender.com/api";
+const apiUrl = "https://nomad-vzpq.onrender.com/api";
 
 // Función para solicitar el restablecimiento de contraseña
 export const requestPasswordReset = async ({ email }) => {

@@ -80,7 +80,7 @@ const SpacesList = () => {
   const toggleFavorite = async (spaceId) => {
     try {
       await axios.post(
-        "https://nomad-j3w6.onrender.com/api/favorites",
+        "https://nomad-vzpq.onrender.com/api/favorites",
         { spaceId },
         {
           headers: {
@@ -104,7 +104,7 @@ const SpacesList = () => {
     try {
       // Buscar el ID del favorito para este espacio
       const favoritosUsuario = await axios.get(
-        "https://nomad-j3w6.onrender.com/api/favorites/user",
+        "https://nomad-vzpq.onrender.com/api/favorites/user",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       // Encontrar el favorito específico para eliminar
@@ -113,7 +113,7 @@ const SpacesList = () => {
       );
       if (favoriteToDelete) {
         await axios.delete(
-          `https://nomad-j3w6.onrender.com/api/favorites/${favoriteToDelete._id}`,
+          `https://nomad-vzpq.onrender.com/api/favorites/${favoriteToDelete._id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         // Actualizar lista de favoritos
@@ -134,7 +134,7 @@ const SpacesList = () => {
     const getSpaces = async () => {
       try {
         const respuesta = await axios.get(
-          "https://nomad-j3w6.onrender.com/api/spaces"
+          "https://nomad-vzpq.onrender.com/api/spaces"
         );
         setSpaces(respuesta.data);
 
@@ -142,7 +142,7 @@ const SpacesList = () => {
         if (user && token) {
           try {
             const responseFavs = await axios.get(
-              "https://nomad-j3w6.onrender.com/api/favorites/user",
+              "https://nomad-vzpq.onrender.com/api/favorites/user",
               { headers: { Authorization: `Bearer ${token}` } }
             );
             const idsFavoritos = responseFavs.data.map(
@@ -330,7 +330,7 @@ const SpacesList = () => {
                   alt={espacio.nombre}
                   src={
                     espacio.imagen
-                      ? `https://nomad-j3w6.onrender.com/${espacio.imagen}`
+                      ? `https://nomad-vzpq.onrender.com/${espacio.imagen}`
                       : "default-image.png"
                   }
                 />

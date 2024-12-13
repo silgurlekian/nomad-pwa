@@ -18,7 +18,7 @@ const ResetPassword = () => {
     const verifyToken = async () => {
       try {
         const response = await fetch(
-          `https://nomad-j3w6.onrender.com/api/auth/reset-password/${token}`
+          `https://nomad-vzpq.onrender.com/api/auth/reset-password/${token}`
         );
         if (!response.ok) throw new Error("Token inválido o expirado.");
         const data = await response.json();

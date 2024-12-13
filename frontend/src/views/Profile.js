@@ -19,7 +19,7 @@ const MyAccount = () => {
     const getReservations = async () => {
       try {
         const response = await fetch(
-          "https://nomad-j3w6.onrender.com/api/reservations/user",
+          "https://nomad-vzpq.onrender.com/api/reservations/user",
           {
             method: "GET",
             headers: {
@@ -37,7 +37,7 @@ const MyAccount = () => {
         const reservasConDetalles = await Promise.all(
           data.map(async (reserva) => {
             const spaceResponse = await fetch(
-              `https://nomad-j3w6.onrender.com/api/spaces/${reserva.spaceId}`,
+              `https://nomad-vzpq.onrender.com/api/spaces/${reserva.spaceId}`,
               {
                 method: "GET",
                 headers: {
@@ -78,7 +78,7 @@ const MyAccount = () => {
   const handleCancelReservation = async (reservationId) => {
     try {
       const response = await fetch(
-        `https://nomad-j3w6.onrender.com/api/reservations/${reservationId}`,
+        `https://nomad-vzpq.onrender.com/api/reservations/${reservationId}`,
         {
           method: "DELETE",
           headers: {
