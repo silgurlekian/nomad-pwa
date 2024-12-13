@@ -143,7 +143,7 @@ const Login = () => {
         </form>
 
         {/* Enlace para restablecer la contraseña */}
-        <p className="text-center mt-3">
+        <p className="text-center mt-2 forgot-pwd">
           ¿Olvidaste tu contraseña?{" "}
           <Link to="/reset-password" className="link">
             Haz click aquí
@@ -152,16 +152,15 @@ const Login = () => {
       </div>
 
       <div className="d-flex separator">
-        <div className="line"></div>
-        <hr className="w-100" />
+        <hr className="w-100 mr-2" />
         <div>ó</div>
-        <hr className="w-100" />
+        <hr className="w-100 ml-2" />
       </div>
 
       <div className="d-flex flex-position">
         <div className="">
           <p className="text-center">¿No tienes una cuenta?</p>
-          <Link to="/register" className="d-block link">
+          <Link to="/register" className="d-block link mt-2">
             Regístrate
           </Link>
         </div>

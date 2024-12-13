@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-    margin-top: -40%;
+    margin-top: -50%;
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -48,10 +48,11 @@ form {
 }
 
 .separator {
-    justify-content: space-around;
+    justify-content: center;
     margin: 1rem;
     align-items: center;
     gap: 12px;
+    padding: 0;
 }
 
 .password-input-container {
@@ -87,5 +88,9 @@ form {
 
 .flex-position {
     flex-direction: column;
-    gap: 70px;
+    gap: 40px;
+}
+
+.forgot-pwd {
+    font-size: .8rem;
 }
