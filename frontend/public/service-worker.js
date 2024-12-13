@@ -1,7 +1,8 @@
-const CACHE_NAME = "nomad-pwa-cache-v2.2"; 
+const CACHE_NAME = "nomad-pwa-cache-v2.3"; 
 const urlsToCache = [
   "/pwa/",
   "/pwa/index.html",
+  "/pwa/offline.html",
   "/pwa/manifest.json",
   "/pwa/icons/192x192.png",
   "/pwa/icons/512x512.png",
@@ -46,24 +47,22 @@ self.addEventListener("activate", (event) => {
 
 // Interceptar solicitudes de red y manejar errores en fetch
 self.addEventListener("fetch", (event) => {
-  console.log("Fetching:", event.request.url); // Log para depuración
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      caches.match("/pwa/index.html").then((response) => {
+        return response || fetch(event.request);
+      })
+    );
+    return;
+  }
 
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Si se encuentra en caché, retornar la respuesta
-        if (response) {
-          return response;
-        }
-
-        // Si no está en caché, hacer el fetch
-        return fetch(event.request)
-          .catch((error) => {
-            console.error("Error al obtener el recurso:", error);
-            // Retornar una página de fallback en caso de error
-            return caches.match('/pwa/offline.html');
-          });
-      })
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request).catch((error) => {
+        console.error("Error al obtener el recurso:", error);
+        return caches.match("/pwa/offline.html"); // Asegúrate de que este archivo existe
+      });
+    })
   );
 });
 
