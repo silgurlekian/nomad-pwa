@@ -2,6 +2,12 @@
   padding: 20px;
 }
 
+.espacios-favoritos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .favorite-container {
   background-color: #FFFFFF;
   border-radius: 8px;
