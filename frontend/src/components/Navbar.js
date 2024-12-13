@@ -11,7 +11,7 @@ const Navbar = () => {
           <span>Inicio</span>
         </Link>
         <Link to="/favorites" className="nav-item">
-          <img src="/pwa/images/icons/heart.svg" alt="Favoritos" className="nav-icon" />
+          <img src="/pwa/images/icons/heart.svg" alt="Favoritos" className="nav-icon"/>
           <span>Favoritos</span>
         </Link>
         <Link to="/profile" className="nav-item">

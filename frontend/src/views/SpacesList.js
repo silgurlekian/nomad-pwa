@@ -364,28 +364,30 @@ const SpacesList = () => {
                   />
                   {espacio.direccion}, {espacio.ciudad}
                 </div>
-                <div className="precio mt-3">
-                  ${espacio.precio} <span>/hora</span>
-                </div>
-                <div
-                  className="favorito"
-                  style={{ cursor: "pointer" }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleFavoriteToggle(
-                      espacio._id,
-                      favoritos.includes(espacio._id)
-                    );
-                  }}
-                >
-                  <img
-                    src={
-                      favoritos.includes(espacio._id)
-                        ? "/pwa/images/icons/heart-filled.svg"
-                        : "/pwa/images/icons/heart.svg"
-                    }
-                    alt={`Favorito ${espacio.nombre}`}
-                  />
+                <div className="d-flex align-items-center justify-content-between mt-3">
+                  <div className="precio">
+                    ${espacio.precio} <span>/hora</span>
+                  </div>
+                  <div
+                    className="favorito"
+                    style={{ cursor: "pointer" }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleFavoriteToggle(
+                        espacio._id,
+                        favoritos.includes(espacio._id)
+                      );
+                    }}
+                  >
+                    <img
+                      src={
+                        favoritos.includes(espacio._id)
+                          ? "/pwa/images/icons/heart-filled.svg"
+                          : "/pwa/images/icons/heart-fav.svg"
+                      }
+                      alt={`Favorito ${espacio.nombre}`}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
