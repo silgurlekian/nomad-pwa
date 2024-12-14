@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
@@ -11,26 +11,23 @@ const SpacesList = () => {
   const [orderCriteria, setOrderCriteria] = useState("alfabetico"); 
   const [cargando, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [criterioOrdenacion] = useState("alfabetico");
   const [modalVisible, setModalVisible] = useState(false);
   const [filtersModalVisible, setFiltersModalVisible] = useState(false);
   const [ubicacionDetectada, setUbicacionDetectada] = useState(null);
   const [favoritos, setFavoritos] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
-  const [mostrarCancelarUbicacion, setMostrarCancelarUbicacion] =
-    useState(false);
+  const [mostrarCancelarUbicacion, setMostrarCancelarUbicacion] = useState(false);
 
-  // New state for filters
-  const [tipoEspaciosFiltros, setTipoEspaciosFiltros] = useState([]);
-  const [filtrosPrecio, setFiltrosPrecio] = useState({
-    min: 0,
-    max: 1000,
-  });
   const [filtrosAplicados, setFiltrosAplicados] = useState({
     tipos: [],
     precioMin: 0,
     precioMax: 1000,
+  });
+  const [tipoEspaciosFiltros, setTipoEspaciosFiltros] = useState([]);
+  const [filtrosPrecio, setFiltrosPrecio] = useState({
+    min: 0,
+    max: 1000,
   });
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -41,7 +38,7 @@ const SpacesList = () => {
     navigate(`/spaces/${espacio._id}`, { state: { espacio } });
   };
 
-  const solicitarPermisoUbicacion = async () => {
+  const solicitarPermisoUbicacion = useCallback(async () => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         reject(new Error("Geolocalización no soportada por este navegador."));
@@ -50,7 +47,6 @@ const SpacesList = () => {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           try {
-            // Replace OpenStreetMap with OpenCage API
             const response = await axios.get(
               `https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=b199cfdf173b45c6984a3a0e96040627`
             );
@@ -75,7 +71,7 @@ const SpacesList = () => {
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
     });
-  };
+  }, []);
 
   const cancelarUbicacion = () => {
     setSearchTerms("");
@@ -114,7 +110,6 @@ const SpacesList = () => {
           },
         }
       );
-      // Actualizar la lista de favoritos
       setFavoritos((prevFavoritos) => [...prevFavoritos, spaceId]);
       setSuccessMessage("Espacio añadido a favoritos.");
       setTimeout(() => setSuccessMessage(""), 3000);
@@ -127,12 +122,10 @@ const SpacesList = () => {
 
   const removeFavorite = async (espacioId) => {
     try {
-      // Buscar el ID del favorito para este espacio
       const favoritosUsuario = await axios.get(
         "https://nomad-vzpq.onrender.com/api/favorites/user",
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // Encontrar el favorito específico para eliminar
       const favoriteToDelete = favoritosUsuario.data.find(
         (fav) => fav.spaceId._id === espacioId
       );
@@ -141,7 +134,6 @@ const SpacesList = () => {
           `https://nomad-vzpq.onrender.com/api/favorites/${favoriteToDelete._id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        // Actualizar lista de favoritos
         setFavoritos((prevFavoritos) =>
           prevFavoritos.filter((id) => id !== espacioId)
         );
@@ -155,108 +147,14 @@ const SpacesList = () => {
     }
   };
 
-  useEffect(() => {
-    const getSpaces = async () => {
-      try {
-        const respuesta = await axios.get(
-          "https://nomad-vzpq.onrender.com/api/spaces"
-        );
-        setSpaces(respuesta.data);
-        setSpacesFiltered(respuesta.data);
-
-        // Intento de detectar la ubicación cuando los espacios se cargan por primera vez
-        try {
-          const ciudadDetectada = await solicitarPermisoUbicacion();
-
-          // Filtra automáticamente los espacios según la ubicación detectada
-          const espaciosCiudad = respuesta.data.filter((espacio) =>
-            espacio.ciudad.toLowerCase().includes(ciudadDetectada.toLowerCase())
-          );
-
-          // Si se encuentran espacios en la ciudad detectada se filtra. En caso contrario, conservar todos los espacios
-          setSpacesFiltered(
-            espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data
-          );
-        } catch (locationError) {
-          // Si falla la detección de la ubicación, muestra todos los espacios
-          setSpacesFiltered(respuesta.data);
-          console.warn("No se pudo detectar la ubicación automáticamente.");
-        }
-
-        // Cargar favoritos del usuario
-        if (user && token) {
-          try {
-            const responseFavs = await axios.get(
-              "https://nomad-vzpq.onrender.com/api/favorites/user",
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
-            const idsFavoritos = responseFavs.data.map(
-              (fav) => fav.spaceId._id
-            );
-            setFavoritos(idsFavoritos);
-          } catch (errorFavs) {
-            console.error("Error al cargar los favoritos:", errorFavs);
-          }
-        }
-
-        // Extraer tipos de espacios únicos
-        const tiposUnicos = [
-          ...new Set(
-            respuesta.data
-              .flatMap((espacio) => espacio.spacesType)
-              .filter((tipo) => tipo)
-              .map((tipo) => tipo.name)
-          ),
-        ];
-        setTipoEspaciosFiltros(tiposUnicos);
-
-        // Calcular rango de precios
-        const precios = respuesta.data.map((espacio) => espacio.precio);
-        setFiltrosPrecio({
-          min: Math.floor(Math.min(...precios)),
-          max: Math.ceil(Math.max(...precios)),
-        });
-
-        // Establecer filtros iniciales
-        const espaciosFiltradosIniciales = aplicarFiltrosYOrden(
-          respuesta.data,
-          filtrosAplicados,
-          criterioOrdenacion
-        );
-        setSpacesFiltered(espaciosFiltradosIniciales);
-
-        // Cargar favoritos del usuario
-        if (user && token) {
-          try {
-            const responseFavs = await axios.get(
-              "https://nomad-vzpq.onrender.com/api/favorites/user",
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
-            const idsFavoritos = responseFavs.data.map(
-              (fav) => fav.spaceId._id
-            );
-            setFavoritos(idsFavoritos);
-          } catch (errorFavs) {
-            console.error("Error al cargar los favoritos:", errorFavs);
-          }
-        }
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error al obtener los espacios de coworking:", error);
-        setError("No se pudieron cargar los espacios.");
-        setLoading(false);
-      }
-    };
-
-    getSpaces();
-  }, [user, token, filtrosAplicados, criterioOrdenacion]);
-
-  // Función centralizada de filtrado y ordenamiento
-  const aplicarFiltrosYOrden = (espacios, filtros, ordenamiento, busqueda) => {
+  const aplicarFiltrosYOrden = useCallback((
+    espacios, 
+    filtros, 
+    ordenamiento, 
+    busqueda
+  ) => {
     let filteredSpaces = [...espacios];
 
-    // Filtrar por búsqueda de texto (si hay búsqueda)
     if (busqueda) {
       const palabrasBusqueda = busqueda
         .toLowerCase()
@@ -273,21 +171,18 @@ const SpacesList = () => {
       );
     }
 
-    // Filtrar por tipos de espacio
     if (filtros.tipos.length > 0) {
       filteredSpaces = filteredSpaces.filter((espacio) =>
         espacio.spacesType.some((tipo) => filtros.tipos.includes(tipo.name))
       );
     }
 
-    // Filtrar por precio
     filteredSpaces = filteredSpaces.filter(
       (espacio) =>
         espacio.precio >= filtros.precioMin &&
         espacio.precio <= filtros.precioMax
     );
 
-    // Ordenar
     if (ordenamiento === "alfabetico") {
       filteredSpaces.sort((a, b) => a.nombre.localeCompare(b.nombre));
     } else if (ordenamiento === "precio") {
@@ -295,33 +190,98 @@ const SpacesList = () => {
     }
 
     return filteredSpaces;
-  };
+  }, []);
+
+  useEffect(() => {
+    const getSpaces = async () => {
+      try {
+        const respuesta = await axios.get(
+          "https://nomad-vzpq.onrender.com/api/spaces"
+        );
+        const espaciosData = respuesta.data;
+        
+        setSpaces(espaciosData);
+
+        try {
+          const ciudadDetectada = await solicitarPermisoUbicacion();
+          const espaciosCiudad = espaciosData.filter((espacio) =>
+            espacio.ciudad.toLowerCase().includes(ciudadDetectada.toLowerCase())
+          );
+
+          setSpacesFiltered(
+            espaciosCiudad.length > 0 ? espaciosCiudad : espaciosData
+          );
+        } catch (locationError) {
+          setSpacesFiltered(espaciosData);
+          console.warn("No se pudo detectar la ubicación automáticamente.");
+        }
+
+        if (user && token) {
+          try {
+            const responseFavs = await axios.get(
+              "https://nomad-vzpq.onrender.com/api/favorites/user",
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const idsFavoritos = responseFavs.data.map(
+              (fav) => fav.spaceId._id
+            );
+            setFavoritos(idsFavoritos);
+          } catch (errorFavs) {
+            console.error("Error al cargar los favoritos:", errorFavs);
+          }
+        }
+
+        const tiposUnicos = [
+          ...new Set(
+            espaciosData
+              .flatMap((espacio) => espacio.spacesType)
+              .filter((tipo) => tipo)
+              .map((tipo) => tipo.name)
+          ),
+        ];
+        setTipoEspaciosFiltros(tiposUnicos);
+
+        const precios = espaciosData.map((espacio) => espacio.precio);
+        setFiltrosPrecio({
+          min: Math.floor(Math.min(...precios)),
+          max: Math.ceil(Math.max(...precios)),
+        });
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error al obtener los espacios de coworking:", error);
+        setError("No se pudieron cargar los espacios.");
+        setLoading(false);
+      }
+    };
+
+    getSpaces();
+  }, [user, token, solicitarPermisoUbicacion]);
 
   const ChangeSearch = (event) => {
     const valor = event.target.value;
-    setSearchTerms(valor); // Actualizamos el estado de búsqueda
+    setSearchTerms(valor);
 
-    // Filtrado automático por búsqueda
     const espaciosFiltradosPorBusqueda = aplicarFiltrosYOrden(
       espacios,
       filtrosAplicados,
       orderCriteria,
       valor
     );
-    setSpacesFiltered(espaciosFiltradosPorBusqueda); // Aplicamos el filtro de búsqueda
+    setSpacesFiltered(espaciosFiltradosPorBusqueda);
   };
 
   const ChageOrder = (nuevoCriterio) => {
-    setOrderCriteria(nuevoCriterio); // Actualizamos el criterio de orden
+    setOrderCriteria(nuevoCriterio);
 
-    // Filtrado automático por orden
     const espaciosFiltradosPorOrden = aplicarFiltrosYOrden(
       espacios,
       filtrosAplicados,
       nuevoCriterio,
       terminoBusqueda
     );
-    setSpacesFiltered(espaciosFiltradosPorOrden); // Aplicamos el filtro de orden
+    setSpacesFiltered(espaciosFiltradosPorOrden);
+    setModalVisible(false);
   };
 
   const aplicarFiltros = () => {
@@ -331,7 +291,7 @@ const SpacesList = () => {
       orderCriteria,
       terminoBusqueda
     );
-    setSpacesFiltered(espaciosFiltradosActualizados); // Aplicar los filtros
+    setSpacesFiltered(espaciosFiltradosActualizados);
     setFiltersModalVisible(false);
   };
 
@@ -341,7 +301,7 @@ const SpacesList = () => {
       precioMin: 0,
       precioMax: 1000,
     });
-    setSpacesFiltered(espacios); // Restablecer todos los espacios
+    setSpacesFiltered(espacios);
   };
 
   const handleTipoEspacioToggle = (tipo) => {
@@ -350,20 +310,18 @@ const SpacesList = () => {
         ? prev.tipos.filter((t) => t !== tipo)
         : [...prev.tipos, tipo];
 
-      // Reapply filters immediately after updating types
       const espaciosFiltradosActualizados = aplicarFiltrosYOrden(
         espacios,
-        { ...prev, tipos: nuevosTipos }, // Use the updated filters
-        criterioOrdenacion
+        { ...prev, tipos: nuevosTipos },
+        orderCriteria
       );
 
-      setSpacesFiltered(espaciosFiltradosActualizados); // Update filtered spaces
+      setSpacesFiltered(espaciosFiltradosActualizados);
 
       return { ...prev, tipos: nuevosTipos };
     });
   };
 
-  // Componente de modal de filtros
   const FiltersModal = () => (
     <div className={`drawer ${filtersModalVisible ? "modal-visible" : ""}`}>
       <div className="modal-contenido">
@@ -380,7 +338,6 @@ const SpacesList = () => {
         />
         <h3>Filtros</h3>
 
-        {/* Filtro de Tipos de Espacios */}
         <div className="filtro-seccion">
           <h4>Tipo de Espacio</h4>
           {tipoEspaciosFiltros.map((tipo) => (
@@ -399,7 +356,6 @@ const SpacesList = () => {
           ))}
         </div>
 
-        {/* Filtro de Precio */}
         <div className="filtro-seccion">
           <h4>Precio por Hora</h4>
           <div className="rango-precio">
@@ -479,7 +435,7 @@ const SpacesList = () => {
         )}
       </div>
 
-      <span className="d-none">{criterioOrdenacion}</span>
+      <span className="d-none">{orderCriteria}</span>
 
       <div className="d-flex gap-4">
         <div className="iconos-ordenar-filtrar">
