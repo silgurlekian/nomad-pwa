@@ -154,9 +154,7 @@ const SpacesList = () => {
 
           // Automatically filter spaces by detected location
           const espaciosCiudad = respuesta.data.filter((espacio) =>
-            espacio.ciudad
-              .toLowerCase()
-              .includes(ciudadDetectada.toLowerCase())
+            espacio.ciudad.toLowerCase().includes(ciudadDetectada.toLowerCase())
           );
 
           // If spaces are found in the detected city, set them as filtered
@@ -200,32 +198,52 @@ const SpacesList = () => {
   const ChangeSearch = (event) => {
     const valor = event.target.value.toLowerCase();
     setSearchTerms(valor);
-  
+
     // Safely handle location detection comparison
-    const detectedLocationLower = ubicacionDetectada?.toLowerCase() || '';
-  
+    const detectedLocationLower = ubicacionDetectada?.toLowerCase() || "";
+
     // Si se modifica la búsqueda, eliminar la ubicación detectada
     if (valor !== detectedLocationLower) {
-      const elementoAOcultar = document.getElementById('elementoAOcultar');
+      const elementoAOcultar = document.getElementById("elementoAOcultar");
       if (elementoAOcultar) {
-        elementoAOcultar.style.display = 'none';
+        elementoAOcultar.style.display = "none";
       }
       setUbicacionDetectada(null);
     }
-  
+
     // Actualizar visibilidad del botón de cancelar ubicación
     setMostrarCancelarUbicacion(valor !== detectedLocationLower);
-  
-    // Filter spaces based on search term
-    const filtrados = espacios.filter((espacio) => 
-      !valor || 
-      espacio.nombre.toLowerCase().includes(valor) ||
-      espacio.direccion.toLowerCase().includes(valor) ||
-      espacio.ciudad.toLowerCase().includes(valor)
-    );
-  
-    // Always set filtered spaces
-    setSpacesFiltered(filtrados.length > 0 ? filtrados : espacios);
+
+    // Filter spaces based on search words
+    const palabrasBusqueda = valor
+      .split(/\s+/)
+      .filter((palabra) => palabra.length > 0);
+
+    const filtrados =
+      palabrasBusqueda.length === 0
+        ? espacios
+        : espacios.filter((espacio) =>
+            palabrasBusqueda.every(
+              (palabra) =>
+                espacio.nombre
+                  .toLowerCase()
+                  .split(/\s+/)
+                  .some((nombrePalabra) => nombrePalabra.includes(palabra)) ||
+                espacio.direccion
+                  .toLowerCase()
+                  .split(/\s+/)
+                  .some((direccionPalabra) =>
+                    direccionPalabra.includes(palabra)
+                  ) ||
+                espacio.ciudad
+                  .toLowerCase()
+                  .split(/\s+/)
+                  .some((ciudadPalabra) => ciudadPalabra.includes(palabra))
+            )
+          );
+
+    // Set filtered spaces
+    setSpacesFiltered(filtrados);
   };
 
   const ChageOrder = (nuevoCriterio) => {
