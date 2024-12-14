@@ -12,6 +12,9 @@ const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [favoriteToRemove, setFavoriteToRemove] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,42 +59,42 @@ const Favorites = () => {
     navigate(`/spaces/${space._id}`, { state: { space } });
   };
 
-  const handleRemoveFavorite = async (favoriteId, e) => {
-    e.stopPropagation();
+  const handleShowModal = (favoriteId) => {
+    setFavoriteToRemove(favoriteId);
+    setShowModal(true);
+  };
 
-    const confirmDelete = window.confirm(
-      "¿Estás seguro de eliminar este favorito?"
-    );
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setFavoriteToRemove(null);
+  };
 
-    if (confirmDelete) {
-      try {
-        const token = localStorage.getItem("token");
+  const handleRemoveFavorite = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-        await axios.delete(
-          `https://nomad-vzpq.onrender.com/api/favorites/${favoriteId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+      await axios.delete(
+        `https://nomad-vzpq.onrender.com/api/favorites/${favoriteToRemove}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        // Actualizar el estado de favoritos
-        setFavorites((favorites) =>
-          favorites.filter((favorite) => favorite._id !== favoriteId)
-        );
-      } catch (error) {
-        console.error(
-          "Error al eliminar favorito:",
-          error.response ? error.response.data : error.message
-        );
-
-        const errorMessage = error.response
-          ? error.response.data.message
-          : "No se pudo eliminar el favorito";
-
-        setError(errorMessage);
-      }
+      setFavorites((favorites) =>
+        favorites.filter((favorite) => favorite._id !== favoriteToRemove)
+      );
+      setShowModal(false);
+    } catch (error) {
+      console.error(
+        "Error al eliminar favorito:",
+        error.response ? error.response.data : error.message
+      );
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "No se pudo eliminar el favorito";
+      setError(errorMessage);
     }
   };
 
@@ -166,9 +169,12 @@ const Favorites = () => {
                   <div>
                     <button
                       className="link m-0"
-                      onClick={(e) => handleRemoveFavorite(favorite._id, e)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShowModal(favorite._id);
+                      }}
                     >
-                      Eliminar de favoritos
+                      Eliminar favorito
                     </button>
                   </div>
                 </div>
@@ -177,6 +183,47 @@ const Favorites = () => {
           </div>
         )}
       </div>
+
+      {showModal && (
+        <div
+          className="modal fade show"
+          style={{ display: "block" }}
+          tabIndex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Confirmar eliminación
+                </h5>
+              </div>
+              <div className="modal-body">
+                ¿Estás seguro de que deseas eliminar este favorito?
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseModal}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={handleRemoveFavorite}
+                >
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Navbar />
     </div>
   );
