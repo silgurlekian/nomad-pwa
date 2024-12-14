@@ -21,6 +21,16 @@
     z-index: 9;
 }
 
+.close-circle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+}
+
 .iconos-ordenar-filtrar {
     display: flex;
     align-items: center;

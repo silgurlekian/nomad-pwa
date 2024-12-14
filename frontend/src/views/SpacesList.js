@@ -148,27 +148,26 @@ const SpacesList = () => {
         );
         setSpaces(respuesta.data);
 
-        // Attempt to detect location when spaces are first loaded
+        // Intento de detectar la ubicación cuando los espacios se cargan por primera vez
         try {
           const ciudadDetectada = await solicitarPermisoUbicacion();
 
-          // Automatically filter spaces by detected location
+          // Filtra automáticamente los espacios según la ubicación detectada
           const espaciosCiudad = respuesta.data.filter((espacio) =>
             espacio.ciudad.toLowerCase().includes(ciudadDetectada.toLowerCase())
           );
 
-          // If spaces are found in the detected city, set them as filtered
-          // Otherwise, keep all spaces
+          // Si se encuentran espacios en la ciudad detectada se filtra. En caso contrario, conservar todos los espacios
           setSpacesFiltered(
             espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data
           );
         } catch (locationError) {
-          // If location detection fails, show all spaces
+          // Si falla la detección de la ubicación, muestra todos los espacios
           setSpacesFiltered(respuesta.data);
           console.warn("No se pudo detectar la ubicación automáticamente.");
         }
 
-        // Load user favorites
+        // Cargar favoritos del usuario
         if (user && token) {
           try {
             const responseFavs = await axios.get(
@@ -242,7 +241,7 @@ const SpacesList = () => {
             )
           );
 
-    // Set filtered spaces
+    // Establecer espacios filtrados
     setSpacesFiltered(filtrados);
   };
 
@@ -294,15 +293,7 @@ const SpacesList = () => {
             src="/pwa/images/icons/close-circle.svg"
             alt="Cancelar ubicación"
             onClick={cancelarUbicacion}
-            style={{
-              position: "absolute",
-              right: "10px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              width: "24px",
-              height: "24px",
-            }}
+            className="close-circle"
           />
         )}
       </div>
