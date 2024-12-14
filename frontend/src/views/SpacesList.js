@@ -20,15 +20,16 @@ const SpacesList = () => {
   const [mostrarCancelarUbicacion, setMostrarCancelarUbicacion] =
     useState(false);
 
-  const [filtrosAplicados, setFiltrosAplicados] = useState({
-    tipos: [],
-    precioMin: 0,
-    precioMax: 1000,
-  });
   const [tipoEspaciosFiltros, setTipoEspaciosFiltros] = useState([]);
   const [filtrosPrecio, setFiltrosPrecio] = useState({
     min: 0,
     max: 1000,
+  });
+
+  const [filtrosAplicados, setFiltrosAplicados] = useState({
+    tipos: [],
+    precioMin: filtrosPrecio.min,
+    precioMax: filtrosPrecio.max,
   });
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -240,10 +241,21 @@ const SpacesList = () => {
         ];
         setTipoEspaciosFiltros(tiposUnicos);
 
+        // Calcular el mínimo y máximo de los precios de los espacios
         const precios = espaciosData.map((espacio) => espacio.precio);
+        const precioMin = Math.floor(Math.min(...precios));
+        const precioMax = Math.ceil(Math.max(...precios));
+
+        // Establecer los filtros con el rango de precios calculado
         setFiltrosPrecio({
-          min: Math.floor(Math.min(...precios)),
-          max: Math.ceil(Math.max(...precios)),
+          min: precioMin,
+          max: precioMax,
+        });
+
+        setFiltrosAplicados({
+          tipos: [],
+          precioMin: precioMin,
+          precioMax: precioMax,
         });
 
         setLoading(false);
@@ -302,8 +314,8 @@ const SpacesList = () => {
   const limpiarFiltros = () => {
     setFiltrosAplicados({
       tipos: [],
-      precioMin: 0,
-      precioMax: 1000,
+      precioMin: filtrosPrecio.min,
+      precioMax: filtrosPrecio.max,
     });
     setSpacesFiltered(espacios);
   };
@@ -342,8 +354,10 @@ const SpacesList = () => {
         />
         <h3>Filtros</h3>
 
-        <div className="filtro-seccion">
-          <h4>Tipo de Espacio</h4>
+        <div className="filtro-seccion mt-4">
+          <p>
+            <strong>Tipo de espacio</strong>
+          </p>
           {tipoEspaciosFiltros.map((tipo) => (
             <div key={tipo} className="form-check">
               <input
@@ -360,44 +374,50 @@ const SpacesList = () => {
           ))}
         </div>
 
-        <div className="filtro-seccion">
-          <h4>Precio por Hora</h4>
+        <div className="filtro-seccion mt-4">
+          <p>
+            <strong>Precio por hora</strong>
+          </p>
           <div className="rango-precio">
-            <div className="d-flex justify-content-between mb-2">
-              <span>${filtrosAplicados.precioMin}</span>
-              <span>${filtrosAplicados.precioMax}</span>
+            <div className="d-flex align-items-center gap-2 justify-content-between mb-2">
+              <div className="w-100">
+                <p className="m-0">Mínimo</p>
+                <input
+                  type="number"
+                  className="form-control"
+                  min={filtrosPrecio.min}
+                  max={filtrosPrecio.max}
+                  value={filtrosAplicados.precioMin}
+                  onChange={(e) =>
+                    setFiltrosAplicados((prev) => ({
+                      ...prev,
+                      precioMin: Number(e.target.value),
+                    }))
+                  }
+                />
+              </div>
+              <div className="w-100">
+                <p className="m-0">Máximo</p>
+                <input
+                  type="number"
+                  className="form-control"
+                  min={filtrosPrecio.min}
+                  max={filtrosPrecio.max}
+                  value={filtrosAplicados.precioMax}
+                  onChange={(e) =>
+                    setFiltrosAplicados((prev) => ({
+                      ...prev,
+                      precioMax: Number(e.target.value),
+                    }))
+                  }
+                />
+              </div>
             </div>
-            <input
-              type="range"
-              className="form-range"
-              min={filtrosPrecio.min}
-              max={filtrosPrecio.max}
-              value={filtrosAplicados.precioMin}
-              onChange={(e) =>
-                setFiltrosAplicados((prev) => ({
-                  ...prev,
-                  precioMin: Number(e.target.value),
-                }))
-              }
-            />
-            <input
-              type="range"
-              className="form-range"
-              min={filtrosPrecio.min}
-              max={filtrosPrecio.max}
-              value={filtrosAplicados.precioMax}
-              onChange={(e) =>
-                setFiltrosAplicados((prev) => ({
-                  ...prev,
-                  precioMax: Number(e.target.value),
-                }))
-              }
-            />
           </div>
         </div>
 
-        <button onClick={aplicarFiltros}>Aplicar filtros</button>
-        <button onClick={limpiarFiltros}>Limpiar filtros</button>
+        <button onClick={aplicarFiltros} className="btn-primary mt-4">Aplicar filtros</button>
+        <button onClick={limpiarFiltros} className="link m-0">Limpiar filtros</button>
       </div>
     </div>
   );
