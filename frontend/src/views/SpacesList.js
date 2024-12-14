@@ -8,7 +8,7 @@ const SpacesList = () => {
   const [espacios, setSpaces] = useState([]);
   const [espaciosFiltrados, setSpacesFiltered] = useState([]);
   const [terminoBusqueda, setSearchTerms] = useState("");
-  const [orderCriteria, setOrderCriteria] = useState("alfabetico"); 
+  const [orderCriteria, setOrderCriteria] = useState("alfabetico");
   const [cargando, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -17,7 +17,8 @@ const SpacesList = () => {
   const [favoritos, setFavoritos] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
-  const [mostrarCancelarUbicacion, setMostrarCancelarUbicacion] = useState(false);
+  const [mostrarCancelarUbicacion, setMostrarCancelarUbicacion] =
+    useState(false);
 
   const [filtrosAplicados, setFiltrosAplicados] = useState({
     tipos: [],
@@ -147,50 +148,48 @@ const SpacesList = () => {
     }
   };
 
-  const aplicarFiltrosYOrden = useCallback((
-    espacios, 
-    filtros, 
-    ordenamiento, 
-    busqueda
-  ) => {
-    let filteredSpaces = [...espacios];
+  const aplicarFiltrosYOrden = useCallback(
+    (espacios, filtros, ordenamiento, busqueda) => {
+      let filteredSpaces = [...espacios];
 
-    if (busqueda) {
-      const palabrasBusqueda = busqueda
-        .toLowerCase()
-        .split(/\s+/)
-        .filter((palabra) => palabra.length > 0);
+      if (busqueda) {
+        const palabrasBusqueda = busqueda
+          .toLowerCase()
+          .split(/\s+/)
+          .filter((palabra) => palabra.length > 0);
 
-      filteredSpaces = filteredSpaces.filter((espacio) =>
-        palabrasBusqueda.every(
-          (palabra) =>
-            espacio.nombre.toLowerCase().includes(palabra) ||
-            espacio.direccion.toLowerCase().includes(palabra) ||
-            espacio.ciudad.toLowerCase().includes(palabra)
-        )
+        filteredSpaces = filteredSpaces.filter((espacio) =>
+          palabrasBusqueda.every(
+            (palabra) =>
+              espacio.nombre.toLowerCase().includes(palabra) ||
+              espacio.direccion.toLowerCase().includes(palabra) ||
+              espacio.ciudad.toLowerCase().includes(palabra)
+          )
+        );
+      }
+
+      if (filtros.tipos.length > 0) {
+        filteredSpaces = filteredSpaces.filter((espacio) =>
+          espacio.spacesType.some((tipo) => filtros.tipos.includes(tipo.name))
+        );
+      }
+
+      filteredSpaces = filteredSpaces.filter(
+        (espacio) =>
+          espacio.precio >= filtros.precioMin &&
+          espacio.precio <= filtros.precioMax
       );
-    }
 
-    if (filtros.tipos.length > 0) {
-      filteredSpaces = filteredSpaces.filter((espacio) =>
-        espacio.spacesType.some((tipo) => filtros.tipos.includes(tipo.name))
-      );
-    }
+      if (ordenamiento === "alfabetico") {
+        filteredSpaces.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      } else if (ordenamiento === "precio") {
+        filteredSpaces.sort((a, b) => a.precio - b.precio);
+      }
 
-    filteredSpaces = filteredSpaces.filter(
-      (espacio) =>
-        espacio.precio >= filtros.precioMin &&
-        espacio.precio <= filtros.precioMax
-    );
-
-    if (ordenamiento === "alfabetico") {
-      filteredSpaces.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    } else if (ordenamiento === "precio") {
-      filteredSpaces.sort((a, b) => a.precio - b.precio);
-    }
-
-    return filteredSpaces;
-  }, []);
+      return filteredSpaces;
+    },
+    []
+  );
 
   useEffect(() => {
     const getSpaces = async () => {
@@ -199,7 +198,7 @@ const SpacesList = () => {
           "https://nomad-vzpq.onrender.com/api/spaces"
         );
         const espaciosData = respuesta.data;
-        
+
         setSpaces(espaciosData);
 
         try {
@@ -261,6 +260,11 @@ const SpacesList = () => {
   const ChangeSearch = (event) => {
     const valor = event.target.value;
     setSearchTerms(valor);
+
+    // Si el campo de búsqueda está vacío, limpiar la ubicación detectada
+    if (valor === "") {
+      setUbicacionDetectada(null);
+    }
 
     const espaciosFiltradosPorBusqueda = aplicarFiltrosYOrden(
       espacios,
@@ -521,14 +525,11 @@ const SpacesList = () => {
 
       <FiltersModal />
 
-      {ubicacionDetectada ? (
-        <p className="texto-ubicacion" id="elementoAOcultar">
-          {" "}
-          Mostrando espacios cerca de {ubicacionDetectada}
-        </p>
-      ) : (
-        <p className="texto-ubicacion"></p>
-      )}
+      <div>
+        {ubicacionDetectada && terminoBusqueda && (
+          <p>Mostrando espacios cerca de {ubicacionDetectada}</p>
+        )}
+      </div>
 
       {espaciosFiltrados.length === 0 ? (
         <div className="alerta alerta-info">
