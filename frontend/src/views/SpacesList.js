@@ -14,6 +14,7 @@ const SpacesList = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [filtersModalVisible, setFiltersModalVisible] = useState(false);
   const [ubicacionDetectada, setUbicacionDetectada] = useState(null);
+  const [ubicacionObtenida, setUbicacionObtenida] = useState(false);
   const [favoritos, setFavoritos] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
@@ -41,6 +42,8 @@ const SpacesList = () => {
   };
 
   const solicitarPermisoUbicacion = useCallback(async () => {
+    if (ubicacionObtenida) return; // Si la ubicación ya fue obtenida, no hacer nada
+    
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         reject(new Error("Geolocalización no soportada por este navegador."));
@@ -60,6 +63,7 @@ const SpacesList = () => {
             setUbicacionDetectada(ciudad);
             setSearchTerms(ciudad);
             setMostrarCancelarUbicacion(true);
+            setUbicacionObtenida(true); // Marcar que la ubicación ha sido obtenida
             resolve(ciudad);
           } catch (error) {
             console.error("Error al obtener la ciudad:", error);
@@ -73,7 +77,7 @@ const SpacesList = () => {
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
     });
-  }, []);
+  }, [ubicacionObtenida]);
 
   const cancelarUbicacion = () => {
     setSearchTerms("");

@@ -9,7 +9,7 @@ const Onboarding = () => {
   const slides = [
     {
       image: "./pwa/images/onboarding1.jpg",
-      title: "Bienvenido a nomad!",
+      title: "¡Bienvenido a nomad!",
       description:
         "Encuentra el espacio de trabajo perfecto cerca tuyo. Ya sea para una reunión rápida o un día de trabajo remoto, tenemos el lugar que necesitas.",
     },
