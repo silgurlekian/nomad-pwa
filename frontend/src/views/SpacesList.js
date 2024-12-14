@@ -8,9 +8,10 @@ const SpacesList = () => {
   const [espacios, setSpaces] = useState([]);
   const [espaciosFiltrados, setSpacesFiltered] = useState([]);
   const [terminoBusqueda, setSearchTerms] = useState("");
+  const [orderCriteria, setOrderCriteria] = useState("alfabetico"); 
   const [cargando, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [criterioOrdenacion, setOrderCriteria] = useState("alfabetico");
+  const [criterioOrdenacion] = useState("alfabetico");
   const [modalVisible, setModalVisible] = useState(false);
   const [filtersModalVisible, setFiltersModalVisible] = useState(false);
   const [ubicacionDetectada, setUbicacionDetectada] = useState(null);
@@ -30,7 +31,6 @@ const SpacesList = () => {
     tipos: [],
     precioMin: 0,
     precioMax: 1000,
-    busqueda: "",
   });
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -253,12 +253,12 @@ const SpacesList = () => {
   }, [user, token, filtrosAplicados, criterioOrdenacion]);
 
   // Función centralizada de filtrado y ordenamiento
-  const aplicarFiltrosYOrden = (espacios, filtros, ordenamiento) => {
+  const aplicarFiltrosYOrden = (espacios, filtros, ordenamiento, busqueda) => {
     let filteredSpaces = [...espacios];
 
-    // Filtrar por búsqueda de texto
-    if (filtros.busqueda) {
-      const palabrasBusqueda = filtros.busqueda
+    // Filtrar por búsqueda de texto (si hay búsqueda)
+    if (busqueda) {
+      const palabrasBusqueda = busqueda
         .toLowerCase()
         .split(/\s+/)
         .filter((palabra) => palabra.length > 0);
@@ -299,45 +299,49 @@ const SpacesList = () => {
 
   const ChangeSearch = (event) => {
     const valor = event.target.value;
-    setSearchTerms(valor); // Update the search term
+    setSearchTerms(valor); // Actualizamos el estado de búsqueda
 
-    // Reapply filters based on the updated search term
-    const espaciosFiltradosActualizados = aplicarFiltrosYOrden(
+    // Filtrado automático por búsqueda
+    const espaciosFiltradosPorBusqueda = aplicarFiltrosYOrden(
       espacios,
-      { ...filtrosAplicados, busqueda: valor }, // Update only the search term in filters
-      criterioOrdenacion
+      filtrosAplicados,
+      orderCriteria,
+      valor
     );
-
-    setSpacesFiltered(espaciosFiltradosActualizados); // Update filtered spaces
-    setFiltrosAplicados((prev) => ({
-      ...prev,
-      busqueda: valor,
-    }));
+    setSpacesFiltered(espaciosFiltradosPorBusqueda); // Aplicamos el filtro de búsqueda
   };
 
   const ChageOrder = (nuevoCriterio) => {
-    setOrderCriteria(nuevoCriterio);
+    setOrderCriteria(nuevoCriterio); // Actualizamos el criterio de orden
 
-    // Aplicar filtros y nuevo ordenamiento
-    const espaciosFiltradosOrdenados = aplicarFiltrosYOrden(
+    // Filtrado automático por orden
+    const espaciosFiltradosPorOrden = aplicarFiltrosYOrden(
       espacios,
       filtrosAplicados,
-      nuevoCriterio
+      nuevoCriterio,
+      terminoBusqueda
     );
-
-    setSpacesFiltered(espaciosFiltradosOrdenados);
-    setModalVisible(false);
+    setSpacesFiltered(espaciosFiltradosPorOrden); // Aplicamos el filtro de orden
   };
 
   const aplicarFiltros = () => {
     const espaciosFiltradosActualizados = aplicarFiltrosYOrden(
       espacios,
       filtrosAplicados,
-      criterioOrdenacion
+      orderCriteria,
+      terminoBusqueda
     );
-
-    setSpacesFiltered(espaciosFiltradosActualizados); // Apply filters and set state
+    setSpacesFiltered(espaciosFiltradosActualizados); // Aplicar los filtros
     setFiltersModalVisible(false);
+  };
+
+  const limpiarFiltros = () => {
+    setFiltrosAplicados({
+      tipos: [],
+      precioMin: 0,
+      precioMax: 1000,
+    });
+    setSpacesFiltered(espacios); // Restablecer todos los espacios
   };
 
   const handleTipoEspacioToggle = (tipo) => {
@@ -432,9 +436,8 @@ const SpacesList = () => {
           </div>
         </div>
 
-        <button className="btn btn-primary w-100 mt-3" onClick={aplicarFiltros}>
-          Aplicar Filtros
-        </button>
+        <button onClick={aplicarFiltros}>Aplicar filtros</button>
+        <button onClick={limpiarFiltros}>Limpiar filtros</button>
       </div>
     </div>
   );
