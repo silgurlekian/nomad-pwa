@@ -12,7 +12,7 @@ const SpacesList = () => {
   const [error, setError] = useState(null);
   const [criterioOrdenacion, setOrderCriteria] = useState("alfabetico");
   const [modalVisible, setModalVisible] = useState(false);
-  const [ubicacionDetectada, setUbicacionDetectada] = useState("tu ubicación");
+  const [ubicacionDetectada, setUbicacionDetectada] = useState(null);
   const [favoritos, setFavoritos] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
@@ -25,7 +25,7 @@ const SpacesList = () => {
     navigate(`/spaces/${espacio._id}`, { state: { espacio } });
   };
 
-  const solicitarPermisoUbicacion = () => {
+  const solicitarPermisoUbicacion = async () => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         reject(new Error("Geolocalización no soportada por este navegador."));
@@ -137,8 +137,31 @@ const SpacesList = () => {
           "https://nomad-vzpq.onrender.com/api/spaces"
         );
         setSpaces(respuesta.data);
+        
+        // Attempt to detect location when spaces are first loaded
+        try {
+          const ciudadDetectada = await solicitarPermisoUbicacion();
+          
+          // Automatically filter spaces by detected location
+          const espaciosCiudad = respuesta.data.filter((espacio) =>
+            espacio.ciudad
+              .toLowerCase()
+              .trim()
+              .includes(ciudadDetectada.toLowerCase().trim())
+          );
+          
+          // If spaces are found in the detected city, set them as filtered
+          // Otherwise, keep all spaces
+          setSpacesFiltered(
+            espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data
+          );
+        } catch (locationError) {
+          // If location detection fails, show all spaces
+          setSpacesFiltered(respuesta.data);
+          console.warn("No se pudo detectar la ubicación automáticamente.");
+        }
 
-        // Cargar los favoritos del usuario
+        // Load user favorites
         if (user && token) {
           try {
             const responseFavs = await axios.get(
@@ -148,28 +171,10 @@ const SpacesList = () => {
             const idsFavoritos = responseFavs.data.map(
               (fav) => fav.spaceId._id
             );
-            setFavoritos(idsFavoritos); // Establecer los IDs de los favoritos
+            setFavoritos(idsFavoritos);
           } catch (errorFavs) {
             console.error("Error al cargar los favoritos:", errorFavs);
           }
-        }
-
-        try {
-          const ciudadDetectada = await solicitarPermisoUbicacion();
-          setSearchTerms(ciudadDetectada);
-
-          const espaciosCiudad = respuesta.data.filter((espacio) =>
-            espacio.ciudad
-              .toLowerCase()
-              .trim()
-              .includes(ciudadDetectada.toLowerCase().trim())
-          );
-          setSpacesFiltered(
-            espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data
-          );
-        } catch (errorUbicacion) {
-          console.error("No se pudo detectar la ubicación:", errorUbicacion);
-          setSpacesFiltered(respuesta.data);
         }
 
         setLoading(false);
@@ -179,20 +184,38 @@ const SpacesList = () => {
         setLoading(false);
       }
     };
-    getSpaces();
-  });
 
-  const ChageSearch = (event) => {
+    getSpaces();
+  }, [user, token]);
+
+  const ChangeSearch = (event) => {
     const valor = event.target.value.trim();
     setSearchTerms(valor);
 
+    // Filter spaces based on search term
     const filtrados = espacios.filter(
       (espacio) =>
         espacio.nombre.toLowerCase().includes(valor.toLowerCase()) ||
         espacio.direccion.toLowerCase().includes(valor.toLowerCase()) ||
         espacio.ciudad.toLowerCase().includes(valor.toLowerCase())
     );
-    setSpacesFiltered(filtrados);
+
+    // If no search term and a location was detected, filter by location
+    if (!valor && ubicacionDetectada) {
+      const espaciosCiudad = espacios.filter((espacio) =>
+        espacio.ciudad
+          .toLowerCase()
+          .trim()
+          .includes(ubicacionDetectada.toLowerCase().trim())
+      );
+      
+      setSpacesFiltered(
+        espaciosCiudad.length > 0 ? espaciosCiudad : espacios
+      );
+    } else {
+      // Otherwise, use the filtered results
+      setSpacesFiltered(filtrados);
+    }
   };
 
   const ChageOrder = (nuevoCriterio) => {
@@ -226,7 +249,7 @@ const SpacesList = () => {
           type="text"
           placeholder="Buscar espacios, ciudades..."
           value={terminoBusqueda}
-          onChange={ChageSearch}
+          onChange={ChangeSearch}
           className="form-control"
           style={{ paddingLeft: "30px" }}
         />
