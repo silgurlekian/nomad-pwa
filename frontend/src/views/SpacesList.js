@@ -156,8 +156,7 @@ const SpacesList = () => {
           const espaciosCiudad = respuesta.data.filter((espacio) =>
             espacio.ciudad
               .toLowerCase()
-              .trim()
-              .includes(ciudadDetectada.toLowerCase().trim())
+              .includes(ciudadDetectada.toLowerCase())
           );
 
           // If spaces are found in the detected city, set them as filtered
@@ -199,32 +198,34 @@ const SpacesList = () => {
   }, [user, token]);
 
   const ChangeSearch = (event) => {
-    const valor = event.target.value.trim();
+    const valor = event.target.value.toLowerCase();
     setSearchTerms(valor);
-
+  
+    // Safely handle location detection comparison
+    const detectedLocationLower = ubicacionDetectada?.toLowerCase() || '';
+  
     // Si se modifica la búsqueda, eliminar la ubicación detectada
-    if (valor !== ubicacionDetectada) {
-      document.getElementById('elementoAOcultar').style.display = 'none';
+    if (valor !== detectedLocationLower) {
+      const elementoAOcultar = document.getElementById('elementoAOcultar');
+      if (elementoAOcultar) {
+        elementoAOcultar.style.display = 'none';
+      }
       setUbicacionDetectada(null);
     }
-
+  
     // Actualizar visibilidad del botón de cancelar ubicación
-    setMostrarCancelarUbicacion(valor !== ubicacionDetectada);
-
+    setMostrarCancelarUbicacion(valor !== detectedLocationLower);
+  
     // Filter spaces based on search term
-    const filtrados = espacios.filter(
-      (espacio) =>
-        espacio.nombre.toLowerCase().includes(valor.toLowerCase()) ||
-        espacio.direccion.toLowerCase().includes(valor.toLowerCase()) ||
-        espacio.ciudad.toLowerCase().includes(valor.toLowerCase())
+    const filtrados = espacios.filter((espacio) => 
+      !valor || 
+      espacio.nombre.toLowerCase().includes(valor) ||
+      espacio.direccion.toLowerCase().includes(valor) ||
+      espacio.ciudad.toLowerCase().includes(valor)
     );
-
-    // If no search results, show all spaces
-    setSpacesFiltered(
-      filtrados.length > 0
-        ? filtrados
-        : espacios
-    );
+  
+    // Always set filtered spaces
+    setSpacesFiltered(filtrados.length > 0 ? filtrados : espacios);
   };
 
   const ChageOrder = (nuevoCriterio) => {
