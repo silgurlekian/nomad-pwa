@@ -16,6 +16,8 @@ const SpacesList = () => {
   const [favoritos, setFavoritos] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
+  const [mostrarCancelarUbicacion, setMostrarCancelarUbicacion] =
+    useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
@@ -43,6 +45,8 @@ const SpacesList = () => {
               response.data.address.village ||
               response.data.address.county;
             setUbicacionDetectada(ciudad);
+            setSearchTerms(ciudad);
+            setMostrarCancelarUbicacion(true);
             resolve(ciudad);
           } catch (error) {
             console.error("Error al obtener la ciudad:", error);
@@ -56,6 +60,12 @@ const SpacesList = () => {
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
     });
+  };
+
+  const cancelarUbicacion = () => {
+    setSearchTerms("");
+    setMostrarCancelarUbicacion(false);
+    setSpacesFiltered(espacios);
   };
 
   const handleFavoriteToggle = async (espacioId, isFavorite) => {
@@ -137,11 +147,11 @@ const SpacesList = () => {
           "https://nomad-vzpq.onrender.com/api/spaces"
         );
         setSpaces(respuesta.data);
-        
+
         // Attempt to detect location when spaces are first loaded
         try {
           const ciudadDetectada = await solicitarPermisoUbicacion();
-          
+
           // Automatically filter spaces by detected location
           const espaciosCiudad = respuesta.data.filter((espacio) =>
             espacio.ciudad
@@ -149,7 +159,7 @@ const SpacesList = () => {
               .trim()
               .includes(ciudadDetectada.toLowerCase().trim())
           );
-          
+
           // If spaces are found in the detected city, set them as filtered
           // Otherwise, keep all spaces
           setSpacesFiltered(
@@ -192,6 +202,15 @@ const SpacesList = () => {
     const valor = event.target.value.trim();
     setSearchTerms(valor);
 
+    // Si se modifica la búsqueda, eliminar la ubicación detectada
+    if (valor !== ubicacionDetectada) {
+      document.getElementById('elementoAOcultar').style.display = 'none';
+      setUbicacionDetectada(null);
+    }
+
+    // Actualizar visibilidad del botón de cancelar ubicación
+    setMostrarCancelarUbicacion(valor !== ubicacionDetectada);
+
     // Filter spaces based on search term
     const filtrados = espacios.filter(
       (espacio) =>
@@ -200,22 +219,12 @@ const SpacesList = () => {
         espacio.ciudad.toLowerCase().includes(valor.toLowerCase())
     );
 
-    // If no search term and a location was detected, filter by location
-    if (!valor && ubicacionDetectada) {
-      const espaciosCiudad = espacios.filter((espacio) =>
-        espacio.ciudad
-          .toLowerCase()
-          .trim()
-          .includes(ubicacionDetectada.toLowerCase().trim())
-      );
-      
-      setSpacesFiltered(
-        espaciosCiudad.length > 0 ? espaciosCiudad : espacios
-      );
-    } else {
-      // Otherwise, use the filtered results
-      setSpacesFiltered(filtrados);
-    }
+    // If no search results, show all spaces
+    setSpacesFiltered(
+      filtrados.length > 0
+        ? filtrados
+        : espacios
+    );
   };
 
   const ChageOrder = (nuevoCriterio) => {
@@ -251,13 +260,32 @@ const SpacesList = () => {
           value={terminoBusqueda}
           onChange={ChangeSearch}
           className="form-control"
-          style={{ paddingLeft: "30px" }}
+          style={{
+            paddingLeft: "30px",
+            paddingRight: mostrarCancelarUbicacion ? "60px" : "30px",
+          }}
         />
         <img
           src="/pwa/images/icons/search.svg"
           alt="Buscar"
           className="search-icon"
         />
+        {mostrarCancelarUbicacion && (
+          <img
+            src="/pwa/images/icons/close-circle.svg"
+            alt="Cancelar ubicación"
+            onClick={cancelarUbicacion}
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              width: "24px",
+              height: "24px",
+            }}
+          />
+        )}
       </div>
 
       <span className="d-none">{criterioOrdenacion}</span>
@@ -318,8 +346,11 @@ const SpacesList = () => {
         </div>
       </div>
 
-      {ubicacionDetectada !== "tu ubicación" ? (
-        <p className="texto-ubicacion">Espacios cerca de tu ubicación</p>
+      {ubicacionDetectada ? (
+        <p className="texto-ubicacion" id="elementoAOcultar">
+          {" "}
+          Mostrando espacios cerca de {ubicacionDetectada}
+        </p>
       ) : (
         <p className="texto-ubicacion"></p>
       )}
