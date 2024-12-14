@@ -12,12 +12,26 @@ const SpacesList = () => {
   const [error, setError] = useState(null);
   const [criterioOrdenacion, setOrderCriteria] = useState("alfabetico");
   const [modalVisible, setModalVisible] = useState(false);
+  const [filtersModalVisible, setFiltersModalVisible] = useState(false);
   const [ubicacionDetectada, setUbicacionDetectada] = useState(null);
   const [favoritos, setFavoritos] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
   const [mostrarCancelarUbicacion, setMostrarCancelarUbicacion] =
     useState(false);
+
+  // New state for filters
+  const [tipoEspaciosFiltros, setTipoEspaciosFiltros] = useState([]);
+  const [filtrosPrecio, setFiltrosPrecio] = useState({
+    min: 0,
+    max: 1000,
+  });
+  const [filtrosAplicados, setFiltrosAplicados] = useState({
+    tipos: [],
+    precioMin: 0,
+    precioMax: 1000,
+    busqueda: "",
+  });
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
@@ -147,6 +161,7 @@ const SpacesList = () => {
           "https://nomad-vzpq.onrender.com/api/spaces"
         );
         setSpaces(respuesta.data);
+        setSpacesFiltered(respuesta.data);
 
         // Intento de detectar la ubicación cuando los espacios se cargan por primera vez
         try {
@@ -183,6 +198,48 @@ const SpacesList = () => {
           }
         }
 
+        // Extraer tipos de espacios únicos
+        const tiposUnicos = [
+          ...new Set(
+            respuesta.data
+              .flatMap((espacio) => espacio.spacesType)
+              .filter((tipo) => tipo)
+              .map((tipo) => tipo.name)
+          ),
+        ];
+        setTipoEspaciosFiltros(tiposUnicos);
+
+        // Calcular rango de precios
+        const precios = respuesta.data.map((espacio) => espacio.precio);
+        setFiltrosPrecio({
+          min: Math.floor(Math.min(...precios)),
+          max: Math.ceil(Math.max(...precios)),
+        });
+
+        // Establecer filtros iniciales
+        const espaciosFiltradosIniciales = aplicarFiltrosYOrden(
+          respuesta.data,
+          filtrosAplicados,
+          criterioOrdenacion
+        );
+        setSpacesFiltered(espaciosFiltradosIniciales);
+
+        // Cargar favoritos del usuario
+        if (user && token) {
+          try {
+            const responseFavs = await axios.get(
+              "https://nomad-vzpq.onrender.com/api/favorites/user",
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const idsFavoritos = responseFavs.data.map(
+              (fav) => fav.spaceId._id
+            );
+            setFavoritos(idsFavoritos);
+          } catch (errorFavs) {
+            console.error("Error al cargar los favoritos:", errorFavs);
+          }
+        }
+
         setLoading(false);
       } catch (error) {
         console.error("Error al obtener los espacios de coworking:", error);
@@ -192,74 +249,194 @@ const SpacesList = () => {
     };
 
     getSpaces();
-  }, [user, token]);
+  }, [user, token, filtrosAplicados, criterioOrdenacion]);
 
-  const ChangeSearch = (event) => {
-    const valor = event.target.value.toLowerCase();
-    setSearchTerms(valor);
+  // Función centralizada de filtrado y ordenamiento
+  const aplicarFiltrosYOrden = (espacios, filtros, ordenamiento) => {
+    let filteredSpaces = [...espacios];
 
-    // Safely handle location detection comparison
-    const detectedLocationLower = ubicacionDetectada?.toLowerCase() || "";
+    // Filtrar por búsqueda de texto
+    if (filtros.busqueda) {
+      const palabrasBusqueda = filtros.busqueda
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((palabra) => palabra.length > 0);
 
-    // Si se modifica la búsqueda, eliminar la ubicación detectada
-    if (valor !== detectedLocationLower) {
-      const elementoAOcultar = document.getElementById("elementoAOcultar");
-      if (elementoAOcultar) {
-        elementoAOcultar.style.display = "none";
-      }
-      setUbicacionDetectada(null);
+      filteredSpaces = filteredSpaces.filter((espacio) =>
+        palabrasBusqueda.every(
+          (palabra) =>
+            espacio.nombre.toLowerCase().includes(palabra) ||
+            espacio.direccion.toLowerCase().includes(palabra) ||
+            espacio.ciudad.toLowerCase().includes(palabra)
+        )
+      );
     }
 
-    // Actualizar visibilidad del botón de cancelar ubicación
-    setMostrarCancelarUbicacion(valor !== detectedLocationLower);
+    // Filtrar por tipos de espacio
+    if (filtros.tipos.length > 0) {
+      filteredSpaces = filteredSpaces.filter((espacio) =>
+        espacio.spacesType.some((tipo) => filtros.tipos.includes(tipo.name))
+      );
+    }
 
-    // Filter spaces based on search words
-    const palabrasBusqueda = valor
-      .split(/\s+/)
-      .filter((palabra) => palabra.length > 0);
+    // Filtrar por precio
+    filteredSpaces = filteredSpaces.filter(
+      (espacio) =>
+        espacio.precio >= filtros.precioMin &&
+        espacio.precio <= filtros.precioMax
+    );
 
-    const filtrados =
-      palabrasBusqueda.length === 0
-        ? espacios
-        : espacios.filter((espacio) =>
-            palabrasBusqueda.every(
-              (palabra) =>
-                espacio.nombre
-                  .toLowerCase()
-                  .split(/\s+/)
-                  .some((nombrePalabra) => nombrePalabra.includes(palabra)) ||
-                espacio.direccion
-                  .toLowerCase()
-                  .split(/\s+/)
-                  .some((direccionPalabra) =>
-                    direccionPalabra.includes(palabra)
-                  ) ||
-                espacio.ciudad
-                  .toLowerCase()
-                  .split(/\s+/)
-                  .some((ciudadPalabra) => ciudadPalabra.includes(palabra))
-            )
-          );
+    // Ordenar
+    if (ordenamiento === "alfabetico") {
+      filteredSpaces.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    } else if (ordenamiento === "precio") {
+      filteredSpaces.sort((a, b) => a.precio - b.precio);
+    }
 
-    // Establecer espacios filtrados
-    setSpacesFiltered(filtrados);
+    return filteredSpaces;
+  };
+
+  const ChangeSearch = (event) => {
+    const valor = event.target.value;
+    setSearchTerms(valor); // Update the search term
+
+    // Reapply filters based on the updated search term
+    const espaciosFiltradosActualizados = aplicarFiltrosYOrden(
+      espacios,
+      { ...filtrosAplicados, busqueda: valor }, // Update only the search term in filters
+      criterioOrdenacion
+    );
+
+    setSpacesFiltered(espaciosFiltradosActualizados); // Update filtered spaces
+    setFiltrosAplicados((prev) => ({
+      ...prev,
+      busqueda: valor,
+    }));
   };
 
   const ChageOrder = (nuevoCriterio) => {
     setOrderCriteria(nuevoCriterio);
-    let ordenados;
 
-    if (nuevoCriterio === "alfabetico") {
-      ordenados = [...espaciosFiltrados].sort((a, b) =>
-        a.nombre.localeCompare(b.nombre)
-      );
-    } else if (nuevoCriterio === "precio") {
-      ordenados = [...espaciosFiltrados].sort((a, b) => a.precio - b.precio);
-    }
+    // Aplicar filtros y nuevo ordenamiento
+    const espaciosFiltradosOrdenados = aplicarFiltrosYOrden(
+      espacios,
+      filtrosAplicados,
+      nuevoCriterio
+    );
 
-    setSpacesFiltered(ordenados);
+    setSpacesFiltered(espaciosFiltradosOrdenados);
     setModalVisible(false);
   };
+
+  const aplicarFiltros = () => {
+    const espaciosFiltradosActualizados = aplicarFiltrosYOrden(
+      espacios,
+      filtrosAplicados,
+      criterioOrdenacion
+    );
+
+    setSpacesFiltered(espaciosFiltradosActualizados); // Apply filters and set state
+    setFiltersModalVisible(false);
+  };
+
+  const handleTipoEspacioToggle = (tipo) => {
+    setFiltrosAplicados((prev) => {
+      const nuevosTipos = prev.tipos.includes(tipo)
+        ? prev.tipos.filter((t) => t !== tipo)
+        : [...prev.tipos, tipo];
+
+      // Reapply filters immediately after updating types
+      const espaciosFiltradosActualizados = aplicarFiltrosYOrden(
+        espacios,
+        { ...prev, tipos: nuevosTipos }, // Use the updated filters
+        criterioOrdenacion
+      );
+
+      setSpacesFiltered(espaciosFiltradosActualizados); // Update filtered spaces
+
+      return { ...prev, tipos: nuevosTipos };
+    });
+  };
+
+  // Componente de modal de filtros
+  const FiltersModal = () => (
+    <div className={`drawer ${filtersModalVisible ? "modal-visible" : ""}`}>
+      <div className="modal-contenido">
+        <img
+          src="/pwa/images/icons/close-circle.svg"
+          alt="Cerrar"
+          onClick={() => setFiltersModalVisible(false)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            cursor: "pointer",
+          }}
+        />
+        <h3>Filtros</h3>
+
+        {/* Filtro de Tipos de Espacios */}
+        <div className="filtro-seccion">
+          <h4>Tipo de Espacio</h4>
+          {tipoEspaciosFiltros.map((tipo) => (
+            <div key={tipo} className="form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id={`tipo-${tipo}`}
+                checked={filtrosAplicados.tipos.includes(tipo)}
+                onChange={() => handleTipoEspacioToggle(tipo)}
+              />
+              <label className="form-check-label" htmlFor={`tipo-${tipo}`}>
+                {tipo}
+              </label>
+            </div>
+          ))}
+        </div>
+
+        {/* Filtro de Precio */}
+        <div className="filtro-seccion">
+          <h4>Precio por Hora</h4>
+          <div className="rango-precio">
+            <div className="d-flex justify-content-between mb-2">
+              <span>${filtrosAplicados.precioMin}</span>
+              <span>${filtrosAplicados.precioMax}</span>
+            </div>
+            <input
+              type="range"
+              className="form-range"
+              min={filtrosPrecio.min}
+              max={filtrosPrecio.max}
+              value={filtrosAplicados.precioMin}
+              onChange={(e) =>
+                setFiltrosAplicados((prev) => ({
+                  ...prev,
+                  precioMin: Number(e.target.value),
+                }))
+              }
+            />
+            <input
+              type="range"
+              className="form-range"
+              min={filtrosPrecio.min}
+              max={filtrosPrecio.max}
+              value={filtrosAplicados.precioMax}
+              onChange={(e) =>
+                setFiltrosAplicados((prev) => ({
+                  ...prev,
+                  precioMax: Number(e.target.value),
+                }))
+              }
+            />
+          </div>
+        </div>
+
+        <button className="btn btn-primary w-100 mt-3" onClick={aplicarFiltros}>
+          Aplicar Filtros
+        </button>
+      </div>
+    </div>
+  );
 
   if (cargando) return <Loading />;
 
@@ -300,25 +477,51 @@ const SpacesList = () => {
 
       <span className="d-none">{criterioOrdenacion}</span>
 
-      <div className="iconos-ordenar-filtrar">
-        <img
-          src="/pwa/images/icons/arrow-3.svg"
-          alt="Ordenar"
-          onClick={() => setModalVisible(true)}
-          className="icono-ordenar"
-          style={{ cursor: "pointer" }}
-        />
-        <span
-          onClick={() => setModalVisible(true)}
-          className="texto-ordenar"
-          style={{ cursor: "pointer", marginLeft: "8px" }}
-        >
-          Ordenar
-        </span>
-      </div>
+      <div className="d-flex gap-4">
+        <div className="iconos-ordenar-filtrar">
+          <img
+            src="/pwa/images/icons/arrow-3.svg"
+            alt="Ordenar"
+            onClick={() => setModalVisible(true)}
+            className="icono-ordenar"
+            style={{ cursor: "pointer" }}
+          />
+          <span
+            onClick={() => setModalVisible(true)}
+            className="texto-ordenar"
+            style={{ cursor: "pointer", marginLeft: "8px" }}
+          >
+            Ordenar
+          </span>
+        </div>
 
+        <div className="iconos-ordenar-filtrar">
+          <img
+            src="/pwa/images/icons/setting-4.svg"
+            alt="Filtrar"
+            onClick={() => setFiltersModalVisible(true)}
+            className="icono-ordenar"
+            style={{ cursor: "pointer" }}
+          />
+          <span
+            onClick={() => setFiltersModalVisible(true)}
+            className="texto-ordenar"
+            style={{ cursor: "pointer", marginLeft: "8px" }}
+          >
+            Filtrar
+          </span>
+        </div>
+      </div>
       {modalVisible && (
         <div className="overlay" onClick={() => setModalVisible(false)}></div>
+      )}
+
+      {/* Nuevo modal de filtros */}
+      {filtersModalVisible && (
+        <div
+          className="overlay"
+          onClick={() => setFiltersModalVisible(false)}
+        ></div>
       )}
 
       <div className={`drawer ${modalVisible ? "modal-visible" : ""}`}>
@@ -355,6 +558,8 @@ const SpacesList = () => {
           </ul>
         </div>
       </div>
+
+      <FiltersModal />
 
       {ubicacionDetectada ? (
         <p className="texto-ubicacion" id="elementoAOcultar">
