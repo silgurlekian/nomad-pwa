@@ -11,6 +11,10 @@
     text-align: left;
 }
 
+.campo-busqueda {
+    padding-left: 35px;
+}
+
 .search-icon {
     position: absolute;
     left: 10px;
@@ -214,8 +218,8 @@
     justify-content: center;
     padding: 8px;
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: 10px;
+    top: 10px;
 }
 
 .precio {

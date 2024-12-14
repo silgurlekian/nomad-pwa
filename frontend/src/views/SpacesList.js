@@ -269,9 +269,16 @@ const SpacesList = () => {
     getSpaces();
   }, [user, token, solicitarPermisoUbicacion]);
 
+  // Añadir un estado que controle si el campo tiene texto
+  const [mostrarBorrar, setMostrarBorrar] = useState(false);
+
+  // Modificar la función ChangeSearch para que actualice el estado de mostrarBorrar
   const ChangeSearch = (event) => {
     const valor = event.target.value;
     setSearchTerms(valor);
+
+    // Mostrar la cruz si el campo tiene texto
+    setMostrarBorrar(valor.length > 0);
 
     // Si el campo de búsqueda está vacío, limpiar la ubicación detectada
     if (valor === "") {
@@ -285,6 +292,13 @@ const SpacesList = () => {
       valor
     );
     setSpacesFiltered(espaciosFiltradosPorBusqueda);
+  };
+
+  // Función para limpiar el campo de búsqueda al hacer clic en la cruz
+  const limpiarBusqueda = () => {
+    setSearchTerms("");
+    setMostrarBorrar(false);
+    setSpacesFiltered(espacios);
   };
 
   const ChageOrder = (nuevoCriterio) => {
@@ -416,8 +430,12 @@ const SpacesList = () => {
           </div>
         </div>
 
-        <button onClick={aplicarFiltros} className="btn-primary mt-4">Aplicar filtros</button>
-        <button onClick={limpiarFiltros} className="link m-0">Limpiar filtros</button>
+        <button onClick={aplicarFiltros} className="btn-primary mt-4">
+          Aplicar filtros
+        </button>
+        <button onClick={limpiarFiltros} className="link m-0">
+          Limpiar filtros
+        </button>
       </div>
     </div>
   );
@@ -435,15 +453,16 @@ const SpacesList = () => {
       <div className="input-group mb-3" style={{ position: "relative" }}>
         <input
           type="text"
-          placeholder="Buscar espacios, ciudades..."
           value={terminoBusqueda}
           onChange={ChangeSearch}
-          className="form-control"
-          style={{
-            paddingLeft: "30px",
-            paddingRight: mostrarCancelarUbicacion ? "60px" : "30px",
-          }}
+          placeholder="Buscar espacios"
+          className="form-control campo-busqueda"
         />
+        {mostrarBorrar && (
+          <span className="clear-search" onClick={limpiarBusqueda}>
+            <img src="../pwa/images/icons/close-circle.svg" alt="" className="close-circle"/>
+          </span>
+        )}
         <img
           src="/pwa/images/icons/search.svg"
           alt="Buscar"
