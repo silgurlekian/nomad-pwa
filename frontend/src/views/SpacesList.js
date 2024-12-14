@@ -50,14 +50,15 @@ const SpacesList = () => {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           try {
+            // Replace OpenStreetMap with OpenCage API
             const response = await axios.get(
-              `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+              `https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=b199cfdf173b45c6984a3a0e96040627`
             );
             const ciudad =
-              response.data.address.city ||
-              response.data.address.town ||
-              response.data.address.village ||
-              response.data.address.county;
+              response.data.results[0].components.city ||
+              response.data.results[0].components.town ||
+              response.data.results[0].components.village ||
+              response.data.results[0].components.county;
             setUbicacionDetectada(ciudad);
             setSearchTerms(ciudad);
             setMostrarCancelarUbicacion(true);
