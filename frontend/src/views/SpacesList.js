@@ -43,7 +43,7 @@ const SpacesList = () => {
 
   const solicitarPermisoUbicacion = useCallback(async () => {
     if (ubicacionObtenida) return; // Si la ubicación ya fue obtenida, no hacer nada
-    
+
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         reject(new Error("Geolocalización no soportada por este navegador."));
@@ -158,7 +158,10 @@ const SpacesList = () => {
       let filteredSpaces = [...espacios];
 
       if (busqueda) {
+        // Normalizar el término de búsqueda
         const palabrasBusqueda = busqueda
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
           .toLowerCase()
           .split(/\s+/)
           .filter((palabra) => palabra.length > 0);
@@ -166,9 +169,21 @@ const SpacesList = () => {
         filteredSpaces = filteredSpaces.filter((espacio) =>
           palabrasBusqueda.every(
             (palabra) =>
-              espacio.nombre.toLowerCase().includes(palabra) ||
-              espacio.direccion.toLowerCase().includes(palabra) ||
-              espacio.ciudad.toLowerCase().includes(palabra)
+              espacio.nombre
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .includes(palabra) ||
+              espacio.direccion
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .includes(palabra) ||
+              espacio.ciudad
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .includes(palabra)
           )
         );
       }
@@ -289,11 +304,16 @@ const SpacesList = () => {
       setUbicacionDetectada(null);
     }
 
+    // Normalizar el valor de búsqueda eliminando acentos y caracteres especiales
+    const valorNormalizado = valor
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
     const espaciosFiltradosPorBusqueda = aplicarFiltrosYOrden(
       espacios,
       filtrosAplicados,
       orderCriteria,
-      valor
+      valorNormalizado
     );
     setSpacesFiltered(espaciosFiltradosPorBusqueda);
   };
@@ -464,7 +484,11 @@ const SpacesList = () => {
         />
         {mostrarBorrar && (
           <span className="clear-search" onClick={limpiarBusqueda}>
-            <img src="../pwa/images/icons/close-circle.svg" alt="" className="close-circle"/>
+            <img
+              src="../pwa/images/icons/close-circle.svg"
+              alt=""
+              className="close-circle"
+            />
           </span>
         )}
         <img
