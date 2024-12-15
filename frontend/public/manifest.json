@@ -1,8 +1,8 @@
 {
   "name": "nomad",
   "short_name": "nomad",
-  "theme_color": "#FF4500",
-  "background_color": "#fff",
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF",
   "display": "fullscreen",
   "orientation": "portrait",
   "scope": "/pwa/",
