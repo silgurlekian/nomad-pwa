@@ -144,7 +144,7 @@ const SpacesList = () => {
   const toggleFavorite = async (spaceId) => {
     try {
       await axios.post(
-        "https://nomad-vzpq.onrender.com/api/favorites",
+        "https://nomad-znm2.onrender.com/api/favorites",
         { spaceId },
         {
           headers: {
@@ -166,7 +166,7 @@ const SpacesList = () => {
   const removeFavorite = async (espacioId) => {
     try {
       const favoritosUsuario = await axios.get(
-        "https://nomad-vzpq.onrender.com/api/favorites/user",
+        "https://nomad-znm2.onrender.com/api/favorites/user",
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const favoriteToDelete = favoritosUsuario.data.find(
@@ -174,7 +174,7 @@ const SpacesList = () => {
       );
       if (favoriteToDelete) {
         await axios.delete(
-          `https://nomad-vzpq.onrender.com/api/favorites/${favoriteToDelete._id}`,
+          `https://nomad-znm2.onrender.com/api/favorites/${favoriteToDelete._id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setFavoritos((prevFavoritos) =>
@@ -236,47 +236,39 @@ const SpacesList = () => {
   // Efecto para cargar espacios y detectar ubicación
   useEffect(() => {
     const getSpaces = async () => {
-      try {
-        const respuesta = await axios.get(
-          "https://nomad-vzpq.onrender.com/api/spaces"
-        );
-        setSpaces(respuesta.data);
-
+        setLoading(true); // Establecer carga antes de comenzar
         try {
-          await solicitarPermisoUbicacion();
-        } catch (locationError) {
-          console.warn("No se pudo detectar la ubicación automáticamente.");
-        }
+            const respuesta = await axios.get("https://nomad-znm2.onrender.com/api/spaces");
+            const espaciosData = respuesta.data;
+            setSpaces(espaciosData);
 
-        // Filtrar espacios según la ciudad detectada
-        if (ubicacionDetectada) {
-          const espaciosCiudad = respuesta.data.filter((espacio) =>
-            espacio.ciudad
-              .toLowerCase()
-              .includes(ubicacionDetectada.toLowerCase())
-          );
-          setSpacesFiltered(
-            espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data
-          );
-        } else {
-          setSpacesFiltered(respuesta.data);
+            // Intentar detectar la ubicación
+            try {
+                const ciudadDetectada = await solicitarPermisoUbicacion();
+                const espaciosCiudad = espaciosData.filter((espacio) =>
+                    espacio.ciudad.toLowerCase().includes(ciudadDetectada.toLowerCase())
+                );
+                setSpacesFiltered(espaciosCiudad.length > 0 ? espaciosCiudad : espaciosData);
+            } catch (locationError) {
+                console.warn("No se pudo detectar la ubicación automáticamente.");
+                setSpacesFiltered(espaciosData); // Mostrar todos los espacios si falla la detección
+            }
+        } catch (error) {
+            console.error("Error al obtener los espacios:", error);
+        } finally {
+            setLoading(false); // Cambiar a false después de completar el filtrado
         }
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error al obtener los espacios:", error);
-        setLoading(false);
-      }
     };
 
     getSpaces();
-  }, [solicitarPermisoUbicacion, ubicacionDetectada]);
+}, [solicitarPermisoUbicacion]);
+
 
   useEffect(() => {
     const getSpaces = async () => {
       try {
         const respuesta = await axios.get(
-          "https://nomad-vzpq.onrender.com/api/spaces"
+          "https://nomad-znm2.onrender.com/api/spaces"
         );
         const espaciosData = respuesta.data;
 
@@ -285,7 +277,7 @@ const SpacesList = () => {
         if (user && token) {
           try {
             const responseFavs = await axios.get(
-              "https://nomad-vzpq.onrender.com/api/favorites/user",
+              "https://nomad-znm2.onrender.com/api/favorites/user",
               { headers: { Authorization: `Bearer ${token}` } }
             );
             const idsFavoritos = responseFavs.data.map(
@@ -639,7 +631,7 @@ const SpacesList = () => {
                   alt={espacio.nombre}
                   src={
                     espacio.imagen
-                      ? `https://nomad-vzpq.onrender.com/${espacio.imagen}`
+                      ? `https://nomad-znm2.onrender.com/${espacio.imagen}`
                       : "default-image.png"
                   }
                 />
