@@ -25,6 +25,7 @@ const Reservation = () => {
   });
   const [reservationSuccess, setReservationSuccess] = useState(false);
 
+  // Obtener el nombre del usuario desde localStorage
   useEffect(() => {
     const checkLoginStatus = () => {
       const token = localStorage.getItem("token");
@@ -41,12 +42,24 @@ const Reservation = () => {
       }
     };
 
+    // Obtener detalles del espacio si están disponibles
     if (location.state?.spaceDetails) {
       setSpaceDetails(location.state.spaceDetails);
     }
 
     checkLoginStatus();
   }, [location, navigate]);
+
+  // Cargar el nombre del usuario desde el almacenamiento local
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setReservationData((prev) => ({
+        ...prev,
+        fullName: storedUser.nombre, // Asignar el nombre del usuario
+      }));
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -187,7 +200,7 @@ const Reservation = () => {
                 <img
                   src="/pwa/images/icons/warning.svg"
                   alt="Advertencia"
-                  style={{ width: "16px", height: "16px" }}
+                  style={{ width: "16px" }}
                 />
                 {errors.fullName}
               </p>

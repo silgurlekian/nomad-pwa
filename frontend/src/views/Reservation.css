@@ -55,3 +55,19 @@
     height: 100px;
     margin-bottom: 15px;
   }
+
+  input[type="time"] {
+    background-image: url('../../public/images/icons/clock.svg');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px; /* Ajusta el tamaño del icono según lo necesites */
+    padding-right: 30px; /* Ajusta el espacio a la derecha para que el texto no se solape con el icono */
+  }
+
+  input[type="date"] {
+    background-image: url('../../public/images/icons/calendar.svg');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px; /* Ajusta el tamaño del icono según lo necesites */
+    padding-right: 30px; /* Ajusta el espacio a la derecha para que el texto no se solape con el icono */
+  }
