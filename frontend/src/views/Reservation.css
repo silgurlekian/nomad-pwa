@@ -1,73 +1,73 @@
 .reservation-container {
-    padding: 20px;
-  }
-  
-  .space-info {
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .reservation-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group label {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .form-group input,
-  .form-group textarea {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .error-message {
-    color: red;
-    margin-bottom: 10px;
-  }
-  
-  .login-prompt, .reservation-success {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .login-content, .success-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-  }
-  
-  .success-icon {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 15px;
-  }
+  padding: 20px;
+}
 
-  input[type="time"] {
-    background-image: url('../../public/images/icons/clock.svg');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px; /* Ajusta el tamaño del icono según lo necesites */
-    padding-right: 30px; /* Ajusta el espacio a la derecha para que el texto no se solape con el icono */
-  }
+.space-info {
+  margin-bottom: 20px;
+  text-align: center;
+}
 
-  input[type="date"] {
-    background-image: url('../../public/images/icons/calendar.svg');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px; /* Ajusta el tamaño del icono según lo necesites */
-    padding-right: 30px; /* Ajusta el espacio a la derecha para que el texto no se solape con el icono */
-  }
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.login-prompt, .reservation-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.login-content, .success-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.success-icon {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 15px;
+}
+
+input[type="time"] {
+  background-image: url('../../public/images/icons/clock.svg');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 30px;
+}
+
+input[type="date"] {
+  background-image: url('../../public/images/icons/calendar.svg');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 30px;
+}

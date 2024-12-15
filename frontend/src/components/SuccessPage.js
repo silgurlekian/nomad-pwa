@@ -6,7 +6,11 @@ const SuccessPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const reservation = location.state?.reservation;
-  const spaceDetails = location.state?.spaceDetails; // Obtener los detalles del espacio
+  const spaceDetails = location.state?.spaceDetails;
+
+  // Agrega un console.log para verificar
+  console.log('Reservation:', reservation);
+  console.log('Space Details:', spaceDetails);
 
   const handleRedirect = () => {
     navigate("/home");
@@ -23,7 +27,7 @@ const SuccessPage = () => {
         <br />
         Se te cobrará en el lugar directamente.
       </p>
-      <div className="reservation-code">{reservation?.code || "FGHJ56"}</div>
+      <div className="reservation-code">{reservation?.code}</div>
       <div className="reservation-details">
         <div className="d-flex space-detail">
           <p>{spaceDetails?.nombre || "Nombre no disponible"}</p>

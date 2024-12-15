@@ -187,7 +187,6 @@ const MyAccount = () => {
                     {reservation.spaceAddress || "Sin dirección"},
                     {reservation.spaceCity || "Sin ciudad"}
                   </p>
-
                   <p className="reservation-date">
                     <img
                       src="../pwa/images/icons/calendar.svg"
@@ -202,14 +201,17 @@ const MyAccount = () => {
                     />
                     {reservation.startTime} - {reservation.endTime}
                   </p>
+                  <p className="reservation-date">
+                    Código de reserva: {reservation.code || "Sin código"}
+                  </p>
+                  <button
+                    className="link justify-content-start p-0 mt-3"
+                    onClick={() => handleShowModal(reservation._id)}
+                  >
+                    Cancelar reserva
+                  </button>
                 </div>
               </div>
-              <button
-                className="link m-0"
-                onClick={() => handleShowModal(reservation._id)}
-              >
-                Cancelar reserva
-              </button>
             </div>
           ))
         )}

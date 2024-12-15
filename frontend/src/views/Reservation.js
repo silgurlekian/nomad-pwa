@@ -116,6 +116,18 @@ const Reservation = () => {
       return;
     }
 
+    const generateRandomCode = () => {
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let code = "";
+      for (let i = 0; i < 6; i++) {
+        code += characters.charAt(
+          Math.floor(Math.random() * characters.length)
+        );
+      }
+      console.log("Generated Code:", code); 
+      return code;
+    };
+
     const reservationDataToSend = {
       userId: "", // El userId lo toma del token JWT
       fullName: reservationData.fullName,
@@ -125,6 +137,7 @@ const Reservation = () => {
       additionalNotes: reservationData.additionalNotes,
       numberOfPlaces: reservationData.numberOfPlaces,
       spaceId: spaceDetails?._id || "", // Incluye el ID del espacio reservado
+      code: generateRandomCode(),
     };
 
     try {
