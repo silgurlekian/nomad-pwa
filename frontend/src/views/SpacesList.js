@@ -236,33 +236,36 @@ const SpacesList = () => {
   // Efecto para cargar espacios y detectar ubicación
   useEffect(() => {
     const getSpaces = async () => {
-        setLoading(true); // Establecer carga antes de comenzar
-        try {
-            const respuesta = await axios.get("https://nomad-znm2.onrender.com/api/spaces");
-            const espaciosData = respuesta.data;
-            setSpaces(espaciosData);
+      setLoading(true); // Establecer carga antes de comenzar
+      try {
+        const respuesta = await axios.get(
+          "https://nomad-znm2.onrender.com/api/spaces"
+        );
+        const espaciosData = respuesta.data;
+        setSpaces(espaciosData);
 
-            // Intentar detectar la ubicación
-            try {
-                const ciudadDetectada = await solicitarPermisoUbicacion();
-                const espaciosCiudad = espaciosData.filter((espacio) =>
-                    espacio.ciudad.toLowerCase().includes(ciudadDetectada.toLowerCase())
-                );
-                setSpacesFiltered(espaciosCiudad.length > 0 ? espaciosCiudad : espaciosData);
-            } catch (locationError) {
-                console.warn("No se pudo detectar la ubicación automáticamente.");
-                setSpacesFiltered(espaciosData); // Mostrar todos los espacios si falla la detección
-            }
-        } catch (error) {
-            console.error("Error al obtener los espacios:", error);
-        } finally {
-            setLoading(false); // Cambiar a false después de completar el filtrado
+        // Intentar detectar la ubicación
+        try {
+          const ciudadDetectada = await solicitarPermisoUbicacion();
+          const espaciosCiudad = espaciosData.filter((espacio) =>
+            espacio.ciudad.toLowerCase().includes(ciudadDetectada.toLowerCase())
+          );
+          setSpacesFiltered(
+            espaciosCiudad.length > 0 ? espaciosCiudad : espaciosData
+          );
+        } catch (locationError) {
+          console.warn("No se pudo detectar la ubicación automáticamente.");
+          setSpacesFiltered(espaciosData); // Mostrar todos los espacios si falla la detección
         }
+      } catch (error) {
+        console.error("Error al obtener los espacios:", error);
+      } finally {
+        setLoading(false); // Cambiar a false después de completar el filtrado
+      }
     };
 
     getSpaces();
-}, [solicitarPermisoUbicacion]);
-
+  }, [solicitarPermisoUbicacion]);
 
   useEffect(() => {
     const getSpaces = async () => {
@@ -500,6 +503,16 @@ const SpacesList = () => {
           alt="Buscar"
           className="search-icon"
         />
+
+        {terminoBusqueda && (
+          <button className="clear-button" onClick={cancelarUbicacion}>
+            <img
+              src="../pwa/images/icons/close-circle.svg"
+              alt="Limpiar búsqueda"
+              className="clear-icon"
+            />
+          </button>
+        )}
         {mostrarCancelarUbicacion && (
           <img
             src="/pwa/images/icons/close-circle.svg"

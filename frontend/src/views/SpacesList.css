@@ -230,3 +230,18 @@
     color: #39A58E;
     text-decoration: none;
 }
+
+.clear-button {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .clear-icon {
+    width: 24px;
+    height: 24px;
+  }
