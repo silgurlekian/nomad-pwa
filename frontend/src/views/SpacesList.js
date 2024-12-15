@@ -39,23 +39,58 @@ const SpacesList = () => {
     navigate(`/spaces/${espacio._id}`, { state: { espacio } });
   };
 
+  // const solicitarPermisoUbicacion = useCallback(async () => {
+  //   return new Promise((resolve, reject) => {
+  //     if (!navigator.geolocation) {
+  //       reject(new Error("Geolocalización no soportada por este navegador."));
+  //       return;
+  //     }
+  //     navigator.geolocation.getCurrentPosition(
+  //       async (position) => {
+  //         try {
+  //           const response = await axios.get(
+  //             `https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=fa620e3b72fa483bb811eae62f867e36`
+  //           );
+  //           const ciudad =
+  //             response.data.results[0].components.city ||
+  //             response.data.results[0].components.town ||
+  //             response.data.results[0].components.village ||
+  //             response.data.results[0].components.county;
+  //           setUbicacionDetectada(ciudad);
+  //           setSearchTerms(ciudad);
+  //           setMostrarCancelarUbicacion(true);
+  //           resolve(ciudad);
+  //         } catch (error) {
+  //           console.error("Error al obtener la ciudad:", error);
+  //           reject(error);
+  //         }
+  //       },
+  //       (error) => {
+  //         console.error("Error al obtener la ubicación:", error);
+  //         reject(error);
+  //       },
+  //       { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+  //     );
+  //   });
+  // }, []);
+
   const solicitarPermisoUbicacion = useCallback(async () => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         reject(new Error("Geolocalización no soportada por este navegador."));
         return;
       }
+
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           try {
             const response = await axios.get(
-              `https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=b199cfdf173b45c6984a3a0e96040627`
+              `https://ipinfo.io?token=f2427583b004d2`
             );
             const ciudad =
-              response.data.results[0].components.city ||
-              response.data.results[0].components.town ||
-              response.data.results[0].components.village ||
-              response.data.results[0].components.county;
+              response.data.city ||
+              response.data.region ||
+              "Ubicación no disponible";
             setUbicacionDetectada(ciudad);
             setSearchTerms(ciudad);
             setMostrarCancelarUbicacion(true);
@@ -75,9 +110,18 @@ const SpacesList = () => {
   }, []);
 
   const cancelarUbicacion = () => {
-    setSearchTerms("");
+    setSearchTerms(""); // Limpiar la búsqueda
     setMostrarCancelarUbicacion(false);
-    setSpacesFiltered(espacios);
+    setUbicacionDetectada(null); // Asegúrate de resetear la ubicación detectada también
+
+    // Aquí actualizamos el filtro para que no se aplique la búsqueda por ubicación
+    const espaciosFiltradosActualizados = aplicarFiltrosYOrden(
+      espacios,
+      filtrosAplicados,
+      orderCriteria,
+      ""
+    );
+    setSpacesFiltered(espaciosFiltradosActualizados);
   };
 
   const handleFavoriteToggle = async (espacioId, isFavorite) => {
