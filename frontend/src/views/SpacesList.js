@@ -190,12 +190,16 @@ const SpacesList = () => {
     }
   };
 
+  const quitarAcentos = (texto) => {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  };
+
   const aplicarFiltrosYOrden = useCallback(
     (espacios, filtros, ordenamiento, busqueda) => {
       let filteredSpaces = [...espacios];
 
       if (busqueda) {
-        const palabrasBusqueda = busqueda
+        const palabrasBusqueda = quitarAcentos(busqueda)
           .toLowerCase()
           .split(/\s+/)
           .filter((palabra) => palabra.length > 0);
@@ -203,9 +207,11 @@ const SpacesList = () => {
         filteredSpaces = filteredSpaces.filter((espacio) =>
           palabrasBusqueda.every(
             (palabra) =>
-              espacio.nombre.toLowerCase().includes(palabra) ||
-              espacio.direccion.toLowerCase().includes(palabra) ||
-              espacio.ciudad.toLowerCase().includes(palabra)
+              quitarAcentos(espacio.nombre).toLowerCase().includes(palabra) ||
+              quitarAcentos(espacio.direccion)
+                .toLowerCase()
+                .includes(palabra) ||
+              quitarAcentos(espacio.ciudad).toLowerCase().includes(palabra)
           )
         );
       }
@@ -366,16 +372,16 @@ const SpacesList = () => {
   };
 
   const limpiarFiltros = () => {
-    const precios = espacios.map(espacio => espacio.precio);
+    const precios = espacios.map((espacio) => espacio.precio);
     const precioMin = Math.min(...precios);
     const precioMax = Math.max(...precios);
-  
+
     setFiltrosAplicados({
       tipos: [],
       precioMin,
       precioMax,
     });
-  
+
     setSpacesFiltered(espacios);
   };
 
