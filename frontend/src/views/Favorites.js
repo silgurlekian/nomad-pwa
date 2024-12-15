@@ -22,7 +22,7 @@ const Favorites = () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          navigate("/login");
+          setCargando(false);
           return;
         }
 
@@ -51,7 +51,7 @@ const Favorites = () => {
     if (storedUser) {
       getFavorites();
     } else {
-      navigate("/login");
+      setCargando(false); // Fin de la carga si no hay usuario
     }
   }, [storedUser, navigate]);
 
@@ -101,7 +101,7 @@ const Favorites = () => {
   if (!storedUser) {
     return (
       <div>
-        <HeaderSection />
+        <HeaderSection title="Favoritos" />
         <div className="my-account text-center">
           <img
             src="../pwa/images/icons/warning-big.svg"
@@ -113,6 +113,7 @@ const Favorites = () => {
             Iniciar Sesión
           </button>
         </div>
+        <Navbar />
       </div>
     );
   }

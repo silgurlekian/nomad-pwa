@@ -56,7 +56,7 @@ const MyAccount = () => {
               };
             }
 
-            return reserva; 
+            return reserva;
           })
         );
 
@@ -131,6 +131,7 @@ const MyAccount = () => {
             Iniciar Sesión
           </button>
         </div>
+        <Navbar />
       </div>
     );
   }
@@ -216,17 +217,30 @@ const MyAccount = () => {
 
       {/* Modal Bootstrap */}
       {showModal && (
-        <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div
+          className="modal fade show"
+          style={{ display: "block" }}
+          tabIndex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">Confirmar cancelación</h5>
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Confirmar cancelación
+                </h5>
               </div>
               <div className="modal-body">
                 ¿Estás seguro de que deseas cancelar esta reserva?
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseModal}
+                >
                   Cancelar
                 </button>
                 <button
