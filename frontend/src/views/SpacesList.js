@@ -321,6 +321,24 @@ const SpacesList = () => {
     });
   };
 
+  const handlePrecioMinChange = (e) => {
+    const newPrecioMin = Number(e.target.value);
+    setFiltrosAplicados((prev) => {
+      const newPrecioMax =
+        newPrecioMin > prev.precioMax ? newPrecioMin : prev.precioMax;
+      return { ...prev, precioMin: newPrecioMin, precioMax: newPrecioMax };
+    });
+  };
+
+  const handlePrecioMaxChange = (e) => {
+    const newPrecioMax = Number(e.target.value);
+    setFiltrosAplicados((prev) => {
+      const newPrecioMin =
+        newPrecioMax < prev.precioMin ? newPrecioMax : prev.precioMin;
+      return { ...prev, precioMax: newPrecioMax, precioMin: newPrecioMin };
+    });
+  };
+
   const FiltersModal = () => (
     <div className={`drawer ${filtersModalVisible ? "modal-visible" : ""}`}>
       <div className="modal-contenido">
@@ -371,12 +389,7 @@ const SpacesList = () => {
               min={filtrosPrecio.min}
               max={filtrosPrecio.max}
               value={filtrosAplicados.precioMin}
-              onChange={(e) =>
-                setFiltrosAplicados((prev) => ({
-                  ...prev,
-                  precioMin: Number(e.target.value),
-                }))
-              }
+              onChange={handlePrecioMinChange}
             />
 
             <span>Máximo: ${filtrosAplicados.precioMax}</span>
@@ -386,12 +399,7 @@ const SpacesList = () => {
               min={filtrosPrecio.min}
               max={filtrosPrecio.max}
               value={filtrosAplicados.precioMax}
-              onChange={(e) =>
-                setFiltrosAplicados((prev) => ({
-                  ...prev,
-                  precioMax: Number(e.target.value),
-                }))
-              }
+              onChange={handlePrecioMaxChange}
             />
           </div>
         </div>
