@@ -302,11 +302,20 @@ const SpacesList = () => {
         ];
         setTipoEspaciosFiltros(tiposUnicos);
 
+        // Ajuste de los filtros de precio solo después de obtener los datos
         const precios = espaciosData.map((espacio) => espacio.precio);
         setFiltrosPrecio({
           min: Math.floor(Math.min(...precios)),
           max: Math.ceil(Math.max(...precios)),
         });
+
+        // Aquí aplicas los filtros iniciales
+        const filtrosAplicadosActualizados = {
+          tipos: [],
+          precioMin: Math.floor(Math.min(...precios)),
+          precioMax: Math.ceil(Math.max(...precios)),
+        };
+        setFiltrosAplicados(filtrosAplicadosActualizados);
 
         setLoading(false);
       } catch (error) {
@@ -357,11 +366,16 @@ const SpacesList = () => {
   };
 
   const limpiarFiltros = () => {
+    const precios = espacios.map(espacio => espacio.precio);
+    const precioMin = Math.min(...precios);
+    const precioMax = Math.max(...precios);
+  
     setFiltrosAplicados({
       tipos: [],
-      precioMin: 0,
-      precioMax: 1000,
+      precioMin,
+      precioMax,
     });
+  
     setSpacesFiltered(espacios);
   };
 
