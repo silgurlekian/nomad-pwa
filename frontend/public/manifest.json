@@ -1,7 +1,7 @@
 {
   "name": "nomad",
   "short_name": "nomad",
-  "theme_color": "#fff",
+  "theme_color": "#FF4500",
   "background_color": "#fff",
   "display": "fullscreen",
   "orientation": "portrait",
@@ -69,5 +69,39 @@
   "lang": "es",
   "categories": [
     "lifestyle"
-  ]
+  ],
+  "display_override": [
+    "window-controls-overlay"
+  ],
+  "handle_links": {
+    "enabled": true,
+    "action": "/link-handler",
+    "accept": [
+      "https://www.nomad.com/spaces/*",
+      "https://nomad.com/book/*"
+    ]
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "nomad",
+      "url": "/link-handler?url=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/share-handler",
+    "accept": [
+      "image/*",
+      "text/*"
+    ]
+  },
+  "background_sync": {
+    "enabled": true
+  },
+  "periodic_sync": {
+    "enabled": true,
+    "interval": 86400000
+  },
+  "push": {
+    "enabled": true
+  }
 }
