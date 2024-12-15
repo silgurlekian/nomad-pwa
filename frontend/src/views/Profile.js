@@ -172,7 +172,7 @@ const MyAccount = () => {
           <p>No tienes reservas activas.</p>
         ) : (
           reservas.map((reservation) => (
-            <div key={reservation._id} className="reservation-container">
+            <div key={reservation._id} className="reservation-container mb-2">
               <div className="reservation">
                 <img
                   src={reservation.imagen || "../pwa/images/default-image.png"}
