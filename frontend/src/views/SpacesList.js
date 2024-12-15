@@ -14,23 +14,21 @@ const SpacesList = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [filtersModalVisible, setFiltersModalVisible] = useState(false);
   const [ubicacionDetectada, setUbicacionDetectada] = useState(null);
-  const [ubicacionObtenida, setUbicacionObtenida] = useState(false);
   const [favoritos, setFavoritos] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
   const [mostrarCancelarUbicacion, setMostrarCancelarUbicacion] =
     useState(false);
 
+  const [filtrosAplicados, setFiltrosAplicados] = useState({
+    tipos: [],
+    precioMin: 0,
+    precioMax: 1000,
+  });
   const [tipoEspaciosFiltros, setTipoEspaciosFiltros] = useState([]);
   const [filtrosPrecio, setFiltrosPrecio] = useState({
     min: 0,
     max: 1000,
-  });
-
-  const [filtrosAplicados, setFiltrosAplicados] = useState({
-    tipos: [],
-    precioMin: filtrosPrecio.min,
-    precioMax: filtrosPrecio.max,
   });
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -42,8 +40,6 @@ const SpacesList = () => {
   };
 
   const solicitarPermisoUbicacion = useCallback(async () => {
-    if (ubicacionObtenida) return; // Si la ubicación ya fue obtenida, no hacer nada
-
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         reject(new Error("Geolocalización no soportada por este navegador."));
@@ -63,7 +59,6 @@ const SpacesList = () => {
             setUbicacionDetectada(ciudad);
             setSearchTerms(ciudad);
             setMostrarCancelarUbicacion(true);
-            setUbicacionObtenida(true); // Marcar que la ubicación ha sido obtenida
             resolve(ciudad);
           } catch (error) {
             console.error("Error al obtener la ciudad:", error);
@@ -77,7 +72,7 @@ const SpacesList = () => {
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
     });
-  }, [ubicacionObtenida]);
+  }, []);
 
   const cancelarUbicacion = () => {
     setSearchTerms("");
@@ -158,10 +153,7 @@ const SpacesList = () => {
       let filteredSpaces = [...espacios];
 
       if (busqueda) {
-        // Normalizar el término de búsqueda
         const palabrasBusqueda = busqueda
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
           .toLowerCase()
           .split(/\s+/)
           .filter((palabra) => palabra.length > 0);
@@ -169,21 +161,9 @@ const SpacesList = () => {
         filteredSpaces = filteredSpaces.filter((espacio) =>
           palabrasBusqueda.every(
             (palabra) =>
-              espacio.nombre
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .includes(palabra) ||
-              espacio.direccion
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .includes(palabra) ||
-              espacio.ciudad
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .includes(palabra)
+              espacio.nombre.toLowerCase().includes(palabra) ||
+              espacio.direccion.toLowerCase().includes(palabra) ||
+              espacio.ciudad.toLowerCase().includes(palabra)
           )
         );
       }
@@ -260,21 +240,10 @@ const SpacesList = () => {
         ];
         setTipoEspaciosFiltros(tiposUnicos);
 
-        // Calcular el mínimo y máximo de los precios de los espacios
         const precios = espaciosData.map((espacio) => espacio.precio);
-        const precioMin = Math.floor(Math.min(...precios));
-        const precioMax = Math.ceil(Math.max(...precios));
-
-        // Establecer los filtros con el rango de precios calculado
         setFiltrosPrecio({
-          min: precioMin,
-          max: precioMax,
-        });
-
-        setFiltrosAplicados({
-          tipos: [],
-          precioMin: precioMin,
-          precioMax: precioMax,
+          min: Math.floor(Math.min(...precios)),
+          max: Math.ceil(Math.max(...precios)),
         });
 
         setLoading(false);
@@ -288,41 +257,17 @@ const SpacesList = () => {
     getSpaces();
   }, [user, token, solicitarPermisoUbicacion]);
 
-  // Añadir un estado que controle si el campo tiene texto
-  const [mostrarBorrar, setMostrarBorrar] = useState(false);
-
-  // Modificar la función ChangeSearch para que actualice el estado de mostrarBorrar
   const ChangeSearch = (event) => {
     const valor = event.target.value;
     setSearchTerms(valor);
-
-    // Mostrar la cruz si el campo tiene texto
-    setMostrarBorrar(valor.length > 0);
-
-    // Si el campo de búsqueda está vacío, limpiar la ubicación detectada
-    if (valor === "") {
-      setUbicacionDetectada(null);
-    }
-
-    // Normalizar el valor de búsqueda eliminando acentos y caracteres especiales
-    const valorNormalizado = valor
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
 
     const espaciosFiltradosPorBusqueda = aplicarFiltrosYOrden(
       espacios,
       filtrosAplicados,
       orderCriteria,
-      valorNormalizado
+      valor
     );
     setSpacesFiltered(espaciosFiltradosPorBusqueda);
-  };
-
-  // Función para limpiar el campo de búsqueda al hacer clic en la cruz
-  const limpiarBusqueda = () => {
-    setSearchTerms("");
-    setMostrarBorrar(false);
-    setSpacesFiltered(espacios);
   };
 
   const ChageOrder = (nuevoCriterio) => {
@@ -352,8 +297,8 @@ const SpacesList = () => {
   const limpiarFiltros = () => {
     setFiltrosAplicados({
       tipos: [],
-      precioMin: filtrosPrecio.min,
-      precioMax: filtrosPrecio.max,
+      precioMin: 0,
+      precioMax: 1000,
     });
     setSpacesFiltered(espacios);
   };
@@ -393,7 +338,7 @@ const SpacesList = () => {
         <h3>Filtros</h3>
 
         <div className="filtro-seccion mt-4">
-          <p>
+          <p className="mb-2">
             <strong>Tipo de espacio</strong>
           </p>
           {tipoEspaciosFiltros.map((tipo) => (
@@ -412,52 +357,49 @@ const SpacesList = () => {
           ))}
         </div>
 
-        <div className="filtro-seccion mt-4">
+        <div className="filtro-seccion mt-4 mb-4">
           <p>
             <strong>Precio por hora</strong>
           </p>
           <div className="rango-precio">
-            <div className="d-flex align-items-center gap-2 justify-content-between mb-2">
-              <div className="w-100">
-                <p className="m-0">Mínimo</p>
-                <input
-                  type="number"
-                  className="form-control"
-                  min={filtrosPrecio.min}
-                  max={filtrosPrecio.max}
-                  value={filtrosAplicados.precioMin}
-                  onChange={(e) =>
-                    setFiltrosAplicados((prev) => ({
-                      ...prev,
-                      precioMin: Number(e.target.value),
-                    }))
-                  }
-                />
-              </div>
-              <div className="w-100">
-                <p className="m-0">Máximo</p>
-                <input
-                  type="number"
-                  className="form-control"
-                  min={filtrosPrecio.min}
-                  max={filtrosPrecio.max}
-                  value={filtrosAplicados.precioMax}
-                  onChange={(e) =>
-                    setFiltrosAplicados((prev) => ({
-                      ...prev,
-                      precioMax: Number(e.target.value),
-                    }))
-                  }
-                />
-              </div>
+            <div className="d-flex justify-content-between mb-2">
+              <span>Mínimo: ${filtrosAplicados.precioMin}</span>
             </div>
+            <input
+              type="range"
+              className="form-range"
+              min={filtrosPrecio.min}
+              max={filtrosPrecio.max}
+              value={filtrosAplicados.precioMin}
+              onChange={(e) =>
+                setFiltrosAplicados((prev) => ({
+                  ...prev,
+                  precioMin: Number(e.target.value),
+                }))
+              }
+            />
+
+            <span>Máximo: ${filtrosAplicados.precioMax}</span>
+            <input
+              type="range"
+              className="form-range"
+              min={filtrosPrecio.min}
+              max={filtrosPrecio.max}
+              value={filtrosAplicados.precioMax}
+              onChange={(e) =>
+                setFiltrosAplicados((prev) => ({
+                  ...prev,
+                  precioMax: Number(e.target.value),
+                }))
+              }
+            />
           </div>
         </div>
 
-        <button onClick={aplicarFiltros} className="btn-primary mt-4">
+        <button onClick={aplicarFiltros} className="btn-primary">
           Aplicar filtros
         </button>
-        <button onClick={limpiarFiltros} className="link m-0">
+        <button onClick={limpiarFiltros} className="link mt-0">
           Limpiar filtros
         </button>
       </div>
@@ -477,20 +419,15 @@ const SpacesList = () => {
       <div className="input-group mb-3" style={{ position: "relative" }}>
         <input
           type="text"
+          placeholder="Buscar espacios, ciudades..."
           value={terminoBusqueda}
           onChange={ChangeSearch}
-          placeholder="Buscar espacios"
-          className="form-control campo-busqueda"
+          className="form-control"
+          style={{
+            paddingLeft: "30px",
+            paddingRight: mostrarCancelarUbicacion ? "60px" : "30px",
+          }}
         />
-        {mostrarBorrar && (
-          <span className="clear-search" onClick={limpiarBusqueda}>
-            <img
-              src="../pwa/images/icons/close-circle.svg"
-              alt=""
-              className="close-circle"
-            />
-          </span>
-        )}
         <img
           src="/pwa/images/icons/search.svg"
           alt="Buscar"
