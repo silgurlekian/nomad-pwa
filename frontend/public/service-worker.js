@@ -1,4 +1,4 @@
-const CACHE_NAME = "nomad-pwa-cache-v5"; 
+const CACHE_NAME = "nomad-pwa-cache-v1.1.3"; 
 const urlsToCache = [
   "/pwa/",
   "/pwa/index.html",
@@ -10,7 +10,7 @@ const urlsToCache = [
 
 // Instalación del Service Worker
 self.addEventListener("install", (event) => {
-  console.log("Service Worker instalado.");
+  console.log("Service Worker instalado.", CACHE_NAME);
 
   event.waitUntil(
     caches

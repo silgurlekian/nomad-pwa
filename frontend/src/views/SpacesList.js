@@ -80,7 +80,6 @@ const SpacesList = () => {
         reject(new Error("Geolocalización no soportada por este navegador."));
         return;
       }
-
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           try {
@@ -93,7 +92,6 @@ const SpacesList = () => {
               "Ubicación no disponible";
             setUbicacionDetectada(ciudad);
             setSearchTerms(ciudad);
-            setMostrarCancelarUbicacion(true);
             resolve(ciudad);
           } catch (error) {
             console.error("Error al obtener la ciudad:", error);
@@ -235,6 +233,45 @@ const SpacesList = () => {
     []
   );
 
+  // Efecto para cargar espacios y detectar ubicación
+  useEffect(() => {
+    const getSpaces = async () => {
+      try {
+        const respuesta = await axios.get(
+          "https://nomad-vzpq.onrender.com/api/spaces"
+        );
+        setSpaces(respuesta.data);
+
+        try {
+          await solicitarPermisoUbicacion();
+        } catch (locationError) {
+          console.warn("No se pudo detectar la ubicación automáticamente.");
+        }
+
+        // Filtrar espacios según la ciudad detectada
+        if (ubicacionDetectada) {
+          const espaciosCiudad = respuesta.data.filter((espacio) =>
+            espacio.ciudad
+              .toLowerCase()
+              .includes(ubicacionDetectada.toLowerCase())
+          );
+          setSpacesFiltered(
+            espaciosCiudad.length > 0 ? espaciosCiudad : respuesta.data
+          );
+        } else {
+          setSpacesFiltered(respuesta.data);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error al obtener los espacios:", error);
+        setLoading(false);
+      }
+    };
+
+    getSpaces();
+  }, [solicitarPermisoUbicacion, ubicacionDetectada]);
+
   useEffect(() => {
     const getSpaces = async () => {
       try {
@@ -244,20 +281,6 @@ const SpacesList = () => {
         const espaciosData = respuesta.data;
 
         setSpaces(espaciosData);
-
-        try {
-          const ciudadDetectada = await solicitarPermisoUbicacion();
-          const espaciosCiudad = espaciosData.filter((espacio) =>
-            espacio.ciudad.toLowerCase().includes(ciudadDetectada.toLowerCase())
-          );
-
-          setSpacesFiltered(
-            espaciosCiudad.length > 0 ? espaciosCiudad : espaciosData
-          );
-        } catch (locationError) {
-          setSpacesFiltered(espaciosData);
-          console.warn("No se pudo detectar la ubicación automáticamente.");
-        }
 
         if (user && token) {
           try {
@@ -299,7 +322,7 @@ const SpacesList = () => {
     };
 
     getSpaces();
-  }, [user, token, solicitarPermisoUbicacion]);
+  }, [user, token]);
 
   const ChangeSearch = (event) => {
     const valor = event.target.value;
