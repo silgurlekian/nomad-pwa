@@ -28,7 +28,7 @@ const Favorites = () => {
 
         // Obtener los favoritos del usuario
         const { data } = await axios.get(
-          "https://nomad-vzpq.onrender.com/api/favorites/user",
+          "https://nomad-znm2.onrender.com/api/favorites/user",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -74,7 +74,7 @@ const Favorites = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `https://nomad-vzpq.onrender.com/api/favorites/${favoriteToRemove}`,
+        `https://nomad-znm2.onrender.com/api/favorites/${favoriteToRemove}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -147,7 +147,7 @@ const Favorites = () => {
                     alt={favorite.spaceId.nombre || "Nombre no disponible"}
                     src={
                       favorite.spaceId.imagen
-                        ? `https://nomad-vzpq.onrender.com/${favorite.spaceId.imagen}`
+                        ? `https://nomad-znm2.onrender.com/${favorite.spaceId.imagen}`
                         : "default-image.png"
                     }
                   />

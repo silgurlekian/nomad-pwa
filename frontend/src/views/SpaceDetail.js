@@ -35,7 +35,7 @@ const SpaceDetail = () => {
     const isLoggedIn = localStorage.getItem("userToken");
     setUsuarioLogueado(isLoggedIn ? true : false);
 
-    fetch(`https://nomad-vzpq.onrender.com/api/spaces/${id}`)
+    fetch(`https://nomad-znm2.onrender.com/api/spaces/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Error HTTP: ${response.status}`);
@@ -88,7 +88,7 @@ const SpaceDetail = () => {
         <img
           src={
             espacio.imagen
-              ? `https://nomad-vzpq.onrender.com/${espacio.imagen}`
+              ? `https://nomad-znm2.onrender.com/${espacio.imagen}`
               : "default-image.png"
           }
           alt={espacio.nombre}
