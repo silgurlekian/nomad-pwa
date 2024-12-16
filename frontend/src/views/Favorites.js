@@ -147,7 +147,7 @@ const Favorites = () => {
                     alt={favorite.spaceId.nombre || "Nombre no disponible"}
                     src={
                       favorite.spaceId.imagen
-                        ? `https://nomad-znm2.onrender.com/${favorite.spaceId.imagen}`
+                        ? `https://nomad-znm2.onrender.com${favorite.spaceId.imagen}`
                         : "default-image.png"
                     }
                   />
