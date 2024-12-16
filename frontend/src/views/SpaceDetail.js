@@ -181,7 +181,7 @@ const SpaceDetail = () => {
         <iframe
           title="Mapa"
           src={`https://www.google.com/maps?q=${encodeURIComponent(
-            espacio.direccion
+            `${espacio.direccion}, ${espacio.ciudad}`
           )}&output=embed`}
           width="100%"
           height="200"

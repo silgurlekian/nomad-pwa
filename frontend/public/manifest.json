@@ -3,7 +3,7 @@
   "short_name": "nomad",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
-  "display": "standalone",
+  "display": "minimal-ui",
   "orientation": "portrait",
   "scope": "/pwa/",
   "start_url": "/pwa/",
@@ -63,7 +63,7 @@
       "label": "Búsqueda de espacios"
     }
   ],
-  "id": "nomad",
+  "id": "nomadpwa",
   "description": "La app que centraliza todos los espacios de trabajo en tu ciudad",
   "dir": "ltr",
   "lang": "es",
@@ -75,23 +75,9 @@
   ],
   "handle_links": {
     "enabled": true,
-    "action": "/link-handler",
     "accept": [
       "https://www.nomad.com/spaces/*",
       "https://nomad.com/book/*"
-    ]
-  },
-  "protocol_handlers": [
-    {
-      "protocol": "web+nomad",
-      "url": "/link-handler?url=%s"
-    }
-  ],
-  "share_target": {
-    "action": "/share-handler",
-    "accept": [
-      "image/*",
-      "text/*"
     ]
   },
   "background_sync": {
@@ -103,5 +89,6 @@
   },
   "push": {
     "enabled": true
-  }
+  },
+  "prefer_related_applications": false
 }
