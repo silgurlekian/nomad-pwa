@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 import HeaderSection from "../components/HeaderSection";
 import "./Reservation.css";
 
 const Reservation = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [cargando, setCargando] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [spaceDetails, setSpaceDetails] = useState(null);
   const [reservationData, setReservationData] = useState({
@@ -23,7 +26,7 @@ const Reservation = () => {
     endTime: "",
     numberOfPlaces: "",
   });
-  const [reservationSuccess, setReservationSuccess] = useState(false);
+  // const [reservationSuccess, setReservationSuccess] = useState(false);
 
   // Obtener el nombre del usuario desde localStorage
   useEffect(() => {
@@ -116,6 +119,8 @@ const Reservation = () => {
       return;
     }
 
+    setCargando(true);
+
     const generateRandomCode = () => {
       const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       let code = "";
@@ -124,7 +129,7 @@ const Reservation = () => {
           Math.floor(Math.random() * characters.length)
         );
       }
-      console.log("Generated Code:", code); 
+      console.log("Generated Code:", code);
       return code;
     };
 
@@ -159,7 +164,9 @@ const Reservation = () => {
 
       const data = await response.json();
       console.log("Reserva creada:", data);
-      setReservationSuccess(true);
+      setRedirecting(true);
+
+      // setReservationSuccess(true);
 
       setTimeout(() => {
         navigate("/reservation-success", {
@@ -172,8 +179,16 @@ const Reservation = () => {
     } catch (error) {
       console.error("Error:", error);
       setErrors({ ...errors, general: error.message });
+    } finally {
+      if (!redirecting) {
+        setCargando(false);
+      }
     }
   };
+
+  if (cargando || redirecting) {
+    return <Loading />;
+  }
 
   return (
     <div>
@@ -181,11 +196,11 @@ const Reservation = () => {
       <div className="contenido-detalle">
         <h1 className="h4">Reservar espacio: {spaceDetails?.nombre}</h1>
 
-        {reservationSuccess && (
+        {/* {reservationSuccess && (
           <div className="alert alert-success">
             ¡Reserva realizada exitosamente!
           </div>
-        )}
+        )} */}
 
         {!isLoggedIn && (
           <div className="error-message">
