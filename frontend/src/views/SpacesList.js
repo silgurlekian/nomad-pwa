@@ -194,51 +194,6 @@ const SpacesList = () => {
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   };
 
-  const aplicarFiltrosYOrden = useCallback(
-    (espacios, filtros, ordenamiento, busqueda) => {
-      let filteredSpaces = [...espacios];
-
-      if (busqueda) {
-        const palabrasBusqueda = quitarAcentos(busqueda)
-          .toLowerCase()
-          .split(/\s+/)
-          .filter((palabra) => palabra.length > 0);
-
-        filteredSpaces = filteredSpaces.filter((espacio) =>
-          palabrasBusqueda.every(
-            (palabra) =>
-              quitarAcentos(espacio.nombre).toLowerCase().includes(palabra) ||
-              quitarAcentos(espacio.direccion)
-                .toLowerCase()
-                .includes(palabra) ||
-              quitarAcentos(espacio.ciudad).toLowerCase().includes(palabra)
-          )
-        );
-      }
-
-      if (filtros.tipos.length > 0) {
-        filteredSpaces = filteredSpaces.filter((espacio) =>
-          espacio.spacesType.some((tipo) => filtros.tipos.includes(tipo.name))
-        );
-      }
-
-      filteredSpaces = filteredSpaces.filter(
-        (espacio) =>
-          espacio.precio >= filtros.precioMin &&
-          espacio.precio <= filtros.precioMax
-      );
-
-      if (ordenamiento === "alfabetico") {
-        filteredSpaces.sort((a, b) => a.nombre.localeCompare(b.nombre));
-      } else if (ordenamiento === "precio") {
-        filteredSpaces.sort((a, b) => a.precio - b.precio);
-      }
-
-      return filteredSpaces;
-    },
-    []
-  );
-
   // Efecto para cargar espacios y detectar ubicación
   useEffect(() => {
     const getSpaces = async () => {
@@ -333,6 +288,51 @@ const SpacesList = () => {
 
     getSpaces();
   }, [user, token]);
+
+  const aplicarFiltrosYOrden = useCallback(
+    (espacios, filtros, ordenamiento, busqueda) => {
+      let filteredSpaces = [...espacios];
+
+      if (busqueda) {
+        const palabrasBusqueda = quitarAcentos(busqueda)
+          .toLowerCase()
+          .split(/\s+/)
+          .filter((palabra) => palabra.length > 0);
+
+        filteredSpaces = filteredSpaces.filter((espacio) =>
+          palabrasBusqueda.every(
+            (palabra) =>
+              quitarAcentos(espacio.nombre).toLowerCase().includes(palabra) ||
+              quitarAcentos(espacio.direccion)
+                .toLowerCase()
+                .includes(palabra) ||
+              quitarAcentos(espacio.ciudad).toLowerCase().includes(palabra)
+          )
+        );
+      }
+
+      if (filtros.tipos.length > 0) {
+        filteredSpaces = filteredSpaces.filter((espacio) =>
+          espacio.spacesType.some((tipo) => filtros.tipos.includes(tipo.name))
+        );
+      }
+
+      filteredSpaces = filteredSpaces.filter(
+        (espacio) =>
+          espacio.precio >= filtros.precioMin &&
+          espacio.precio <= filtros.precioMax
+      );
+
+      if (ordenamiento === "alfabetico") {
+        filteredSpaces.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      } else if (ordenamiento === "precio") {
+        filteredSpaces.sort((a, b) => a.precio - b.precio);
+      }
+
+      return filteredSpaces;
+    },
+    []
+  );
 
   const ChangeSearch = (event) => {
     const valor = event.target.value;
