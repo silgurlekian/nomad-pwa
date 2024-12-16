@@ -664,7 +664,7 @@ const SpacesList = () => {
                   alt={espacio.nombre}
                   src={
                     espacio.imagen
-                      ? `${espacio.imagen}`
+                      ? `https://nomad-znm2.onrender.com${espacio.imagen}`
                       : "default-image.png"
                   }
                 />

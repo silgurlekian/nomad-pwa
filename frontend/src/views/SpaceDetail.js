@@ -88,7 +88,7 @@ const SpaceDetail = () => {
         <img
           src={
             espacio.imagen
-              ? `${espacio.imagen}`
+              ? `https://nomad-znm2.onrender.com${espacio.imagen}`
               : "default-image.png"
           }
           alt={espacio.nombre}
