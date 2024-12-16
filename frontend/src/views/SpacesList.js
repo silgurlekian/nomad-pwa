@@ -194,16 +194,16 @@ const SpacesList = () => {
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   };
 
-  // Efecto para cargar espacios y detectar ubicación
   useEffect(() => {
-    const getSpaces = async () => {
-      setLoading(true); // Establecer carga antes de comenzar
+    const fetchSpaces = async () => {
+      setLoading(true);
       try {
         const respuesta = await axios.get(
           "https://nomad-znm2.onrender.com/api/spaces"
         );
         const espaciosData = respuesta.data;
         setSpaces(espaciosData);
+        setSpacesFiltered(espaciosData); // Setea inicialmente todos los espacios
 
         // Intentar detectar la ubicación
         try {
@@ -218,81 +218,62 @@ const SpacesList = () => {
           console.warn("No se pudo detectar la ubicación automáticamente.");
           setSpacesFiltered(espaciosData); // Mostrar todos los espacios si falla la detección
         }
-      } catch (error) {
-        console.error("Error al obtener los espacios:", error);
-      } finally {
-        setLoading(false); // Cambiar a false después de completar el filtrado
-      }
-    };
 
-    getSpaces();
-  }, [solicitarPermisoUbicacion]);
-
-  useEffect(() => {
-    const getSpaces = async () => {
-      try {
-        const respuesta = await axios.get(
-          "https://nomad-znm2.onrender.com/api/spaces"
-        );
-        const espaciosData = respuesta.data;
-
-        setSpaces(espaciosData);
-
-        if (user && token) {
-          try {
-            const responseFavs = await axios.get(
-              "https://nomad-znm2.onrender.com/api/favorites/user",
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
-            const idsFavoritos = responseFavs.data.map(
-              (fav) => fav.spaceId._id
-            );
-            setFavoritos(idsFavoritos);
-          } catch (errorFavs) {
-            console.error("Error al cargar los favoritos:", errorFavs);
-          }
-        }
-
+        // Calcula tipos únicos y rango de precios
         const tiposUnicos = [
           ...new Set(
             espaciosData
               .flatMap((espacio) => espacio.spacesType)
-              .filter((tipo) => tipo)
               .map((tipo) => tipo.name)
           ),
         ];
         setTipoEspaciosFiltros(tiposUnicos);
 
-        // Ajuste de los filtros de precio solo después de obtener los datos
         const precios = espaciosData.map((espacio) => espacio.precio);
         setFiltrosPrecio({
           min: Math.floor(Math.min(...precios)),
           max: Math.ceil(Math.max(...precios)),
         });
-
-        // Aquí aplicas los filtros iniciales
-        const filtrosAplicadosActualizados = {
+        setFiltrosAplicados({
           tipos: [],
           precioMin: Math.floor(Math.min(...precios)),
           precioMax: Math.ceil(Math.max(...precios)),
-        };
-        setFiltrosAplicados(filtrosAplicadosActualizados);
-
-        setLoading(false);
+        });
       } catch (error) {
-        console.error("Error al obtener los espacios de coworking:", error);
+        console.error("Error al cargar los espacios:", error);
         setError("No se pudieron cargar los espacios.");
+      } finally {
         setLoading(false);
       }
     };
 
-    getSpaces();
+    fetchSpaces();
+  }, [solicitarPermisoUbicacion]);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      if (user && token) {
+        try {
+          const responseFavs = await axios.get(
+            "https://nomad-znm2.onrender.com/api/favorites/user",
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          const idsFavoritos = responseFavs.data.map((fav) => fav.spaceId._id);
+          setFavoritos(idsFavoritos);
+        } catch (error) {
+          console.error("Error al cargar los favoritos:", error);
+        }
+      }
+    };
+
+    fetchFavorites();
   }, [user, token]);
 
   const aplicarFiltrosYOrden = useCallback(
     (espacios, filtros, ordenamiento, busqueda) => {
       let filteredSpaces = [...espacios];
 
+      // Filtrar por búsqueda
       if (busqueda) {
         const palabrasBusqueda = quitarAcentos(busqueda)
           .toLowerCase()
@@ -311,18 +292,21 @@ const SpacesList = () => {
         );
       }
 
+      // Filtrar por tipo
       if (filtros.tipos.length > 0) {
         filteredSpaces = filteredSpaces.filter((espacio) =>
           espacio.spacesType.some((tipo) => filtros.tipos.includes(tipo.name))
         );
       }
 
+      // Filtrar por precio
       filteredSpaces = filteredSpaces.filter(
         (espacio) =>
           espacio.precio >= filtros.precioMin &&
           espacio.precio <= filtros.precioMax
       );
 
+      // Ordenar
       if (ordenamiento === "alfabetico") {
         filteredSpaces.sort((a, b) => a.nombre.localeCompare(b.nombre));
       } else if (ordenamiento === "precio") {
