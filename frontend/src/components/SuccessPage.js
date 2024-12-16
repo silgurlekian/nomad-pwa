@@ -21,7 +21,7 @@ const SuccessPage = () => {
       <div className="success-icon">
         <img src="../pwa/images/icons/circle-success.svg" alt="Reserva exitosa" />
       </div>
-      <h2 className="success-title">Reserva confirmada!</h2>
+      <h2 className="success-title">¡Reserva confirmada!</h2>
       <p className="success-description">
         Preséntate en el espacio de trabajo y presenta este código.
         <br />
