@@ -83,7 +83,7 @@
   },
   "protocol_handlers": [
     {
-      "protocol": "nomad",
+      "protocol": "web+nomad",
       "url": "/link-handler?url=%s"
     }
   ],
