@@ -8,7 +8,7 @@ const Header = () => {
         <img alt="" src="/pwa/images/bkg-home.jpg" />
       </div>
       <div className="header1">
-        <div className="title">Bienvenido a nomad!</div>
+        <div className="title">¡Bienvenido a nomad!</div>
       </div>
     </div>
   );
