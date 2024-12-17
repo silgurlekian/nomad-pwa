@@ -3,7 +3,7 @@
   "short_name": "nomad",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
-  "display": "minimal-ui",
+  "display": "fullscreen",
   "orientation": "portrait",
   "scope": "/pwa/",
   "start_url": "/pwa/",
