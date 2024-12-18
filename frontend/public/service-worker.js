@@ -1,4 +1,4 @@
-const CACHE_NAME = "nomad-pwa-cache-v2.5"; 
+const CACHE_NAME = "nomad-pwa-cache-v2.6"; 
 const urlsToCache = [
   "/pwa/",
   "/pwa/index.html",

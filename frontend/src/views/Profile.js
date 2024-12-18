@@ -60,7 +60,28 @@ const MyAccount = () => {
           })
         );
 
-        setReservas(reservasConDetalles);
+        // Separar las reservas futuras de las pasadas
+        const futureReservations = reservasConDetalles.filter((reserva) => {
+          const reservationDate = new Date(reserva.date);
+          return reservationDate >= new Date(); // Solo reservas futuras
+        });
+
+        const pastReservations = reservasConDetalles.filter((reserva) => {
+          const reservationDate = new Date(reserva.date);
+          return reservationDate < new Date(); // Solo reservas pasadas
+        });
+
+        // Ordenar las reservas futuras por fecha (de la más cercana a la más lejana)
+        const sortedFutureReservations = futureReservations.sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateA - dateB;
+        });
+
+        // Unir las reservas ordenadas (futuras primero y luego pasadas)
+        const sortedReservations = [...sortedFutureReservations, ...pastReservations];
+
+        setReservas(sortedReservations);
         setLoading(false);
       } catch (error) {
         console.error("Error al cargar reservas:", error);
@@ -171,49 +192,59 @@ const MyAccount = () => {
         {reservas.length === 0 ? (
           <p>No tienes reservas activas.</p>
         ) : (
-          reservas.map((reservation) => (
-            <div key={reservation._id} className="reservation-container mb-2">
-              <div className="reservation">
-                <img
-                  src={reservation.imagen || "../pwa/images/default-image.png"}
-                  alt={reservation.spaceName}
-                  className="reservation-image"
-                />
-                <div className="d-flex datos-reservas">
-                  <h4 className="reservation-name">
-                    {reservation.spaceName || "Sin nombre"}
-                  </h4>
-                  <p className="reservation-address">
-                    {reservation.spaceAddress || "Sin dirección"},
-                    {reservation.spaceCity || "Sin ciudad"}
-                  </p>
-                  <p className="reservation-date">
-                    <img
-                      src="../pwa/images/icons/calendar.svg"
-                      alt="fecha de reserva"
-                    />
-                    {new Date(reservation.date).toLocaleDateString("es-ES")}
-                  </p>
-                  <p className="reservation-date">
-                    <img
-                      src="../pwa/images/icons/clock.svg"
-                      alt="hora de reserva"
-                    />
-                    {reservation.startTime} - {reservation.endTime}
-                  </p>
-                  <p className="reservation-date">
-                    Código de reserva: {reservation.code || "Sin código"}
-                  </p>
-                  <button
-                    className="link justify-content-start p-0 mt-3"
-                    onClick={() => handleShowModal(reservation._id)}
-                  >
-                    Cancelar reserva
-                  </button>
+          reservas.map((reservation) => {
+            const reservationDate = new Date(reservation.date);
+            const isPastDate = reservationDate < new Date();
+
+            return (
+              <div
+                key={reservation._id}
+                className={`reservation-container mb-2 ${
+                  isPastDate ? "past-reservation" : ""
+                }`}
+              >
+                <div className="reservation">
+                  <img
+                    src={reservation.imagen || "../pwa/images/default-image.png"}
+                    alt={reservation.spaceName}
+                    className="reservation-image"
+                  />
+                  <div className="d-flex datos-reservas">
+                    <h4 className="reservation-name">
+                      {reservation.spaceName || "Sin nombre"}
+                    </h4>
+                    <p className="reservation-address">
+                      {reservation.spaceAddress || "Sin dirección"},
+                      {reservation.spaceCity || "Sin ciudad"}
+                    </p>
+                    <p className="reservation-date">
+                      <img
+                        src="../pwa/images/icons/calendar.svg"
+                        alt="fecha de reserva"
+                      />
+                      {reservationDate.toLocaleDateString("es-ES")}
+                    </p>
+                    <p className="reservation-date">
+                      <img
+                        src="../pwa/images/icons/clock.svg"
+                        alt="hora de reserva"
+                      />
+                      {reservation.startTime} - {reservation.endTime}
+                    </p>
+                    <p className="reservation-date">
+                      Código de reserva: {reservation.code || "Sin código"}
+                    </p>
+                    <button
+                      className="link justify-content-start p-0 mt-3"
+                      onClick={() => handleShowModal(reservation._id)}
+                    >
+                      Cancelar reserva
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
