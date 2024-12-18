@@ -126,6 +126,10 @@ const SpacesList = () => {
     if (!user) {
       setWarningMessage("Debes estar logueado para gestionar favoritos.");
       setTimeout(() => setWarningMessage(""), 3000);
+      window.scrollTo({
+        top: 0, 
+        behavior: "smooth", 
+      });
       return;
     }
     try {
@@ -647,9 +651,7 @@ const SpacesList = () => {
                   className="imagen-espacio-lista"
                   alt={espacio.nombre}
                   src={
-                    espacio.imagen
-                      ? `${espacio.imagen}`
-                      : "default-image.png"
+                    espacio.imagen ? `${espacio.imagen}` : "default-image.png"
                   }
                 />
                 <div className="tag-container">
