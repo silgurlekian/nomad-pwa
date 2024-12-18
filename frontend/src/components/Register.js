@@ -15,6 +15,7 @@ const Register = () => {
   const [errorPassword, setErrorPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); // Nuevo estado para el mensaje de éxito
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -23,13 +24,11 @@ const Register = () => {
     setErrorEmail(null);
     setErrorPassword(null);
 
-    // Validar el nombre
     if (!nombre) {
       setErrorNombre("El nombre completo es obligatorio.");
       isValid = false;
     }
 
-    // Validar el correo electrónico
     if (!email) {
       setErrorEmail("El correo electrónico es obligatorio.");
       isValid = false;
@@ -38,7 +37,6 @@ const Register = () => {
       isValid = false;
     }
 
-    // Validar la contraseña
     if (!password) {
       setErrorPassword("La contraseña es obligatoria.");
       isValid = false;
@@ -47,7 +45,6 @@ const Register = () => {
       isValid = false;
     }
 
-    // Validar confirmación de contraseña
     if (password !== confirmPassword) {
       setErrorPassword("Las contraseñas no coinciden.");
       isValid = false;
@@ -59,18 +56,34 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Validar el formulario
     if (!validateForm()) {
-      return; // Si la validación falla, no continuar
+      return;
     }
 
     try {
-      const data = await registerUser({ nombre, email, password });
-      localStorage.setItem("user", JSON.stringify(data));
-      localStorage.setItem("token", data.token);
-      navigate("/login");
+      await registerUser({ nombre, email, password });
+
+      setSuccessMessage("¡Registro exitoso! Redirigiendo al login...");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
     } catch (err) {
-      setErrorEmail(err.response ? err.response.data.message : "Error al registrar");
+      console.error("Error al registrar:", err);
+
+      if (err.response) {
+        const errorMessage =
+          err.response.data.message || "Error desconocido al registrar.";
+
+        if (errorMessage === "El usuario ya existe") {
+          setErrorEmail("El correo electrónico ya está registrado.");
+        } else {
+          setErrorEmail(errorMessage);
+        }
+      } else {
+        const errorMessage = err.message || "Error desconocido al registrar.";
+        setErrorEmail(errorMessage);
+      }
     }
   };
 
@@ -88,12 +101,16 @@ const Register = () => {
           Únete a nomad para encontrar y reservar espacios de trabajo
         </p>
 
+        {successMessage && (
+          <div className="success-message">{successMessage}</div>
+        )}
+
         <form onSubmit={handleRegister}>
           <div className="form-group">
             <label htmlFor="nombre">Nombre completo</label>
             <input
               type="text"
-              className={`form-control ${errorNombre ? 'error' : ''}`}
+              className={`form-control ${errorNombre ? "error" : ""}`}
               value={nombre}
               onChange={(e) => {
                 setNombre(e.target.value);
@@ -103,107 +120,136 @@ const Register = () => {
             />
             {errorNombre && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/pwa/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img
+                  src="/pwa/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
                 {errorNombre}
               </p>
             )}
           </div>
+
           <div className="form-group">
             <label htmlFor="email">Correo electrónico</label>
             <input
               type="email"
-              className={`form-control ${errorEmail ? 'error' : ''}`}
+              className={`form-control ${errorEmail ? "error" : ""}`}
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setErrorEmail(null); // Reiniciar error al cambiar el valor
+                setErrorEmail(null);
               }}
               placeholder="Ingresa tu correo electrónico"
             />
             {errorEmail && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/pwa/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img
+                  src="/pwa/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
                 {errorEmail}
               </p>
             )}
           </div>
+
           <div className="form-group">
             <label htmlFor="password">Contraseña</label>
             <div className="password-input-container">
               <input
                 type={showPassword ? "text" : "password"}
-                className={`form-control ${errorPassword ? 'error' : ''}`}
+                className={`form-control ${errorPassword ? "error" : ""}`}
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  setErrorPassword(null); // Reiniciar error al cambiar el valor
+                  setErrorPassword(null);
                 }}
                 placeholder="Ingresa tu contraseña"
               />
-              <span 
+              <span
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                <img 
-                  src={showPassword ? "/pwa/images/icons/eye-slash.svg" : "/pwa//images/icons/eye.svg"} 
-                  alt={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} 
-                  style={{ width: '20px', height: '20px' }} 
+                <img
+                  src={
+                    showPassword
+                      ? "/pwa/images/icons/eye-slash.svg"
+                      : "/pwa//images/icons/eye.svg"
+                  }
+                  alt={
+                    showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                  }
+                  style={{ width: "20px", height: "20px" }}
                 />
               </span>
             </div>
             {errorPassword && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/pwa/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img
+                  src="/pwa/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
                 {errorPassword}
               </p>
             )}
           </div>
+
           <div className="form-group">
             <label htmlFor="confirmPassword">Confirmar contraseña</label>
             <div className="password-input-container">
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                className={`form-control ${errorPassword ? 'error' : ''}`}
+                className={`form-control ${errorPassword ? "error" : ""}`}
                 value={confirmPassword}
                 onChange={(e) => {
                   setConfirmPassword(e.target.value);
-                  // Reiniciar error solo si se está cambiando la confirmación
-                  if (e.target.value === password) {
-                    setErrorPassword(null); 
-                  }
                 }}
                 placeholder="Confirma tu contraseña"
               />
-              <span 
+              <span
                 className="toggle-password"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                <img 
-                  src={showConfirmPassword ? "/pwa/images/icons/eye-slash.svg" : "/pwa//images/icons/eye.svg"} 
-                  alt={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"} 
-                  style={{ width: '20px', height: '20px' }} 
+                <img
+                  src={
+                    showConfirmPassword
+                      ? "/pwa/images/icons/eye-slash.svg"
+                      : "/pwa//images/icons/eye.svg"
+                  }
+                  alt={
+                    showConfirmPassword
+                      ? "Ocultar contraseña"
+                      : "Mostrar contraseña"
+                  }
+                  style={{ width: "20px", height: "20px" }}
                 />
               </span>
             </div>
-            {/* Mostrar error específico para confirmación si es necesario */}
             {password && confirmPassword && password !== confirmPassword && (
               <p className="d-flex align-items-center gap-1 error-message mt-2">
-                <img src="/pwa/images/icons/warning.svg" alt="Advertencia" style={{ width: '16px', height: '16px' }} />
+                <img
+                  src="/pwa/images/icons/warning.svg"
+                  alt="Advertencia"
+                  style={{ width: "16px", height: "16px" }}
+                />
                 Las contraseñas no coinciden.
               </p>
             )}
           </div>
+
           <button type="submit" className="btn-primary">
             Registrarse
           </button>
         </form>
       </div>
-      
+
       <div className="d-flex separator">
         <div className="line"></div>
-        <hr className="w-100"/>
+        <hr className="w-100" />
         <div>ó</div>
-        <hr className="w-100"/>
+        <hr className="w-100" />
       </div>
       <p className="text-center">¿Ya tienes una cuenta?</p>
       <Link to="/login" className="d-block link">
